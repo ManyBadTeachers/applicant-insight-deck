@@ -1,14 +1,14 @@
 export const StatusBadge = ({ status }) => {
   const colors = {
-    Pending: "bg-yellow-100 text-yellow-800",
-    "In Progress": "bg-blue-100 text-blue-800",
-    Passed: "bg-green-100 text-green-800",
-    Rejected: "bg-red-100 text-red-800",
+    Pending: "bg-status-pending text-status-pending-foreground",
+    "In Progress": "bg-status-progress text-status-progress-foreground",
+    Passed: "bg-status-passed text-status-passed-foreground",
+    Rejected: "bg-status-rejected text-status-rejected-foreground",
   };
   return (
     <span
-      className={`px-2 py-1 rounded-full font-semibold text-sm ${
-        colors[status] || "bg-gray-100 text-gray-800"
+      className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold transition-colors ${
+        colors[status] || "bg-muted text-muted-foreground"
       }`}
     >
       {status}

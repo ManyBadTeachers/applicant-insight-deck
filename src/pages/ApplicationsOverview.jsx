@@ -95,13 +95,13 @@ const ApplicationsOverview = () => {
     hired: 2,
   };
   const dashboardColors = {
-    totalApplications: "bg-blue-100 text-blue-800",
-    reviewedToday: "bg-teal-100 text-teal-800",
-    submittedToday: "bg-yellow-100 text-yellow-800",
-    leftInProcess: "bg-gray-100 text-gray-800",
-    waitingConfirmation: "bg-purple-100 text-purple-800",
-    rejectionRate: "bg-red-100 text-red-800",
-    hired: "bg-green-100 text-green-800",
+    totalApplications: "bg-primary/10 text-primary border border-primary/20",
+    reviewedToday: "bg-emerald-50 text-emerald-700 border border-emerald-200",
+    submittedToday: "bg-amber-50 text-amber-700 border border-amber-200",
+    leftInProcess: "bg-muted text-muted-foreground border border-border",
+    waitingConfirmation: "bg-purple-50 text-purple-700 border border-purple-200",
+    rejectionRate: "bg-red-50 text-red-700 border border-red-200",
+    hired: "bg-green-50 text-green-700 border border-green-200",
   };
 
   return (
@@ -110,16 +110,16 @@ const ApplicationsOverview = () => {
       <div className="max-w-7xl mx-auto px-4 py-8 space-y-12">
         {/* Dashboard */}
         <section>
-          <h2 className="text-2xl font-bold mb-4">Quick Overview</h2>
+          <h2 className="text-2xl font-bold mb-4 text-foreground">Quick Overview</h2>
           <div className="grid md:grid-cols-4 gap-4">
             {Object.entries(dashboardStats).map(([key, value]) => (
               <div
                 key={key}
-                className={`p-4 rounded-lg shadow text-center ${
+                className={`p-4 rounded-lg shadow-sm text-center transition-all hover:shadow-md ${
                   dashboardColors[key]
                 }`}
               >
-                <p className="text-sm">{key.replace(/([A-Z])/g, " $1")}</p>
+                <p className="text-sm font-medium opacity-80">{key.replace(/([A-Z])/g, " $1")}</p>
                 <p className="text-xl font-bold">{value}</p>
               </div>
             ))}
@@ -128,30 +128,30 @@ const ApplicationsOverview = () => {
 
         {/* Applications Overview */}
         <section className="space-y-6">
-          <h1 className="text-3xl font-extrabold text-gray-900 mb-6">
+          <h1 className="text-3xl font-extrabold text-foreground mb-6">
             Applications Overview
           </h1>
 
           {/* Filters */}
           <div className="flex flex-col md:flex-row gap-4 mb-6 items-center">
             <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5" />
               <Input
                 placeholder="Search applicants..."
-                className="pl-12 py-2 rounded-lg border border-gray-300 shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="pl-12"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
             </div>
 
             <Select value={expertiseFilter} onValueChange={setExpertiseFilter}>
-              <SelectTrigger className="w-44 rounded-lg border border-gray-300 shadow-sm">
+              <SelectTrigger className="w-44">
                 <SelectValue
                   placeholder="Expertise"
                   className="font-semibold"
                 />
               </SelectTrigger>
-              <SelectContent className="bg-white shadow-md rounded-md">
+              <SelectContent>
                 <SelectItem value="all">All Expertise</SelectItem>
                 <SelectItem value="IT">IT</SelectItem>
                 <SelectItem value="Business">Business</SelectItem>
@@ -177,13 +177,13 @@ const ApplicationsOverview = () => {
               value={nationalityFilter}
               onValueChange={setNationalityFilter}
             >
-              <SelectTrigger className="w-44 rounded-lg border border-gray-300 shadow-sm">
+              <SelectTrigger className="w-44">
                 <SelectValue
                   placeholder="Nationality"
                   className="font-semibold"
                 />
               </SelectTrigger>
-              <SelectContent className="bg-white shadow-md rounded-md">
+              <SelectContent>
                 <SelectItem value="all">All</SelectItem>
                 <SelectItem value="Swedish">Swedish</SelectItem>
                 <SelectItem value="American">American</SelectItem>
@@ -208,10 +208,10 @@ const ApplicationsOverview = () => {
         </section>
 
         {/* Table */}
-        <div className="border border-gray-200 rounded-lg shadow-sm overflow-hidden">
+        <div className="border border-card-border rounded-lg shadow-sm overflow-hidden bg-card">
           <div className="max-h-[600px] overflow-y-auto overflow-x-auto">
             <table className="w-full text-sm border-collapse">
-              <thead className="bg-gray-100 text-left text-gray-700 font-semibold sticky top-0 z-10">
+              <thead className="bg-muted text-left text-muted-foreground font-semibold sticky top-0 z-10">
                 <tr>
                   <th className="p-3">Full Name</th>
                   <th className="p-3">Status</th>
@@ -229,9 +229,9 @@ const ApplicationsOverview = () => {
                 {filteredApplicants.map((a) => (
                   <tr
                     key={a.id}
-                    className="border-t border-gray-200 odd:bg-white even:bg-gray-50 hover:bg-gray-100 transition-all duration-150"
+                    className="border-t border-border odd:bg-card even:bg-muted/30 hover:bg-accent/50 transition-all duration-150"
                   >
-                    <td className="p-3 font-semibold text-gray-900">
+                    <td className="p-3 font-semibold text-card-foreground">
                       {a.fullName}
                     </td>
                     <td className="p-3">
@@ -240,19 +240,19 @@ const ApplicationsOverview = () => {
                     <td className="p-3">
                       <ExpertiseBadge expertise={a.primaryExpertise} />
                     </td>
-                    <td className="p-3 text-gray-600">{a.email}</td>
-                    <td className="p-3 text-gray-600">{a.phone}</td>
-                    <td className="p-3 text-gray-700">{a.firstName}</td>
-                    <td className="p-3 text-gray-700">{a.lastName}</td>
+                    <td className="p-3 text-muted-foreground">{a.email}</td>
+                    <td className="p-3 text-muted-foreground">{a.phone}</td>
+                    <td className="p-3 text-card-foreground">{a.firstName}</td>
+                    <td className="p-3 text-card-foreground">{a.lastName}</td>
                     <td className="p-3">
                       <NationalityBadge nationality={a.nationality} />
                     </td>
-                    <td className="p-3">
-                      <Button variant="ghost" size="icon">
-                        <FileText className="w-5 h-5 text-gray-600" />
-                      </Button>
-                    </td>
-                    <td className="p-3 text-gray-600">{a.submissionDate}</td>
+                     <td className="p-3">
+                       <Button variant="ghost" size="icon">
+                         <FileText className="w-5 h-5 text-muted-foreground" />
+                       </Button>
+                     </td>
+                     <td className="p-3 text-muted-foreground">{a.submissionDate}</td>
                   </tr>
                 ))}
               </tbody>
@@ -265,8 +265,8 @@ const ApplicationsOverview = () => {
           <h2 className="text-2xl font-bold mb-4">Action Center</h2>
 
           {/* Description Card */}
-          <div className="p-4 rounded-lg shadow-md bg-white border border-gray-200">
-            <p className="text-gray-700 mb-4">
+          <div className="p-6 rounded-lg shadow-sm bg-card border border-card-border">
+            <p className="text-card-foreground mb-4">
               The Action Center is where you can manage manual steps in the
               hiring process.
             </p>
@@ -274,18 +274,18 @@ const ApplicationsOverview = () => {
             {applicantSteps.map((applicant) => (
               <div
                 key={applicant.id}
-                className="mb-6 p-6 bg-white rounded-lg shadow-md border border-gray-200 min-h-[180px]"
+                className="mb-6 p-6 bg-card rounded-lg shadow-sm border border-card-border min-h-[180px]"
               >
                 {/* Name and expertise on the same row */}
                 <div className="flex items-center justify-between mb-3">
-                  <h3 className="font-semibold text-lg">
+                  <h3 className="font-semibold text-lg text-card-foreground">
                     {applicant.fullName}
                   </h3>
                   <ExpertiseBadge expertise={applicant.expertise} />
                 </div>
 
                 {/* Dummy text */}
-                <p className="text-gray-500 mb-4">
+                <p className="text-muted-foreground mb-4">
                   Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
                   do eiusmod tempor incididunt ut labore et dolore magna aliqua.
                 </p>
@@ -295,12 +295,12 @@ const ApplicationsOverview = () => {
                   {applicant.steps.map((step, index) => (
                     <span
                       key={index}
-                      className={`flex-shrink-0 px-3 py-1 text-sm font-medium text-white rounded ${
+                      className={`flex-shrink-0 px-3 py-1 text-sm font-medium rounded ${
                         step.color === "green"
-                          ? "bg-green-500"
+                          ? "bg-status-passed text-status-passed-foreground"
                           : step.color === "yellow"
-                          ? "bg-yellow-500"
-                          : "bg-red-500"
+                          ? "bg-status-pending text-status-pending-foreground"
+                          : "bg-status-rejected text-status-rejected-foreground"
                       }`}
                     >
                       {step.label.replace(/_/g, " ")}

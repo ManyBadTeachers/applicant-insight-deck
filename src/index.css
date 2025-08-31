@@ -9,6 +9,14 @@
     /* Core brand colors */
     --background: 0 0% 100%;
     --foreground: 0 0% 9%;
+    
+    /* Secondary colors */
+    --secondary: 213 13% 96%;
+    --secondary-foreground: 213 13% 46%;
+    
+    /* Popover colors */
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 9%;
 
     /* Professional blue palette */
     --primary: 213 94% 68%;
