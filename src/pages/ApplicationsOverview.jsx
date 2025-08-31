@@ -477,6 +477,26 @@ const ApplicationsOverview = () => {
                       >
                         {overallStatus}
                       </div>
+                      
+                      {/* Expand/Collapse Button */}
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setExpandedActionCards({
+                            ...expandedActionCards,
+                            [applicant.id]: !isExpanded
+                          });
+                        }}
+                        className="h-8 w-8 p-0"
+                      >
+                        {isExpanded ? (
+                          <ChevronUp className="w-4 h-4" />
+                        ) : (
+                          <ChevronDown className="w-4 h-4" />
+                        )}
+                      </Button>
                     </div>
                   </div>
 
