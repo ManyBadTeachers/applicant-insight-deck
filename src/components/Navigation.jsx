@@ -1,7 +1,7 @@
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import ThemeToggle from "@/components/ThemeToggle";
-import { BarChart3, Users, FileText, Mail, BookOpen, UserPlus } from "lucide-react";
+import { BarChart3, Users, FileText, BookOpen, UserPlus } from "lucide-react";
 
 const Navigation = () => {
   const location = useLocation();
@@ -9,7 +9,6 @@ const Navigation = () => {
   const navItems = [
     { path: "/", label: "Home", icon: Users },
     { path: "/dashboard", label: "Dashboard", icon: BarChart3 },
-    { path: "/email-templates", label: "Email Templates", icon: Mail },
     { path: "/docs", label: "Docs", icon: BookOpen },
     { path: "/create-applicant", label: "Add Applicant", icon: UserPlus }
   ];
