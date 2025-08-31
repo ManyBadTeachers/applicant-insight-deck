@@ -324,21 +324,29 @@ const ApplicationsOverview = () => {
                   </Button>
                 </div>
 
-                {/* Steps with improved styling */}
-                <div className="flex gap-2 overflow-x-auto pb-1">
+                {/* Steps with improved styling and wrapping */}
+                <div className="flex flex-wrap gap-2">
                   {applicant.steps.map((step, index) => (
-                    <span
+                    <div
                       key={index}
-                      className={`flex-shrink-0 px-3 py-1.5 text-xs font-medium rounded-full border transition-all hover:scale-105 ${
+                      className={`relative px-4 py-2.5 text-xs font-bold tracking-wide uppercase transition-all hover:scale-105 ${
                         step.color === "green"
-                          ? "bg-status-passed text-status-passed-foreground border-status-passed/30 shadow-sm"
+                          ? "bg-status-passed text-status-passed-foreground shadow-lg shadow-status-passed/25"
                           : step.color === "yellow"
-                          ? "bg-status-pending text-status-pending-foreground border-status-pending/30 shadow-sm animate-pulse"
-                          : "bg-status-rejected text-status-rejected-foreground border-status-rejected/30"
+                          ? "bg-status-pending text-status-pending-foreground shadow-lg shadow-status-pending/25 animate-pulse"
+                          : "bg-status-rejected text-status-rejected-foreground shadow-lg shadow-status-rejected/25"
                       }`}
+                      style={{
+                        clipPath: 'polygon(0% 0%, calc(100% - 8px) 0%, 100% 50%, calc(100% - 8px) 100%, 0% 100%, 8px 50%)'
+                      }}
                     >
-                      {step.label.replace(/_/g, " ")}
-                    </span>
+                      <span className="relative z-10">
+                        {step.label.replace(/_/g, " ")}
+                      </span>
+                      {step.color === "green" && (
+                        <div className="absolute top-1 right-1 w-2 h-2 bg-white rounded-full opacity-75"></div>
+                      )}
+                    </div>
                   ))}
                 </div>
               </div>
