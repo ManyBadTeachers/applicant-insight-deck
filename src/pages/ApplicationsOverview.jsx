@@ -27,6 +27,7 @@ const ApplicationsOverview = () => {
   const [selectedApplicants, setSelectedApplicants] = useState([]);
   const [showComparison, setShowComparison] = useState(false);
   const [expandedNotes, setExpandedNotes] = useState({});
+  const [actionCenterFilter, setActionCenterFilter] = useState("all");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -132,7 +133,22 @@ const ApplicationsOverview = () => {
     });
   }, [applicants, searchQuery, expertiseFilter, nationalityFilter, statusFilter, applicantSteps]);
 
-  // Dashboard stats
+  // Filtered applicants for Action Center
+  const filteredActionCenterApplicants = useMemo(() => {
+    return applicantSteps.filter((applicant) => {
+      if (actionCenterFilter === "all") return true;
+      
+      if (applicant.steps.every(s => s.color === "green")) {
+        return actionCenterFilter === "hired";
+      } else if (applicant.steps.some(s => s.color === "red")) {
+        return actionCenterFilter === "rejected";
+      } else if (applicant.steps.some(s => s.color === "yellow")) {
+        return actionCenterFilter === "in_process" || actionCenterFilter === "needs_attention";
+      } else {
+        return actionCenterFilter === "in_process";
+      }
+    });
+  }, [applicantSteps, actionCenterFilter]);
   const dashboardStats = {
     totalApplications: 35,
     reviewedToday: 5,
@@ -382,14 +398,38 @@ const ApplicationsOverview = () => {
         <section className="space-y-6">
           <h2 className="text-2xl font-bold mb-4">Action Center</h2>
 
-          {/* Description Card */}
-          <div className="p-6 rounded-lg shadow-sm bg-card border border-card-border">
-            <p className="text-card-foreground mb-4">
-              The Action Center is where you can manage manual steps in the
-              hiring process.
-            </p>
+          {/* Description and Filter */}
+          <div className="p-6 rounded-lg shadow-sm bg-card border border-card-border space-y-4">
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+              <div className="flex-1">
+                <h3 className="text-lg font-semibold text-card-foreground mb-2">Hiring Process Management</h3>
+                <p className="text-card-foreground">
+                  Review and manage candidates at different stages of the hiring pipeline. Take action on pending interviews, 
+                  document reviews, and track progress through each step of your recruitment process.
+                </p>
+              </div>
+              
+              {/* Filter for Action Center */}
+              <div className="flex-shrink-0">
+                <Select value={actionCenterFilter} onValueChange={setActionCenterFilter}>
+                  <SelectTrigger className="w-48">
+                    <SelectValue placeholder="Filter by status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Candidates</SelectItem>
+                    <SelectItem value="hired">Hired Candidates</SelectItem>
+                    <SelectItem value="rejected">Rejected Candidates</SelectItem>
+                    <SelectItem value="in_process">In Process</SelectItem>
+                    <SelectItem value="needs_attention">Needs Attention</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+          </div>
 
-            {applicantSteps.map((applicant) => (
+          {/* Candidates List */}
+          <div className="space-y-4">
+            {filteredActionCenterApplicants.map((applicant) => (
               <div
                 key={applicant.id}
                 className="mb-6 p-6 bg-gradient-to-br from-card via-card to-accent/5 rounded-xl shadow-lg border border-card-border/50 min-h-[200px] hover:shadow-xl transition-all duration-300 hover:scale-[1.02] group"
