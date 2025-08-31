@@ -276,7 +276,7 @@ const ApplicationsOverview = () => {
                 key={applicant.id}
                 className="mb-6 p-6 bg-gradient-to-br from-card via-card to-accent/5 rounded-xl shadow-lg border border-card-border/50 min-h-[200px] hover:shadow-xl transition-all duration-300 hover:scale-[1.02] group"
               >
-                {/* Header with name, expertise, and action menu */}
+                {/* Header with name, expertise, and status */}
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-3">
                     <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-lg">
@@ -289,7 +289,23 @@ const ApplicationsOverview = () => {
                       <p className="text-sm text-muted-foreground">Candidate Review</p>
                     </div>
                   </div>
-                  <ExpertiseBadge expertise={applicant.expertise} />
+                  <div className="flex items-center gap-3">
+                    {/* Overall Status Badge */}
+                    <div className={`px-4 py-2 font-black text-sm tracking-widest ${
+                      applicant.steps.every(s => s.color === "green") 
+                        ? "bg-emerald-500 text-white shadow-lg shadow-emerald-500/30"
+                        : applicant.steps.some(s => s.color === "red")
+                        ? "bg-red-500 text-white shadow-lg shadow-red-500/30"
+                        : "bg-amber-500 text-white shadow-lg shadow-amber-500/30"
+                    }`}>
+                      {applicant.steps.every(s => s.color === "green") 
+                        ? "HIRED"
+                        : applicant.steps.some(s => s.color === "red")
+                        ? "REJECTED"
+                        : "IN PROCESS"}
+                    </div>
+                    <ExpertiseBadge expertise={applicant.expertise} />
+                  </div>
                 </div>
 
                 {/* Progress status and next action */}
