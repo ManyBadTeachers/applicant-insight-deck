@@ -20,6 +20,7 @@ const ApplicationsOverview = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [expertiseFilter, setExpertiseFilter] = useState("all");
   const [nationalityFilter, setNationalityFilter] = useState("all");
+  const [statusFilter, setStatusFilter] = useState("all");
   const [applicants, setApplicants] = useState([]);
   const [applicantSteps, setApplicantSteps] = useState([]);
   const [favorites, setFavorites] = useState([]);
@@ -110,9 +111,26 @@ const ApplicationsOverview = () => {
       const matchesNationality =
         nationalityFilter === "all" ||
         a.nationality.toLowerCase() === nationalityFilter.toLowerCase();
-      return matchesSearch && matchesExpertise && matchesNationality;
+      
+      // Get hiring status from applicantSteps
+      const applicantStep = applicantSteps.find(step => step.id === a.id);
+      let hiringStatus = "unknown";
+      if (applicantStep) {
+        if (applicantStep.steps.every(s => s.color === "green")) {
+          hiringStatus = "hired";
+        } else if (applicantStep.steps.some(s => s.color === "red")) {
+          hiringStatus = "rejected";
+        } else {
+          hiringStatus = "in_process";
+        }
+      }
+      
+      const matchesStatus =
+        statusFilter === "all" || hiringStatus === statusFilter;
+      
+      return matchesSearch && matchesExpertise && matchesNationality && matchesStatus;
     });
-  }, [applicants, searchQuery, expertiseFilter, nationalityFilter]);
+  }, [applicants, searchQuery, expertiseFilter, nationalityFilter, statusFilter, applicantSteps]);
 
   // Dashboard stats
   const dashboardStats = {
@@ -233,6 +251,24 @@ const ApplicationsOverview = () => {
                   <SelectItem value="Egyptian">Egyptian</SelectItem>
                   <SelectItem value="Pakistani">Pakistani</SelectItem>
                   <SelectItem value="Russian">Russian</SelectItem>
+                </SelectContent>
+              </Select>
+
+              <Select
+                value={statusFilter}
+                onValueChange={setStatusFilter}
+              >
+                <SelectTrigger className="w-44">
+                  <SelectValue
+                    placeholder="Status"
+                    className="font-semibold"
+                  />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Status</SelectItem>
+                  <SelectItem value="hired">Hired</SelectItem>
+                  <SelectItem value="rejected">Rejected</SelectItem>
+                  <SelectItem value="in_process">In Process</SelectItem>
                 </SelectContent>
               </Select>
             </div>
