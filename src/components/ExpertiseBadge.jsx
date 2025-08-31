@@ -18,7 +18,7 @@ export const ExpertiseBadge = ({ expertise }) => {
 
   return (
     <span
-      className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold border transition-colors ${
+      className={`inline-flex items-center px-3 py-1.5 rounded-full text-xs font-bold border transition-all duration-200 hover:scale-105 shadow-sm ${
         colors[expertise] || "bg-muted text-muted-foreground border-border"
       }`}
     >
