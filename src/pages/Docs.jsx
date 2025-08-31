@@ -4,7 +4,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { FileText, Users, Clock, Mail, XCircle } from "lucide-react";
 
-const mapTitle = (subject: string) => {
+const mapTitle = (subject) => {
   switch (subject) {
     case "Application Status Update":
       return "Screening Failure";
@@ -19,16 +19,9 @@ const mapTitle = (subject: string) => {
   }
 };
 
-interface Email {
-  id: number;
-  title: string;
-  subject: string;
-  body: string;
-}
-
 const Docs = () => {
-  const [emails, setEmails] = useState<Email[]>([]);
-  const [editingIndex, setEditingIndex] = useState<number | null>(null);
+  const [emails, setEmails] = useState([]);
+  const [editingIndex, setEditingIndex] = useState(null);
   const [tempBody, setTempBody] = useState("");
 
   const fetchEmails = async () => {
@@ -36,7 +29,7 @@ const Docs = () => {
       const res = await fetch("http://127.0.0.1:5000/get_rejection_emails");
       const data = await res.json();
       const mappedEmails = data.RejectionEmails.map(
-        ([id, subject, body]: [number, string, string]) => ({
+        ([id, subject, body]) => ({
           id,
           title: mapTitle(subject),
           subject,
@@ -53,7 +46,7 @@ const Docs = () => {
     fetchEmails();
   }, []);
 
-  const handleEdit = (index: number) => {
+  const handleEdit = (index) => {
     setEditingIndex(index);
     setTempBody(emails[index].body);
   };
@@ -62,7 +55,7 @@ const Docs = () => {
     setEditingIndex(null);
   };
 
-  const handleSaveToBackend = async (index: number) => {
+  const handleSaveToBackend = async (index) => {
     const email = emails[index];
     try {
       const res = await fetch("http://127.0.0.1:5000/update_rejection_email", {
@@ -203,7 +196,7 @@ const Docs = () => {
               While the initial screening steps are manually reviewed, certain
               stages such as writing assignments and interview scheduling have
               deadlines that are tracked and enforced automatically, taking the
-              applicant’s time zone into account.
+              applicant's time zone into account.
             </p>
           </Card>
 

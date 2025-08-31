@@ -1,18 +1,8 @@
 import { CheckCircle, Clock, XCircle, Circle } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-interface TimelineStep {
-  title: string;
-  status: "completed" | "current" | "failed" | "pending";
-  date?: string;
-}
-
-interface TimelineProps {
-  steps: TimelineStep[];
-}
-
-const Timeline = ({ steps }: TimelineProps) => {
-  const getIcon = (status: string) => {
+const Timeline = ({ steps }) => {
+  const getIcon = (status) => {
     switch (status) {
       case "completed":
         return <CheckCircle className="w-4 h-4 text-status-passed" />;
@@ -27,7 +17,7 @@ const Timeline = ({ steps }: TimelineProps) => {
     }
   };
 
-  const getStepStyles = (status: string) => {
+  const getStepStyles = (status) => {
     switch (status) {
       case "completed":
         return "text-status-passed";

@@ -1,4 +1,4 @@
-export const StatusBadge = ({ status }: { status: string }) => {
+export const StatusBadge = ({ status }) => {
   const colors = {
     Pending: "bg-yellow-100 text-yellow-800",
     "In Progress": "bg-blue-100 text-blue-800",

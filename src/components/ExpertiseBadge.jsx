@@ -1,6 +1,5 @@
-// ExpertiseBadge.tsx
-export const ExpertiseBadge = ({ expertise }: { expertise: string }) => {
-  const colors: Record<string, string> = {
+export const ExpertiseBadge = ({ expertise }) => {
+  const colors = {
     IT: "bg-blue-100 text-blue-800",
     Business: "bg-yellow-100 text-yellow-800",
     Physics: "bg-indigo-100 text-indigo-800",

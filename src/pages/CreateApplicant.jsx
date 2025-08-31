@@ -54,7 +54,7 @@ const CreateApplicant = () => {
         setNationality("");
       }
     } catch (error) {
-      setMessage(`Error: ${(error as Error).message}`);
+      setMessage(`Error: ${error.message}`);
     }
   };
 

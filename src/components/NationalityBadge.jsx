@@ -1,4 +1,4 @@
-export const NationalityBadge = ({ nationality }: { nationality: string }) => {
+export const NationalityBadge = ({ nationality }) => {
   const colors = {
     US: "bg-blue-200 text-blue-900",
     Canada: "bg-red-200 text-red-900",

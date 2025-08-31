@@ -18,8 +18,8 @@ const ApplicationsOverview = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [expertiseFilter, setExpertiseFilter] = useState("all");
   const [nationalityFilter, setNationalityFilter] = useState("all");
-  const [applicants, setApplicants] = useState<any[]>([]);
-  const [applicantSteps, setApplicantSteps] = useState<any[]>([]);
+  const [applicants, setApplicants] = useState([]);
+  const [applicantSteps, setApplicantSteps] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -30,7 +30,7 @@ const ApplicationsOverview = () => {
         );
         const dataApplicants = await resApplicants.json();
         const formattedApplicants = dataApplicants.applicants.map(
-          (a: any[]) => ({
+          (a) => ({
             id: a[0].toString(),
             fullName: a[1],
             status: a[2],
@@ -50,7 +50,7 @@ const ApplicationsOverview = () => {
           "http://127.0.0.1:5000/applicants_hiring_steps"
         );
         const dataSteps = await resSteps.json();
-        const formattedSteps = dataSteps.applicants.map((a: any) => ({
+        const formattedSteps = dataSteps.applicants.map((a) => ({
           id: a.id.toString(),
           fullName: a.fullName,
           expertise: a.expertise,
@@ -116,7 +116,7 @@ const ApplicationsOverview = () => {
               <div
                 key={key}
                 className={`p-4 rounded-lg shadow text-center ${
-                  dashboardColors[key as keyof typeof dashboardColors]
+                  dashboardColors[key]
                 }`}
               >
                 <p className="text-sm">{key.replace(/([A-Z])/g, " $1")}</p>

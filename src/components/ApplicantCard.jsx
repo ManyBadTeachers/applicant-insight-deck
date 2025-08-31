@@ -4,23 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Eye, FileText, Mail, Phone, MapPin } from "lucide-react";
 import { StatusBadge } from "./StatusBadge";
 
-interface ApplicantCardProps {
-  applicant: {
-    id: string;
-    firstName: string;
-    lastName: string;
-    email: string;
-    phone: string;
-    nationality: string;
-    primaryExpertise: string;
-    otherExpertise: string[];
-    status: "Pending" | "In Progress" | "Passed" | "Rejected";
-    submissionDate: string;
-    tags: string[];
-  };
-}
-
-const ApplicantCard = ({ applicant }: ApplicantCardProps) => {
+const ApplicantCard = ({ applicant }) => {
   return (
     <Card className="p-6 min-w-[400px] bg-card border-card-border shadow-sm hover:shadow-md transition-shadow">
       <div className="space-y-4">
