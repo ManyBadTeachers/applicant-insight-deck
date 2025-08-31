@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { Users, ClipboardCheck, Activity, BarChart3, FileText } from "lucide-react";
+import { Users, ClipboardCheck, FileText } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const Navigation = () => {
@@ -7,8 +7,8 @@ const Navigation = () => {
 
   const navItems = [
     {
-      name: "Application Form",
-      href: "/application",
+      name: "Docs",
+      href: "/docs",
       icon: FileText,
     },
     {
@@ -17,14 +17,9 @@ const Navigation = () => {
       icon: Users,
     },
     {
-      name: "Action Center",
-      href: "/actions",
-      icon: Activity,
-    },
-    {
-      name: "Analytics",
-      href: "/analytics",
-      icon: BarChart3,
+      name: "Create Applicant",
+      href: "/create-applicant",
+      icon: ClipboardCheck,
     },
   ];
 
@@ -70,7 +65,9 @@ const Navigation = () => {
               <div className="bg-primary text-primary-foreground w-8 h-8 rounded-full flex items-center justify-center">
                 <span className="text-sm font-medium">JD</span>
               </div>
-              <span className="ml-2 text-sm font-medium text-foreground">John Doe</span>
+              <span className="ml-2 text-sm font-medium text-foreground">
+                John Doe
+              </span>
             </div>
           </div>
         </div>

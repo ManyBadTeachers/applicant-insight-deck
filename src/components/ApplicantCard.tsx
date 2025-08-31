@@ -2,7 +2,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Eye, FileText, Mail, Phone, MapPin } from "lucide-react";
-import StatusBadge from "./StatusBadge";
+import { StatusBadge } from "./StatusBadge";
 
 interface ApplicantCardProps {
   applicant: {
@@ -30,7 +30,9 @@ const ApplicantCard = ({ applicant }: ApplicantCardProps) => {
             <h3 className="text-lg font-semibold text-card-foreground">
               {applicant.firstName} {applicant.lastName}
             </h3>
-            <p className="text-sm text-muted-foreground">{applicant.primaryExpertise}</p>
+            <p className="text-sm text-muted-foreground">
+              {applicant.primaryExpertise}
+            </p>
           </div>
           <StatusBadge status={applicant.status} />
         </div>
@@ -54,7 +56,9 @@ const ApplicantCard = ({ applicant }: ApplicantCardProps) => {
         {/* Other Expertise */}
         {applicant.otherExpertise.length > 0 && (
           <div>
-            <p className="text-sm font-medium text-card-foreground mb-2">Other Areas:</p>
+            <p className="text-sm font-medium text-card-foreground mb-2">
+              Other Areas:
+            </p>
             <div className="flex flex-wrap gap-1">
               {applicant.otherExpertise.map((expertise, index) => (
                 <Badge key={index} variant="secondary" className="text-xs">
