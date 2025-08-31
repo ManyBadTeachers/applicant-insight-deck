@@ -459,12 +459,12 @@ const ApplicationsOverview = () => {
                     
                     <div className="flex items-center gap-3">
                       {/* Overall Status Badge */}
-                      <div className={`px-3 py-1 rounded-full text-xs font-bold ${
+                      <div className={`px-4 py-2 font-black text-sm tracking-widest ${
                         overallStatus === "HIRED"
-                          ? "bg-emerald-100 text-emerald-700"
+                          ? "bg-emerald-500 text-white shadow-lg shadow-emerald-500/30"
                           : overallStatus === "REJECTED"
-                          ? "bg-red-100 text-red-700"
-                          : "bg-amber-100 text-amber-700"
+                          ? "bg-red-500 text-white shadow-lg shadow-red-500/30"
+                          : "bg-amber-500 text-white shadow-lg shadow-amber-500/30"
                       }`}>
                         {overallStatus}
                       </div>
