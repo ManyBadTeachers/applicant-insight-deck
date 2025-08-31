@@ -14,7 +14,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { FileText, Search, Calendar, MessageSquare, PlusCircle, Heart, Users, GitCompare } from "lucide-react";
+import { FileText, Search, Calendar, MessageSquare, PlusCircle, Heart, Users, GitCompare, ChevronDown, ChevronUp } from "lucide-react";
 
 const ApplicationsOverview = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -28,6 +28,7 @@ const ApplicationsOverview = () => {
   const [showComparison, setShowComparison] = useState(false);
   const [expandedNotes, setExpandedNotes] = useState({});
   const [actionCenterFilter, setActionCenterFilter] = useState("all");
+  const [expandedActionCards, setExpandedActionCards] = useState({});
 
   useEffect(() => {
     const fetchData = async () => {
@@ -429,102 +430,129 @@ const ApplicationsOverview = () => {
 
           {/* Candidates List */}
           <div className="space-y-4">
-            {filteredActionCenterApplicants.map((applicant) => (
-              <div
-                key={applicant.id}
-                className="mb-6 p-6 bg-gradient-to-br from-card via-card to-accent/5 rounded-xl shadow-lg border border-card-border/50 min-h-[200px] hover:shadow-xl transition-all duration-300 hover:scale-[1.02] group"
-              >
-                {/* Header with name, expertise, and status */}
-                <div className="flex items-center justify-between mb-4">
-                  <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-lg">
-                      {applicant.fullName.split(' ').map(n => n[0]).join('')}
+            {filteredActionCenterApplicants.map((applicant) => {
+              const isExpanded = expandedActionCards[applicant.id];
+              const overallStatus = applicant.steps.every(s => s.color === "green") 
+                ? "HIRED"
+                : applicant.steps.some(s => s.color === "red")
+                ? "REJECTED"
+                : "IN PROCESS";
+
+              return (
+                <div
+                  key={applicant.id}
+                  className="p-4 bg-gradient-to-br from-card via-card to-accent/5 rounded-xl shadow-lg border border-card-border/50 hover:shadow-xl transition-all duration-300 group"
+                >
+                  {/* Compact Header - Always Visible */}
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-sm">
+                        {applicant.fullName.split(' ').map(n => n[0]).join('')}
+                      </div>
+                      <div>
+                        <h3 className="font-semibold text-card-foreground">
+                          {applicant.fullName}
+                        </h3>
+                        <ExpertiseBadge expertise={applicant.expertise} />
+                      </div>
                     </div>
-                    <div>
-                      <h3 className="font-bold text-lg text-card-foreground group-hover:text-primary transition-colors">
-                        {applicant.fullName}
-                      </h3>
-                      <p className="text-sm text-muted-foreground">Candidate Review</p>
+                    
+                    <div className="flex items-center gap-3">
+                      {/* Overall Status Badge */}
+                      <div className={`px-3 py-1 rounded-full text-xs font-bold ${
+                        overallStatus === "HIRED"
+                          ? "bg-emerald-100 text-emerald-700"
+                          : overallStatus === "REJECTED"
+                          ? "bg-red-100 text-red-700"
+                          : "bg-amber-100 text-amber-700"
+                      }`}>
+                        {overallStatus}
+                      </div>
+                      
+                      {/* Expand/Collapse Button */}
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setExpandedActionCards({
+                          ...expandedActionCards,
+                          [applicant.id]: !isExpanded
+                        })}
+                        className="h-8 w-8 p-0"
+                      >
+                        {isExpanded ? (
+                          <ChevronUp className="w-4 h-4" />
+                        ) : (
+                          <ChevronDown className="w-4 h-4" />
+                        )}
+                      </Button>
                     </div>
                   </div>
-                  <div className="flex items-center gap-3">
-                    {/* Overall Status Badge */}
-                    <div className={`px-4 py-2 font-black text-sm tracking-widest ${
-                      applicant.steps.every(s => s.color === "green") 
-                        ? "bg-emerald-500 text-white shadow-lg shadow-emerald-500/30"
-                        : applicant.steps.some(s => s.color === "red")
-                        ? "bg-red-500 text-white shadow-lg shadow-red-500/30"
-                        : "bg-amber-500 text-white shadow-lg shadow-amber-500/30"
-                    }`}>
-                      {applicant.steps.every(s => s.color === "green") 
-                        ? "HIRED"
-                        : applicant.steps.some(s => s.color === "red")
-                        ? "REJECTED"
-                        : "IN PROCESS"}
+
+                  {/* Expanded Content - Only Visible When Expanded */}
+                  {isExpanded && (
+                    <div className="mt-4 space-y-4 animate-accordion-down">
+                      {/* Progress status and next action */}
+                      <div className="p-3 bg-muted/30 rounded-lg border-l-4 border-primary/50">
+                        <p className="text-sm font-medium text-card-foreground mb-1">Next Action Required:</p>
+                        <p className="text-muted-foreground text-sm">
+                          {applicant.steps.some(s => s.color === "yellow") 
+                            ? "Schedule technical interview and review submitted documents"
+                            : applicant.steps.some(s => s.color === "green")
+                            ? "Final review pending - candidate shows strong potential"
+                            : "Review application and provide feedback"}
+                        </p>
+                      </div>
+
+                      {/* Action buttons */}
+                      <div className="flex flex-wrap gap-2">
+                        <Button size="sm" variant="default" className="h-8 text-xs">
+                          <Calendar className="w-3 h-3 mr-1" />
+                          Schedule Interview
+                        </Button>
+                        <Button size="sm" variant="outline" className="h-8 text-xs">
+                          <MessageSquare className="w-3 h-3 mr-1" />
+                          Send Message
+                        </Button>
+                        <Button size="sm" variant="ghost" className="h-8 text-xs">
+                          <FileText className="w-3 h-3 mr-1" />
+                          Review CV
+                        </Button>
+                        <Button size="sm" variant="ghost" className="h-8 text-xs">
+                          <PlusCircle className="w-3 h-3 mr-1" />
+                          Add Note
+                        </Button>
+                      </div>
+
+                      {/* Detailed Steps */}
+                      <div className="flex flex-wrap gap-2">
+                        {applicant.steps.map((step, index) => (
+                          <div
+                            key={index}
+                            className={`relative px-4 py-2.5 text-xs font-bold tracking-wide uppercase transition-all hover:scale-105 ${
+                              step.color === "green"
+                                ? "bg-status-passed text-status-passed-foreground shadow-lg shadow-status-passed/25"
+                                : step.color === "yellow"
+                                ? "bg-status-pending text-status-pending-foreground shadow-lg shadow-status-pending/25 animate-pulse"
+                                : "bg-status-rejected text-status-rejected-foreground shadow-lg shadow-status-rejected/25"
+                            }`}
+                            style={{
+                              clipPath: 'polygon(0% 0%, calc(100% - 8px) 0%, 100% 50%, calc(100% - 8px) 100%, 0% 100%, 8px 50%)'
+                            }}
+                          >
+                            <span className="relative z-10">
+                              {step.label.replace(/_/g, " ")}
+                            </span>
+                            {step.color === "green" && (
+                              <div className="absolute top-1 right-1 w-2 h-2 bg-white rounded-full opacity-75"></div>
+                            )}
+                          </div>
+                        ))}
+                      </div>
                     </div>
-                    <ExpertiseBadge expertise={applicant.expertise} />
-                  </div>
+                  )}
                 </div>
-
-                {/* Progress status and next action */}
-                <div className="mb-4 p-3 bg-muted/30 rounded-lg border-l-4 border-primary/50">
-                  <p className="text-sm font-medium text-card-foreground mb-1">Next Action Required:</p>
-                  <p className="text-muted-foreground text-sm">
-                    {applicant.steps.some(s => s.color === "yellow") 
-                      ? "Schedule technical interview and review submitted documents"
-                      : applicant.steps.some(s => s.color === "green")
-                      ? "Final review pending - candidate shows strong potential"
-                      : "Review application and provide feedback"}
-                  </p>
-                </div>
-
-                {/* Action buttons */}
-                <div className="flex flex-wrap gap-2 mb-4">
-                  <Button size="sm" variant="default" className="h-8 text-xs">
-                    <Calendar className="w-3 h-3 mr-1" />
-                    Schedule Interview
-                  </Button>
-                  <Button size="sm" variant="outline" className="h-8 text-xs">
-                    <MessageSquare className="w-3 h-3 mr-1" />
-                    Send Message
-                  </Button>
-                  <Button size="sm" variant="ghost" className="h-8 text-xs">
-                    <FileText className="w-3 h-3 mr-1" />
-                    Review CV
-                  </Button>
-                  <Button size="sm" variant="ghost" className="h-8 text-xs">
-                    <PlusCircle className="w-3 h-3 mr-1" />
-                    Add Note
-                  </Button>
-                </div>
-
-                {/* Steps with improved styling and wrapping */}
-                <div className="flex flex-wrap gap-2">
-                  {applicant.steps.map((step, index) => (
-                    <div
-                      key={index}
-                      className={`relative px-4 py-2.5 text-xs font-bold tracking-wide uppercase transition-all hover:scale-105 ${
-                        step.color === "green"
-                          ? "bg-status-passed text-status-passed-foreground shadow-lg shadow-status-passed/25"
-                          : step.color === "yellow"
-                          ? "bg-status-pending text-status-pending-foreground shadow-lg shadow-status-pending/25 animate-pulse"
-                          : "bg-status-rejected text-status-rejected-foreground shadow-lg shadow-status-rejected/25"
-                      }`}
-                      style={{
-                        clipPath: 'polygon(0% 0%, calc(100% - 8px) 0%, 100% 50%, calc(100% - 8px) 100%, 0% 100%, 8px 50%)'
-                      }}
-                    >
-                      <span className="relative z-10">
-                        {step.label.replace(/_/g, " ")}
-                      </span>
-                      {step.color === "green" && (
-                        <div className="absolute top-1 right-1 w-2 h-2 bg-white rounded-full opacity-75"></div>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </section>
 
