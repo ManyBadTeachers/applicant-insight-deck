@@ -12,7 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { FileText, Search } from "lucide-react";
+import { FileText, Search, Calendar, MessageSquare, PlusCircle } from "lucide-react";
 
 const ApplicationsOverview = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -274,33 +274,67 @@ const ApplicationsOverview = () => {
             {applicantSteps.map((applicant) => (
               <div
                 key={applicant.id}
-                className="mb-6 p-6 bg-card rounded-lg shadow-sm border border-card-border min-h-[180px]"
+                className="mb-6 p-6 bg-gradient-to-br from-card via-card to-accent/5 rounded-xl shadow-lg border border-card-border/50 min-h-[200px] hover:shadow-xl transition-all duration-300 hover:scale-[1.02] group"
               >
-                {/* Name and expertise on the same row */}
-                <div className="flex items-center justify-between mb-3">
-                  <h3 className="font-semibold text-lg text-card-foreground">
-                    {applicant.fullName}
-                  </h3>
+                {/* Header with name, expertise, and action menu */}
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-lg">
+                      {applicant.fullName.split(' ').map(n => n[0]).join('')}
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-lg text-card-foreground group-hover:text-primary transition-colors">
+                        {applicant.fullName}
+                      </h3>
+                      <p className="text-sm text-muted-foreground">Candidate Review</p>
+                    </div>
+                  </div>
                   <ExpertiseBadge expertise={applicant.expertise} />
                 </div>
 
-                {/* Dummy text */}
-                <p className="text-muted-foreground mb-4">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
-                  do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                </p>
+                {/* Progress status and next action */}
+                <div className="mb-4 p-3 bg-muted/30 rounded-lg border-l-4 border-primary/50">
+                  <p className="text-sm font-medium text-card-foreground mb-1">Next Action Required:</p>
+                  <p className="text-muted-foreground text-sm">
+                    {applicant.steps.some(s => s.color === "yellow") 
+                      ? "Schedule technical interview and review submitted documents"
+                      : applicant.steps.some(s => s.color === "green")
+                      ? "Final review pending - candidate shows strong potential"
+                      : "Review application and provide feedback"}
+                  </p>
+                </div>
 
-                {/* Steps scroll horizontally */}
-                <div className="flex gap-2 overflow-x-auto">
+                {/* Action buttons */}
+                <div className="flex flex-wrap gap-2 mb-4">
+                  <Button size="sm" variant="default" className="h-8 text-xs">
+                    <Calendar className="w-3 h-3 mr-1" />
+                    Schedule Interview
+                  </Button>
+                  <Button size="sm" variant="outline" className="h-8 text-xs">
+                    <MessageSquare className="w-3 h-3 mr-1" />
+                    Send Message
+                  </Button>
+                  <Button size="sm" variant="ghost" className="h-8 text-xs">
+                    <FileText className="w-3 h-3 mr-1" />
+                    Review CV
+                  </Button>
+                  <Button size="sm" variant="ghost" className="h-8 text-xs">
+                    <PlusCircle className="w-3 h-3 mr-1" />
+                    Add Note
+                  </Button>
+                </div>
+
+                {/* Steps with improved styling */}
+                <div className="flex gap-2 overflow-x-auto pb-1">
                   {applicant.steps.map((step, index) => (
                     <span
                       key={index}
-                      className={`flex-shrink-0 px-3 py-1 text-sm font-medium rounded ${
+                      className={`flex-shrink-0 px-3 py-1.5 text-xs font-medium rounded-full border transition-all hover:scale-105 ${
                         step.color === "green"
-                          ? "bg-status-passed text-status-passed-foreground"
+                          ? "bg-status-passed text-status-passed-foreground border-status-passed/30 shadow-sm"
                           : step.color === "yellow"
-                          ? "bg-status-pending text-status-pending-foreground"
-                          : "bg-status-rejected text-status-rejected-foreground"
+                          ? "bg-status-pending text-status-pending-foreground border-status-pending/30 shadow-sm animate-pulse"
+                          : "bg-status-rejected text-status-rejected-foreground border-status-rejected/30"
                       }`}
                     >
                       {step.label.replace(/_/g, " ")}
