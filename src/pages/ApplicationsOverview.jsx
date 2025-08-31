@@ -441,7 +441,11 @@ const ApplicationsOverview = () => {
               return (
                 <div
                   key={applicant.id}
-                  className="p-4 bg-gradient-to-br from-card via-card to-accent/5 rounded-xl shadow-lg border border-card-border/50 hover:shadow-xl transition-all duration-300 group"
+                  className="p-4 bg-gradient-to-br from-card via-card to-accent/5 rounded-xl shadow-lg border border-card-border/50 hover:shadow-xl transition-all duration-300 group cursor-pointer"
+                  onClick={() => setExpandedActionCards({
+                    ...expandedActionCards,
+                    [applicant.id]: !isExpanded
+                  })}
                 >
                   {/* Compact Header - Always Visible */}
                   <div className="flex items-center justify-between">
@@ -453,19 +457,24 @@ const ApplicationsOverview = () => {
                         <h3 className="font-semibold text-card-foreground">
                           {applicant.fullName}
                         </h3>
-                        <ExpertiseBadge expertise={applicant.expertise} />
+                        <div onClick={(e) => e.stopPropagation()}>
+                          <ExpertiseBadge expertise={applicant.expertise} />
+                        </div>
                       </div>
                     </div>
                     
                     <div className="flex items-center gap-3">
                       {/* Overall Status Badge */}
-                      <div className={`px-4 py-2 font-black text-sm tracking-widest ${
-                        overallStatus === "HIRED"
-                          ? "bg-emerald-500 text-white shadow-lg shadow-emerald-500/30"
-                          : overallStatus === "REJECTED"
-                          ? "bg-red-500 text-white shadow-lg shadow-red-500/30"
-                          : "bg-amber-500 text-white shadow-lg shadow-amber-500/30"
-                      }`}>
+                      <div 
+                        className={`px-4 py-2 font-black text-sm tracking-widest ${
+                          overallStatus === "HIRED"
+                            ? "bg-emerald-500 text-white shadow-lg shadow-emerald-500/30"
+                            : overallStatus === "REJECTED"
+                            ? "bg-red-500 text-white shadow-lg shadow-red-500/30"
+                            : "bg-amber-500 text-white shadow-lg shadow-amber-500/30"
+                        }`}
+                        onClick={(e) => e.stopPropagation()}
+                      >
                         {overallStatus}
                       </div>
                       
@@ -473,10 +482,13 @@ const ApplicationsOverview = () => {
                       <Button
                         variant="ghost"
                         size="sm"
-                        onClick={() => setExpandedActionCards({
-                          ...expandedActionCards,
-                          [applicant.id]: !isExpanded
-                        })}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setExpandedActionCards({
+                            ...expandedActionCards,
+                            [applicant.id]: !isExpanded
+                          });
+                        }}
                         className="h-8 w-8 p-0"
                       >
                         {isExpanded ? (
