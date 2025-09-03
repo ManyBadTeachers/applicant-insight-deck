@@ -20,7 +20,7 @@ export const STANDARD_HIRING_STEPS = [
   },
   {
     id: 4,
-    title: "Screening Succeeded",
+    title: "Screening Result",
     description: "Passed initial screening phase",
     icon: "CheckCircle"
   },
@@ -44,19 +44,19 @@ export const STANDARD_HIRING_STEPS = [
   },
   {
     id: 8,
-    title: "Fee Model Email Sent",
+    title: "Fee Model Email",
     description: "Compensation structure shared",
     icon: "DollarSign"
   },
   {
     id: 9,
-    title: "Fee Model Accepted",
+    title: "Fee Model Result",
     description: "Terms and compensation agreed",
     icon: "Handshake"
   },
   {
     id: 10,
-    title: "Writing Assignment Email Sent",
+    title: "Writing Assignment Email",
     description: "Writing task instructions provided",
     icon: "PenTool"
   },
@@ -74,7 +74,7 @@ export const STANDARD_HIRING_STEPS = [
   },
   {
     id: 13,
-    title: "Writing Assignment Succeeded",
+    title: "Writing Assignment Result",
     description: "Writing task met requirements",
     icon: "ThumbsUp"
   },
