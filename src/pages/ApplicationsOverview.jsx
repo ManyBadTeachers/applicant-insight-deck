@@ -7,6 +7,8 @@ import { NationalityBadge } from "@/components/NationalityBadge";
 import { ExpertiseBadge } from "@/components/ExpertiseBadge";
 import NotesSystem from "@/components/NotesSystem";
 import ComparisonModal from "@/components/ComparisonModal";
+import HiringStepCard from "@/components/HiringStepCard";
+import { STANDARD_HIRING_STEPS, getStepStatus } from "@/data/hiringSteps";
 import {
   Select,
   SelectContent,
@@ -22,13 +24,13 @@ const ApplicationsOverview = () => {
   const [nationalityFilter, setNationalityFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
   const [applicants, setApplicants] = useState([]);
-  const [applicantSteps, setApplicantSteps] = useState([]);
   const [favorites, setFavorites] = useState([]);
   const [selectedApplicants, setSelectedApplicants] = useState([]);
   const [showComparison, setShowComparison] = useState(false);
   const [expandedNotes, setExpandedNotes] = useState({});
   const [actionCenterFilter, setActionCenterFilter] = useState("all");
   const [expandedActionCards, setExpandedActionCards] = useState({});
+  const [expandedSteps, setExpandedSteps] = useState({});
 
   useEffect(() => {
     const fetchData = async () => {
@@ -51,29 +53,17 @@ const ApplicationsOverview = () => {
             nationality: a[8],
             cv: a[9],
             submissionDate: a[10].split(" ")[0],
+            currentStep: 2, // Default to step 2 (Phone Screening) as current
           })
         );
 
-        // Fetch applicant steps
-        const resSteps = await fetch(
-          "http://127.0.0.1:5000/applicants_hiring_steps"
-        );
-        const dataSteps = await resSteps.json();
-        const formattedSteps = dataSteps.applicants.map((a) => ({
-          id: a.id.toString(),
-          fullName: a.fullName,
-          expertise: a.expertise,
-          steps: a.steps,
-        }));
-
         setApplicants(formattedApplicants);
-        setApplicantSteps(formattedSteps);
         
         // Load favorites from localStorage
         const savedFavorites = JSON.parse(localStorage.getItem('hr-favorites') || '[]');
         setFavorites(savedFavorites);
       } catch (error) {
-        console.error("Error fetching applicants or steps:", error);
+        console.error("Error fetching applicants:", error);
       }
     };
 
@@ -114,17 +104,12 @@ const ApplicationsOverview = () => {
         nationalityFilter === "all" ||
         a.nationality.toLowerCase() === nationalityFilter.toLowerCase();
       
-      // Get hiring status from applicantSteps
-      const applicantStep = applicantSteps.find(step => step.id === a.id);
-      let hiringStatus = "unknown";
-      if (applicantStep) {
-        if (applicantStep.steps.every(s => s.color === "green")) {
-          hiringStatus = "hired";
-        } else if (applicantStep.steps.some(s => s.color === "red")) {
-          hiringStatus = "rejected";
-        } else {
-          hiringStatus = "in_process";
-        }
+      // Get hiring status based on current step
+      let hiringStatus = "in_process";
+      if (a.currentStep === 7) {
+        hiringStatus = "hired";
+      } else if (a.currentStep === 0) {
+        hiringStatus = "rejected";
       }
       
       const matchesStatus =
@@ -132,24 +117,22 @@ const ApplicationsOverview = () => {
       
       return matchesSearch && matchesExpertise && matchesNationality && matchesStatus;
     });
-  }, [applicants, searchQuery, expertiseFilter, nationalityFilter, statusFilter, applicantSteps]);
+  }, [applicants, searchQuery, expertiseFilter, nationalityFilter, statusFilter]);
 
   // Filtered applicants for Action Center
   const filteredActionCenterApplicants = useMemo(() => {
-    return applicantSteps.filter((applicant) => {
+    return applicants.filter((applicant) => {
       if (actionCenterFilter === "all") return true;
       
-      if (applicant.steps.every(s => s.color === "green")) {
+      if (applicant.currentStep === 7) {
         return actionCenterFilter === "hired";
-      } else if (applicant.steps.some(s => s.color === "red")) {
+      } else if (applicant.currentStep === 0) {
         return actionCenterFilter === "rejected";
-      } else if (applicant.steps.some(s => s.color === "yellow")) {
-        return actionCenterFilter === "in_process" || actionCenterFilter === "needs_attention";
       } else {
-        return actionCenterFilter === "in_process";
+        return actionCenterFilter === "in_process" || actionCenterFilter === "needs_attention";
       }
     });
-  }, [applicantSteps, actionCenterFilter]);
+  }, [applicants, actionCenterFilter]);
   const dashboardStats = {
     totalApplications: 35,
     reviewedToday: 5,
@@ -432,9 +415,9 @@ const ApplicationsOverview = () => {
           <div className="space-y-4">
             {filteredActionCenterApplicants.map((applicant) => {
               const isExpanded = expandedActionCards[applicant.id];
-              const overallStatus = applicant.steps.every(s => s.color === "green") 
+              const overallStatus = applicant.currentStep === 7
                 ? "HIRED"
-                : applicant.steps.some(s => s.color === "red")
+                : applicant.currentStep === 0
                 ? "REJECTED"
                 : "IN PROCESS";
 
@@ -458,7 +441,7 @@ const ApplicationsOverview = () => {
                           {applicant.fullName}
                         </h3>
                         <div onClick={(e) => e.stopPropagation()}>
-                          <ExpertiseBadge expertise={applicant.expertise} />
+                          <ExpertiseBadge expertise={applicant.primaryExpertise} />
                         </div>
                       </div>
                     </div>
@@ -505,60 +488,34 @@ const ApplicationsOverview = () => {
                     <div className="mt-4 space-y-4 animate-accordion-down">
                       {/* Progress status and next action */}
                       <div className="p-3 bg-muted/30 rounded-lg border-l-4 border-primary/50">
-                        <p className="text-sm font-medium text-card-foreground mb-1">Next Action Required:</p>
+                        <p className="text-sm font-medium text-card-foreground mb-1">Current Step:</p>
                         <p className="text-muted-foreground text-sm">
-                          {applicant.steps.some(s => s.color === "yellow") 
-                            ? "Schedule technical interview and review submitted documents"
-                            : applicant.steps.some(s => s.color === "green")
-                            ? "Final review pending - candidate shows strong potential"
-                            : "Review application and provide feedback"}
+                          Step {applicant.currentStep} of {STANDARD_HIRING_STEPS.length}: {STANDARD_HIRING_STEPS.find(s => s.id === applicant.currentStep)?.title || 'Unknown'}
                         </p>
                       </div>
 
-                      {/* Action buttons */}
-                      <div className="flex flex-wrap gap-2">
-                        <Button size="sm" variant="default" className="h-8 text-xs">
-                          <Calendar className="w-3 h-3 mr-1" />
-                          Schedule Interview
-                        </Button>
-                        <Button size="sm" variant="outline" className="h-8 text-xs">
-                          <MessageSquare className="w-3 h-3 mr-1" />
-                          Send Message
-                        </Button>
-                        <Button size="sm" variant="ghost" className="h-8 text-xs">
-                          <FileText className="w-3 h-3 mr-1" />
-                          Review CV
-                        </Button>
-                        <Button size="sm" variant="ghost" className="h-8 text-xs">
-                          <PlusCircle className="w-3 h-3 mr-1" />
-                          Add Note
-                        </Button>
-                      </div>
-
-                      {/* Detailed Steps */}
-                      <div className="flex flex-wrap gap-2">
-                        {applicant.steps.map((step, index) => (
-                          <div
-                            key={index}
-                            className={`relative px-4 py-2.5 text-xs font-bold tracking-wide uppercase transition-all hover:scale-105 ${
-                              step.color === "green"
-                                ? "bg-status-passed text-status-passed-foreground shadow-lg shadow-status-passed/25"
-                                : step.color === "yellow"
-                                ? "bg-status-pending text-status-pending-foreground shadow-lg shadow-status-pending/25 animate-pulse"
-                                : "bg-status-rejected text-status-rejected-foreground shadow-lg shadow-status-rejected/25"
-                            }`}
-                            style={{
-                              clipPath: 'polygon(0% 0%, calc(100% - 8px) 0%, 100% 50%, calc(100% - 8px) 100%, 0% 100%, 8px 50%)'
-                            }}
-                          >
-                            <span className="relative z-10">
-                              {step.label.replace(/_/g, " ")}
-                            </span>
-                            {step.color === "green" && (
-                              <div className="absolute top-1 right-1 w-2 h-2 bg-white rounded-full opacity-75"></div>
-                            )}
-                          </div>
-                        ))}
+                      {/* Hiring Steps */}
+                      <div className="space-y-2">
+                        <h4 className="font-medium text-card-foreground">Hiring Process Steps:</h4>
+                        {STANDARD_HIRING_STEPS.map((step) => {
+                          const stepStatus = getStepStatus(step.id, applicant.currentStep);
+                          const stepKey = `${applicant.id}-${step.id}`;
+                          const isStepExpanded = expandedSteps[stepKey];
+                          
+                          return (
+                            <HiringStepCard
+                              key={step.id}
+                              step={step}
+                              stepData={{ status: stepStatus }}
+                              isExpanded={isStepExpanded}
+                              onToggle={() => setExpandedSteps({
+                                ...expandedSteps,
+                                [stepKey]: !isStepExpanded
+                              })}
+                              applicantId={applicant.id}
+                            />
+                          );
+                        })}
                       </div>
                     </div>
                   )}
