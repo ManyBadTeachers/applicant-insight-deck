@@ -7,7 +7,7 @@ import { NationalityBadge } from "@/components/NationalityBadge";
 import { ExpertiseBadge } from "@/components/ExpertiseBadge";
 import NotesSystem from "@/components/NotesSystem";
 import ComparisonModal from "@/components/ComparisonModal";
-import HiringStepCard from "@/components/HiringStepCard";
+import HorizontalHiringSteps from "@/components/HorizontalHiringSteps";
 import { STANDARD_HIRING_STEPS, getStepStatus } from "@/data/hiringSteps";
 import {
   Select,
@@ -106,7 +106,7 @@ const ApplicationsOverview = () => {
       
       // Get hiring status based on current step
       let hiringStatus = "in_process";
-      if (a.currentStep === 7) {
+      if (a.currentStep === 14) {
         hiringStatus = "hired";
       } else if (a.currentStep === 0) {
         hiringStatus = "rejected";
@@ -124,7 +124,7 @@ const ApplicationsOverview = () => {
     return applicants.filter((applicant) => {
       if (actionCenterFilter === "all") return true;
       
-      if (applicant.currentStep === 7) {
+      if (applicant.currentStep === 14) {
         return actionCenterFilter === "hired";
       } else if (applicant.currentStep === 0) {
         return actionCenterFilter === "rejected";
@@ -415,7 +415,7 @@ const ApplicationsOverview = () => {
           <div className="space-y-4">
             {filteredActionCenterApplicants.map((applicant) => {
               const isExpanded = expandedActionCards[applicant.id];
-              const overallStatus = applicant.currentStep === 7
+              const overallStatus = applicant.currentStep === 14
                 ? "HIRED"
                 : applicant.currentStep === 0
                 ? "REJECTED"
@@ -495,27 +495,18 @@ const ApplicationsOverview = () => {
                       </div>
 
                       {/* Hiring Steps */}
-                      <div className="space-y-2">
+                      <div className="space-y-4">
                         <h4 className="font-medium text-card-foreground">Hiring Process Steps:</h4>
-                        {STANDARD_HIRING_STEPS.map((step) => {
-                          const stepStatus = getStepStatus(step.id, applicant.currentStep);
-                          const stepKey = `${applicant.id}-${step.id}`;
-                          const isStepExpanded = expandedSteps[stepKey];
-                          
-                          return (
-                            <HiringStepCard
-                              key={step.id}
-                              step={step}
-                              stepData={{ status: stepStatus }}
-                              isExpanded={isStepExpanded}
-                              onToggle={() => setExpandedSteps({
-                                ...expandedSteps,
-                                [stepKey]: !isStepExpanded
-                              })}
-                              applicantId={applicant.id}
-                            />
-                          );
-                        })}
+                        <HorizontalHiringSteps
+                          steps={STANDARD_HIRING_STEPS}
+                          currentStep={applicant.currentStep}
+                          applicantId={applicant.id}
+                          expandedSteps={expandedSteps}
+                          onToggleStep={(stepKey) => setExpandedSteps({
+                            ...expandedSteps,
+                            [stepKey]: !expandedSteps[stepKey]
+                          })}
+                        />
                       </div>
                     </div>
                   )}

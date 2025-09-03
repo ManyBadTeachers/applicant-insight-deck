@@ -2,95 +2,176 @@
 export const STANDARD_HIRING_STEPS = [
   {
     id: 1,
-    title: "Application Review",
-    description: "Initial screening of application materials",
+    title: "Submit Form",
+    description: "Initial application submission",
     icon: "FileText"
   },
   {
     id: 2,
-    title: "Phone Screening",
-    description: "Brief phone interview to assess basic fit",
-    icon: "Phone"
+    title: "Screening Started",
+    description: "Initial review process begins",
+    icon: "Search"
   },
   {
     id: 3,
-    title: "Technical Assessment",
-    description: "Coding test or technical evaluation",
-    icon: "Code"
+    title: "Screening Reviewed",
+    description: "Application materials assessed",
+    icon: "FileCheck"
   },
   {
     id: 4,
-    title: "Technical Interview",
-    description: "In-depth technical discussion with team",
-    icon: "Users"
-  },
-  {
-    id: 5,
-    title: "Culture Fit Interview",
-    description: "Assessment of cultural alignment",
-    icon: "Heart"
-  },
-  {
-    id: 6,
-    title: "Reference Check",
-    description: "Verification of past work experience",
+    title: "Screening Succeeded",
+    description: "Passed initial screening phase",
     icon: "CheckCircle"
   },
   {
+    id: 5,
+    title: "Suggested Interview Email",
+    description: "Interview invitation sent",
+    icon: "Mail"
+  },
+  {
+    id: 6,
+    title: "Interview Scheduled",
+    description: "Interview date and time confirmed",
+    icon: "Calendar"
+  },
+  {
     id: 7,
-    title: "Final Decision",
-    description: "Management review and hiring decision",
-    icon: "Award"
+    title: "Interview Passed",
+    description: "Successfully completed interview",
+    icon: "Users"
+  },
+  {
+    id: 8,
+    title: "Fee Model Email Sent",
+    description: "Compensation structure shared",
+    icon: "DollarSign"
+  },
+  {
+    id: 9,
+    title: "Fee Model Accepted",
+    description: "Terms and compensation agreed",
+    icon: "HandShake"
+  },
+  {
+    id: 10,
+    title: "Writing Assignment Email Sent",
+    description: "Writing task instructions provided",
+    icon: "PenTool"
+  },
+  {
+    id: 11,
+    title: "Writing Assignment Finished",
+    description: "Candidate completed writing task",
+    icon: "FileEdit"
+  },
+  {
+    id: 12,
+    title: "Writing Assignment Reviewed",
+    description: "Writing sample evaluated",
+    icon: "Eye"
+  },
+  {
+    id: 13,
+    title: "Writing Assignment Succeeded",
+    description: "Writing task met requirements",
+    icon: "ThumbsUp"
+  },
+  {
+    id: 14,
+    title: "Contract Sent",
+    description: "Final contract issued",
+    icon: "FileSignature"
   }
 ];
 
 // Generate dummy data for each step type
 export const getStepData = (stepId, applicantId) => {
   const baseData = {
-    1: { // Application Review
-      dateCompleted: "2024-01-15",
+    1: { // Submit Form
+      dateCompleted: "2024-01-10",
+      platform: "Company Website",
+      formType: "Standard Application",
+      action: "View Application"
+    },
+    2: { // Screening Started
+      dateStarted: "2024-01-11",
+      assignedTo: "Sarah Johnson (HR)",
+      priority: "Medium",
+      action: "View Details"
+    },
+    3: { // Screening Reviewed
+      dateCompleted: "2024-01-13",
       reviewer: "Sarah Johnson (HR)",
-      notes: "Strong technical background, good communication skills",
-      action: "View Application Materials",
-      score: "8/10"
+      notes: "Strong background, meets requirements",
+      action: "View Review"
     },
-    2: { // Phone Screening
-      dateCompleted: "2024-01-18",
+    4: { // Screening Succeeded
+      dateCompleted: "2024-01-14",
+      score: "8.5/10",
+      nextStep: "Interview Process",
+      action: "View Results"
+    },
+    5: { // Suggested Interview Email
+      dateSent: "2024-01-15",
+      recipient: applicantId,
+      emailTemplate: "Interview Invitation",
+      action: "View Email"
+    },
+    6: { // Interview Scheduled
+      dateScheduled: "2024-01-22 14:00",
       interviewer: "Mike Chen (Tech Lead)",
-      duration: "30 minutes",
-      score: "8/10",
-      action: "View Screening Notes"
+      duration: "45 minutes",
+      action: "Join Interview"
     },
-    3: { // Technical Assessment
-      dateCompleted: "2024-01-20",
-      testType: "Full-stack Development Challenge",
-      score: "85/100",
-      timeTaken: "3.5 hours",
-      action: "View Code Submission"
+    7: { // Interview Passed
+      dateCompleted: "2024-01-22",
+      interviewer: "Mike Chen (Tech Lead)",
+      score: "9/10",
+      action: "View Notes"
     },
-    4: { // Technical Interview
-      dateScheduled: "2024-01-25 14:00",
-      interviewer: "Alex Rodriguez (Senior Developer)",
-      focusAreas: "System design, algorithms, past projects",
-      action: "Join Interview / View Recording"
+    8: { // Fee Model Email Sent
+      dateSent: "2024-01-23",
+      feeStructure: "Hourly Rate",
+      rate: "$75/hour",
+      action: "View Details"
     },
-    5: { // Culture Fit Interview
-      dateScheduled: "2024-01-28 10:00",
-      interviewer: "Emma Davis (Team Lead)",
-      focusAreas: "Team collaboration, company values, communication style",
-      action: "Schedule Interview"
+    9: { // Fee Model Accepted
+      dateAccepted: "2024-01-24",
+      agreedRate: "$75/hour",
+      terms: "Accepted",
+      action: "View Agreement"
     },
-    6: { // Reference Check
-      status: "Pending",
-      referencesRequired: 2,
-      referencesReceived: 0,
-      action: "Request References"
+    10: { // Writing Assignment Email Sent
+      dateSent: "2024-01-25",
+      assignmentType: "Technical Writing Sample",
+      deadline: "2024-01-30",
+      action: "View Assignment"
     },
-    7: { // Final Decision
-      status: "Pending",
-      decisionBy: "2024-02-01",
-      decisionMaker: "John Smith (Hiring Manager)",
-      action: "Await Decision"
+    11: { // Writing Assignment Finished
+      dateSubmitted: "2024-01-29",
+      wordCount: "1,250 words",
+      submissionMethod: "Email",
+      action: "View Submission"
+    },
+    12: { // Writing Assignment Reviewed
+      dateReviewed: "2024-01-31",
+      reviewer: "Emma Davis (Content Lead)",
+      feedback: "Excellent writing quality and structure",
+      action: "View Review"
+    },
+    13: { // Writing Assignment Succeeded
+      dateCompleted: "2024-02-01",
+      score: "9.5/10",
+      grade: "Excellent",
+      action: "View Results"
+    },
+    14: { // Contract Sent
+      dateSent: "2024-02-02",
+      contractType: "Freelance Agreement",
+      status: "Pending Signature",
+      action: "View Contract"
     }
   };
 
