@@ -44,12 +44,11 @@ const HorizontalHiringSteps = ({ steps, currentStep, applicantId, expandedSteps,
                   e.stopPropagation();
                   onToggleStep(stepKey);
                 }}
-                className={`h-12 px-4 flex flex-col items-center gap-1 text-xs font-medium transition-all hover:scale-105 ${getStatusColor(status)}`}
+                className={`h-12 px-4 flex items-center justify-center text-sm font-medium transition-all hover:scale-105 rounded-none ${getStatusColor(status)}`}
               >
-                <span className="text-[10px] text-center leading-tight max-w-[80px] truncate">
+                <span className="text-center leading-tight max-w-[80px] truncate">
                   {step.title}
                 </span>
-                {isExpanded ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
               </Button>
               
               {/* Step number indicator */}
