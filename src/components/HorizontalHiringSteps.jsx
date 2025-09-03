@@ -70,89 +70,210 @@ const HorizontalHiringSteps = ({ steps, currentStep, applicantId, expandedSteps,
           if (!isExpanded) return null;
 
           return (
-            <Card key={step.id} className="border-l-4 border-l-primary">
-              <CardContent className="p-4">
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="p-2 rounded-full bg-primary/10">
-                    <FileText className="w-4 h-4 text-primary" />
-                  </div>
-                  <div>
-                    <h4 className="font-medium text-card-foreground">{step.title}</h4>
-                    <p className="text-sm text-muted-foreground">{step.description}</p>
+            <Card key={step.id} className="border border-border bg-card shadow-sm">
+              <CardContent className="p-6">
+                <div className="flex items-start justify-between mb-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                      <div className="w-6 h-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm font-bold">
+                        {step.id}
+                      </div>
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-lg text-foreground">{step.title}</h4>
+                      <p className="text-sm text-muted-foreground">{step.description}</p>
+                    </div>
                   </div>
                 </div>
                 
-                <div className="space-y-3">
+                <div className="space-y-4">
                   {/* Step-specific content */}
                   {step.id === 1 && ( // Submit Form
-                    <div className="grid grid-cols-2 gap-4 text-sm">
-                      <div>
-                        <span className="font-medium text-muted-foreground">Date Completed:</span>
-                        <p className="text-card-foreground">{data.dateCompleted}</p>
+                    <div className="bg-muted/50 rounded-lg p-4">
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div className="space-y-1">
+                          <span className="text-sm font-medium text-muted-foreground">Date Completed</span>
+                          <p className="text-foreground font-medium">{data.dateCompleted}</p>
+                        </div>
+                        <div className="space-y-1">
+                          <span className="text-sm font-medium text-muted-foreground">Platform</span>
+                          <p className="text-foreground font-medium">{data.platform}</p>
+                        </div>
+                        <div className="space-y-1">
+                          <span className="text-sm font-medium text-muted-foreground">Form Type</span>
+                          <p className="text-foreground font-medium">{data.formType}</p>
+                        </div>
                       </div>
-                      <div>
-                        <span className="font-medium text-muted-foreground">Platform:</span>
-                        <p className="text-card-foreground">{data.platform}</p>
-                      </div>
-                      <div>
-                        <span className="font-medium text-muted-foreground">Form Type:</span>
-                        <p className="text-card-foreground">{data.formType}</p>
+                      <div className="mt-4 pt-4 border-t border-border">
+                        <Button variant="outline" size="sm">
+                          {data.action}
+                        </Button>
                       </div>
                     </div>
                   )}
 
                   {step.id === 2 && ( // Screening Started
-                    <div className="grid grid-cols-2 gap-4 text-sm">
-                      <div>
-                        <span className="font-medium text-muted-foreground">Date Started:</span>
-                        <p className="text-card-foreground">{data.dateStarted}</p>
+                    <div className="bg-muted/50 rounded-lg p-4">
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div className="space-y-1">
+                          <span className="text-sm font-medium text-muted-foreground">Date Started</span>
+                          <p className="text-foreground font-medium">{data.dateStarted}</p>
+                        </div>
+                        <div className="space-y-1">
+                          <span className="text-sm font-medium text-muted-foreground">Assigned To</span>
+                          <p className="text-foreground font-medium">{data.assignedTo}</p>
+                        </div>
+                        <div className="space-y-1">
+                          <span className="text-sm font-medium text-muted-foreground">Priority</span>
+                          <p className="text-foreground font-medium">{data.priority}</p>
+                        </div>
                       </div>
-                      <div>
-                        <span className="font-medium text-muted-foreground">Assigned To:</span>
-                        <p className="text-card-foreground">{data.assignedTo}</p>
-                      </div>
-                      <div>
-                        <span className="font-medium text-muted-foreground">Priority:</span>
-                        <p className="text-card-foreground">{data.priority}</p>
+                      <div className="mt-4 pt-4 border-t border-border">
+                        <Button variant="outline" size="sm">
+                          {data.action}
+                        </Button>
                       </div>
                     </div>
                   )}
 
                   {step.id === 3 && ( // Screening Reviewed
-                    <div className="space-y-2">
-                      <div className="grid grid-cols-2 gap-4 text-sm">
-                        <div>
-                          <span className="font-medium text-muted-foreground">Date Completed:</span>
-                          <p className="text-card-foreground">{data.dateCompleted}</p>
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <div className="px-4 py-2 rounded-lg bg-green-100 text-green-800 font-bold text-lg">
+                            PASSED
+                          </div>
                         </div>
-                        <div>
-                          <span className="font-medium text-muted-foreground">Reviewer:</span>
-                          <p className="text-card-foreground">{data.reviewer}</p>
-                        </div>
+                        <Button variant="link" className="text-primary">
+                          <a href="#screening-link" className="underline">View Screening Details</a>
+                        </Button>
                       </div>
-                      <div>
-                        <span className="font-medium text-muted-foreground">Notes:</span>
-                        <p className="text-card-foreground text-sm mt-1">{data.notes}</p>
+                      <div className="bg-muted/50 rounded-lg p-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                          <div className="space-y-1">
+                            <span className="text-sm font-medium text-muted-foreground">Date Completed</span>
+                            <p className="text-foreground font-medium">{data.dateCompleted}</p>
+                          </div>
+                          <div className="space-y-1">
+                            <span className="text-sm font-medium text-muted-foreground">Reviewer</span>
+                            <p className="text-foreground font-medium">{data.reviewer}</p>
+                          </div>
+                        </div>
+                        <div className="space-y-2">
+                          <span className="text-sm font-medium text-muted-foreground">Review Summary</span>
+                          <p className="text-foreground p-3 bg-background rounded border-l-4 border-l-green-500">
+                            User passed the screening process successfully. Strong technical background, excellent communication skills, and meets all requirements. Candidate demonstrated comprehensive understanding of the role requirements and showed enthusiasm for the position.
+                          </p>
+                        </div>
                       </div>
                     </div>
                   )}
 
-                  {(step.id >= 4 && step.id <= 14) && (
-                    <div className="grid grid-cols-2 gap-4 text-sm">
-                      {Object.entries(data).slice(0, -1).map(([key, value]) => (
-                        <div key={key}>
-                          <span className="font-medium text-muted-foreground">
-                            {key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}:
-                          </span>
-                          <p className="text-card-foreground">{value}</p>
+                  {step.id === 5 && ( // Suggested Interview Email
+                    <div className="space-y-4">
+                      <div className="bg-muted/50 rounded-lg p-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                          <div className="space-y-1">
+                            <span className="text-sm font-medium text-muted-foreground">Date Sent</span>
+                            <p className="text-foreground font-medium">{data.dateSent}</p>
+                          </div>
+                          <div className="space-y-1">
+                            <span className="text-sm font-medium text-muted-foreground">Email Template</span>
+                            <p className="text-foreground font-medium">{data.emailTemplate}</p>
+                          </div>
                         </div>
-                      ))}
+                        <div className="space-y-2">
+                          <span className="text-sm font-medium text-muted-foreground">Email Preview</span>
+                          <div className="bg-background border rounded-lg p-4 space-y-3">
+                            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                              <span className="font-medium">From:</span>
+                              <span>hiring@company.com</span>
+                            </div>
+                            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                              <span className="font-medium">To:</span>
+                              <span>candidate@email.com</span>
+                            </div>
+                            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                              <span className="font-medium">Subject:</span>
+                              <span>Interview Invitation - Software Developer Position</span>
+                            </div>
+                            <div className="border-t pt-3">
+                              <p className="text-sm text-foreground">
+                                Dear Candidate,<br/><br/>
+                                Congratulations! We were impressed with your application and would like to invite you for an interview for the Software Developer position.<br/><br/>
+                                Please let us know your availability for the coming week.<br/><br/>
+                                Best regards,<br/>
+                                HR Team
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   )}
 
-                  <Button variant="outline" size="sm" className="mt-3">
-                    {data.action}
-                  </Button>
+                  {step.id === 6 && ( // Interview Scheduled
+                    <div className="bg-muted/50 rounded-lg p-4">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="space-y-4">
+                          <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
+                              <span className="text-primary font-bold">📅</span>
+                            </div>
+                            <div>
+                              <span className="text-sm font-medium text-muted-foreground">Scheduled Date & Time</span>
+                              <p className="text-lg font-semibold text-foreground">{data.dateScheduled}</p>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
+                              <span className="text-primary font-bold">👤</span>
+                            </div>
+                            <div>
+                              <span className="text-sm font-medium text-muted-foreground">Interviewer</span>
+                              <p className="text-lg font-semibold text-foreground">{data.interviewer}</p>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="space-y-4">
+                          <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
+                              <span className="text-primary font-bold">⏱</span>
+                            </div>
+                            <div>
+                              <span className="text-sm font-medium text-muted-foreground">Duration</span>
+                              <p className="text-lg font-semibold text-foreground">{data.duration}</p>
+                            </div>
+                          </div>
+                          <div className="pt-2">
+                            <Button variant="default" size="sm" className="w-full">
+                              {data.action}
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {(step.id >= 4 && step.id <= 14 && ![5, 6].includes(step.id)) && (
+                    <div className="bg-muted/50 rounded-lg p-4">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {Object.entries(data).slice(0, -1).map(([key, value]) => (
+                          <div key={key} className="space-y-1">
+                            <span className="text-sm font-medium text-muted-foreground">
+                              {key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}
+                            </span>
+                            <p className="text-foreground font-medium">{value}</p>
+                          </div>
+                        ))}
+                      </div>
+                      <div className="mt-4 pt-4 border-t border-border">
+                        <Button variant="outline" size="sm">
+                          {data.action}
+                        </Button>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </CardContent>
             </Card>
