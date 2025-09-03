@@ -502,10 +502,16 @@ const ApplicationsOverview = () => {
                           currentStep={applicant.currentStep}
                           applicantId={applicant.id}
                           expandedSteps={expandedSteps}
-                          onToggleStep={(stepKey) => setExpandedSteps({
-                            ...expandedSteps,
-                            [stepKey]: !expandedSteps[stepKey]
-                          })}
+                          onToggleStep={(stepKey) => {
+                            const isCurrentlyExpanded = expandedSteps[stepKey];
+                            // Close all steps first
+                            const newExpandedSteps = {};
+                            // If the clicked step wasn't expanded, open it
+                            if (!isCurrentlyExpanded) {
+                              newExpandedSteps[stepKey] = true;
+                            }
+                            setExpandedSteps(newExpandedSteps);
+                          }}
                         />
                       </div>
                     </div>
