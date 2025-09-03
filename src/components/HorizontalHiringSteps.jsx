@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ChevronDown, ChevronUp, FileText, Search, FileCheck, CheckCircle, Mail, Calendar, Users, DollarSign, HandShake, PenTool, FileEdit, Eye, ThumbsUp, FileSignature } from "lucide-react";
+import { ChevronDown, ChevronUp, FileText, Search, FileCheck, CheckCircle, Mail, Calendar, Users, DollarSign, Handshake, PenTool, FileEdit, Eye, ThumbsUp, FileSignature } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
@@ -15,7 +15,7 @@ const iconMap = {
   Calendar,
   Users,
   DollarSign,
-  HandShake,
+  Handshake,
   PenTool,
   FileEdit,
   Eye,

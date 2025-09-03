@@ -52,7 +52,7 @@ export const STANDARD_HIRING_STEPS = [
     id: 9,
     title: "Fee Model Accepted",
     description: "Terms and compensation agreed",
-    icon: "HandShake"
+    icon: "Handshake"
   },
   {
     id: 10,
