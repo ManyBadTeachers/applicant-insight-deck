@@ -46,7 +46,7 @@ const HorizontalHiringSteps = ({ steps, currentStep, applicantId, expandedSteps,
                 }}
                 className={`h-12 px-4 flex items-center justify-center text-sm font-medium transition-all hover:scale-105 rounded-none ${getStatusColor(status)}`}
               >
-                <span className="text-center leading-tight max-w-[80px] truncate">
+                <span className="text-center leading-tight">
                   {step.title}
                 </span>
               </Button>
