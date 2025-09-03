@@ -1,27 +1,10 @@
 import { useState } from "react";
-import { ChevronDown, ChevronUp, FileText, Search, FileCheck, CheckCircle, Mail, Calendar, Users, DollarSign, Handshake, PenTool, FileEdit, Eye, ThumbsUp, FileSignature } from "lucide-react";
+import { ChevronDown, ChevronUp, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Badge } from "@/components/ui/badge";
 import { getStepData } from "@/data/hiringSteps";
-
-const iconMap = {
-  FileText,
-  Search,
-  FileCheck,
-  CheckCircle,
-  Mail,
-  Calendar,
-  Users,
-  DollarSign,
-  Handshake,
-  PenTool,
-  FileEdit,
-  Eye,
-  ThumbsUp,
-  FileSignature
-};
 
 const HorizontalHiringSteps = ({ steps, currentStep, applicantId, expandedSteps, onToggleStep }) => {
   const getStatusColor = (status) => {
@@ -48,7 +31,6 @@ const HorizontalHiringSteps = ({ steps, currentStep, applicantId, expandedSteps,
       {/* Horizontal Steps */}
       <div className="flex flex-wrap gap-2 justify-start">
         {steps.map((step) => {
-          const Icon = iconMap[step.icon] || FileText;
           const status = getStepStatus(step.id);
           const stepKey = `${applicantId}-${step.id}`;
           const isExpanded = expandedSteps[stepKey];
@@ -58,10 +40,12 @@ const HorizontalHiringSteps = ({ steps, currentStep, applicantId, expandedSteps,
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => onToggleStep(stepKey)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onToggleStep(stepKey);
+                }}
                 className={`h-12 px-4 flex flex-col items-center gap-1 text-xs font-medium transition-all hover:scale-105 ${getStatusColor(status)}`}
               >
-                <Icon className="w-4 h-4" />
                 <span className="text-[10px] text-center leading-tight max-w-[80px] truncate">
                   {step.title}
                 </span>
