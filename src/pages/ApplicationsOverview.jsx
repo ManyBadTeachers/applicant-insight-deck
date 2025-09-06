@@ -7,8 +7,6 @@ import { NationalityBadge } from "@/components/NationalityBadge";
 import { ExpertiseBadge } from "@/components/ExpertiseBadge";
 import NotesSystem from "@/components/NotesSystem";
 import ComparisonModal from "@/components/ComparisonModal";
-import HorizontalHiringSteps from "@/components/HorizontalHiringSteps";
-import { STANDARD_HIRING_STEPS, getStepStatus } from "@/data/hiringSteps";
 import {
   Select,
   SelectContent,
@@ -16,7 +14,18 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { FileText, Search, Calendar, MessageSquare, PlusCircle, Heart, Users, GitCompare, ChevronDown, ChevronUp } from "lucide-react";
+import {
+  FileText,
+  Search,
+  Calendar,
+  MessageSquare,
+  PlusCircle,
+  Heart,
+  Users,
+  GitCompare,
+  ChevronDown,
+  ChevronUp,
+} from "lucide-react";
 
 const ApplicationsOverview = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -24,67 +33,119 @@ const ApplicationsOverview = () => {
   const [nationalityFilter, setNationalityFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
   const [applicants, setApplicants] = useState([]);
+  const [applicantSteps, setApplicantSteps] = useState([]);
   const [favorites, setFavorites] = useState([]);
   const [selectedApplicants, setSelectedApplicants] = useState([]);
   const [showComparison, setShowComparison] = useState(false);
   const [expandedNotes, setExpandedNotes] = useState({});
   const [actionCenterFilter, setActionCenterFilter] = useState("all");
   const [expandedActionCards, setExpandedActionCards] = useState({});
-  const [expandedSteps, setExpandedSteps] = useState({});
+  const [dashboardStats, setDashboardStats] = useState({});
+  const [formId, setFormId] = useState(1);
+  const [forms, setForms] = useState([]);
+  const [selectedForm, setSelectedForm] = useState("");
+
+  const dashboardColors = {
+    total_applicants: "bg-primary/10 text-primary border border-primary/20",
+    reviewed_today: "bg-emerald-50 text-emerald-700 border border-emerald-200",
+    submitted_today: "bg-amber-50 text-amber-700 border border-amber-200",
+    in_process: "bg-muted text-muted-foreground border border-border",
+    rejection_rate: "bg-red-50 text-red-700 border border-red-200",
+    hired_this_year: "bg-green-50 text-green-700 border border-green-200",
+  };
+
+  // Fetch all forms on mount
+  useEffect(() => {
+    const fetchForms = async () => {
+      try {
+        const res = await fetch("http://127.0.0.1:5000/get_all_forms");
+        const data = await res.json();
+        setForms(data.forms);
+        if (data.forms.length > 0) setSelectedForm(data.forms[0].form_id);
+      } catch (error) {
+        console.error("Error fetching forms:", error);
+      }
+    };
+    fetchForms();
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
+      if (!selectedForm) return;
+
       try {
-        // Fetch applicants
+        // Fetch applicants for the selected form
         const resApplicants = await fetch(
-          "http://127.0.0.1:5000/get_applicants"
+          `http://127.0.0.1:5000/get_applicants?form_id=${selectedForm}`
         );
         const dataApplicants = await resApplicants.json();
-        const formattedApplicants = dataApplicants.applicants.map(
-          (a) => ({
-            id: a[0].toString(),
-            fullName: a[1],
-            status: a[2],
-            primaryExpertise: a[3],
-            email: a[4],
-            phone: a[5],
-            firstName: a[6],
-            lastName: a[7],
-            nationality: a[8],
-            cv: a[9],
-            submissionDate: a[10].split(" ")[0],
-            currentStep: 2, // Default to step 2 (Phone Screening) as current
-          })
-        );
-
+        const formattedApplicants = dataApplicants.applicants.map((a) => ({
+          id: a[0].toString(),
+          fullName: a[1],
+          status: a[2],
+          primaryExpertise: a[3],
+          email: a[4],
+          phone: a[5],
+          firstName: a[6],
+          lastName: a[7],
+          nationality: a[8],
+          cv: a[9],
+          submissionDate: a[10].split(" ")[0],
+          form_id: a[11],
+        }));
         setApplicants(formattedApplicants);
-        
+
+        // Fetch applicant steps for the selected form
+        const resSteps = await fetch(
+          `http://127.0.0.1:5000/applicants_hiring_steps?form_id=${selectedForm}`
+        );
+        const dataSteps = await resSteps.json();
+        const formattedSteps = dataSteps.applicants.map((a) => ({
+          id: a.id.toString(),
+          fullName: a.fullName,
+          expertise: a.expertise,
+          steps: a.steps,
+          form_id: a.form_id,
+        }));
+        setApplicantSteps(formattedSteps);
+
+        // Fetch statistics for the selected form
+        const resStats = await fetch(
+          `http://127.0.0.1:5000/get_hiring_statistics?form_id=${selectedForm}`
+        );
+        const statsData = await resStats.json();
+        setDashboardStats(statsData);
+
         // Load favorites from localStorage
-        const savedFavorites = JSON.parse(localStorage.getItem('hr-favorites') || '[]');
+        const savedFavorites = JSON.parse(
+          localStorage.getItem("hr-favorites") || "[]"
+        );
         setFavorites(savedFavorites);
       } catch (error) {
-        console.error("Error fetching applicants:", error);
+        console.error("Error fetching data for selected form:", error);
       }
     };
 
     fetchData();
-  }, []);
+  }, [selectedForm]); // refetch everything when selectedForm changes
 
   // Favorites management
   const toggleFavorite = (applicantId) => {
     const newFavorites = favorites.includes(applicantId)
-      ? favorites.filter(id => id !== applicantId)
+      ? favorites.filter((id) => id !== applicantId)
       : [...favorites, applicantId];
-    
+
     setFavorites(newFavorites);
-    localStorage.setItem('hr-favorites', JSON.stringify(newFavorites));
+    localStorage.setItem("hr-favorites", JSON.stringify(newFavorites));
   };
 
   // Selection management for comparison
   const toggleSelection = (applicant) => {
-    const isSelected = selectedApplicants.some(a => a.id === applicant.id);
+    const isSelected = selectedApplicants.some((a) => a.id === applicant.id);
     if (isSelected) {
-      setSelectedApplicants(selectedApplicants.filter(a => a.id !== applicant.id));
+      setSelectedApplicants(
+        selectedApplicants.filter((a) => a.id !== applicant.id)
+      );
     } else {
       setSelectedApplicants([...selectedApplicants, applicant]);
     }
@@ -103,54 +164,55 @@ const ApplicationsOverview = () => {
       const matchesNationality =
         nationalityFilter === "all" ||
         a.nationality.toLowerCase() === nationalityFilter.toLowerCase();
-      
-      // Get hiring status based on current step
-      let hiringStatus = "in_process";
-      if (a.currentStep === 14) {
-        hiringStatus = "hired";
-      } else if (a.currentStep === 0) {
-        hiringStatus = "rejected";
+
+      // Get hiring status from applicantSteps
+      const applicantStep = applicantSteps.find((step) => step.id === a.id);
+      let hiringStatus = "unknown";
+      if (applicantStep) {
+        if (applicantStep.steps.every((s) => s.color === "green")) {
+          hiringStatus = "hired";
+        } else if (applicantStep.steps.some((s) => s.color === "red")) {
+          hiringStatus = "rejected";
+        } else {
+          hiringStatus = "in_process";
+        }
       }
-      
+
       const matchesStatus =
         statusFilter === "all" || hiringStatus === statusFilter;
-      
-      return matchesSearch && matchesExpertise && matchesNationality && matchesStatus;
+
+      return (
+        matchesSearch && matchesExpertise && matchesNationality && matchesStatus
+      );
     });
-  }, [applicants, searchQuery, expertiseFilter, nationalityFilter, statusFilter]);
+  }, [
+    applicants,
+    searchQuery,
+    expertiseFilter,
+    nationalityFilter,
+    statusFilter,
+    applicantSteps,
+  ]);
 
   // Filtered applicants for Action Center
   const filteredActionCenterApplicants = useMemo(() => {
-    return applicants.filter((applicant) => {
+    return applicantSteps.filter((applicant) => {
       if (actionCenterFilter === "all") return true;
-      
-      if (applicant.currentStep === 14) {
+
+      if (applicant.steps.every((s) => s.color === "green")) {
         return actionCenterFilter === "hired";
-      } else if (applicant.currentStep === 0) {
+      } else if (applicant.steps.some((s) => s.color === "red")) {
         return actionCenterFilter === "rejected";
+      } else if (applicant.steps.some((s) => s.color === "yellow")) {
+        return (
+          actionCenterFilter === "in_process" ||
+          actionCenterFilter === "needs_attention"
+        );
       } else {
-        return actionCenterFilter === "in_process" || actionCenterFilter === "needs_attention";
+        return actionCenterFilter === "in_process";
       }
     });
-  }, [applicants, actionCenterFilter]);
-  const dashboardStats = {
-    totalApplications: 35,
-    reviewedToday: 5,
-    submittedToday: 7,
-    leftInProcess: 12,
-    waitingConfirmation: 3,
-    rejectionRate: "92%",
-    hired: 2,
-  };
-  const dashboardColors = {
-    totalApplications: "bg-primary/10 text-primary border border-primary/20",
-    reviewedToday: "bg-emerald-50 text-emerald-700 border border-emerald-200",
-    submittedToday: "bg-amber-50 text-amber-700 border border-amber-200",
-    leftInProcess: "bg-muted text-muted-foreground border border-border",
-    waitingConfirmation: "bg-purple-50 text-purple-700 border border-purple-200",
-    rejectionRate: "bg-red-50 text-red-700 border border-red-200",
-    hired: "bg-green-50 text-green-700 border border-green-200",
-  };
+  }, [applicantSteps, actionCenterFilter]);
 
   return (
     <div className="min-h-screen bg-background">
@@ -158,19 +220,50 @@ const ApplicationsOverview = () => {
       <div className="max-w-7xl mx-auto px-4 py-8 space-y-12">
         {/* Dashboard */}
         <section>
-          <h2 className="text-2xl font-bold mb-4 text-foreground">Quick Overview</h2>
+          {/* Heading for the section */}
+          <h1 className="text-3xl font-extrabold text-foreground mb-6">
+            Select Form
+          </h1>
+
+          {/* Form selector */}
+          <div className="mb-6">
+            <Select value={selectedForm} onValueChange={setSelectedForm}>
+              <SelectTrigger className="w-56">
+                <SelectValue
+                  placeholder="Choose a form"
+                  className="font-medium text-foreground"
+                />
+              </SelectTrigger>
+              <SelectContent>
+                {forms.map((form) => (
+                  <SelectItem key={form.form_id} value={form.form_id}>
+                    {form.name.replace(/_/g, " ")}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Quick Overview Stats */}
+          <h2 className="text-2xl font-bold mb-4 text-foreground">
+            Quick Overview
+          </h2>
           <div className="grid md:grid-cols-4 gap-4">
-            {Object.entries(dashboardStats).map(([key, value]) => (
-              <div
-                key={key}
-                className={`p-4 rounded-lg shadow-sm text-center transition-all hover:shadow-md ${
-                  dashboardColors[key]
-                }`}
-              >
-                <p className="text-sm font-medium opacity-80">{key.replace(/([A-Z])/g, " $1")}</p>
-                <p className="text-xl font-bold">{value}</p>
-              </div>
-            ))}
+            {dashboardStats &&
+              Object.values(dashboardStats)[0] &&
+              Object.entries(Object.values(dashboardStats)[0]).map(
+                ([key, value]) => (
+                  <div
+                    key={key}
+                    className={`p-4 rounded-lg shadow-sm text-center transition-all hover:shadow-md ${dashboardColors[key]}`}
+                  >
+                    <p className="text-sm font-medium opacity-80">
+                      {key.replace(/_/g, " ")}
+                    </p>
+                    <p className="text-xl font-bold">{value}</p>
+                  </div>
+                )
+              )}
           </div>
         </section>
 
@@ -193,7 +286,10 @@ const ApplicationsOverview = () => {
                 />
               </div>
 
-              <Select value={expertiseFilter} onValueChange={setExpertiseFilter}>
+              <Select
+                value={expertiseFilter}
+                onValueChange={setExpertiseFilter}
+              >
                 <SelectTrigger className="w-44">
                   <SelectValue
                     placeholder="Expertise"
@@ -254,15 +350,9 @@ const ApplicationsOverview = () => {
                 </SelectContent>
               </Select>
 
-              <Select
-                value={statusFilter}
-                onValueChange={setStatusFilter}
-              >
+              <Select value={statusFilter} onValueChange={setStatusFilter}>
                 <SelectTrigger className="w-44">
-                  <SelectValue
-                    placeholder="Status"
-                    className="font-semibold"
-                  />
+                  <SelectValue placeholder="Status" className="font-semibold" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All Status</SelectItem>
@@ -272,11 +362,11 @@ const ApplicationsOverview = () => {
                 </SelectContent>
               </Select>
             </div>
-            
+
             {/* Action buttons */}
             <div className="flex gap-2">
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 className="gap-2"
                 onClick={() => setShowComparison(true)}
                 disabled={selectedApplicants.length < 2}
@@ -317,7 +407,9 @@ const ApplicationsOverview = () => {
                     <td className="p-3">
                       <input
                         type="checkbox"
-                        checked={selectedApplicants.some(app => app.id === a.id)}
+                        checked={selectedApplicants.some(
+                          (app) => app.id === a.id
+                        )}
                         onChange={() => toggleSelection(a)}
                         className="rounded border-border"
                       />
@@ -331,12 +423,12 @@ const ApplicationsOverview = () => {
                           onClick={() => toggleFavorite(a.id)}
                           className="h-6 w-6 p-0"
                         >
-                          <Heart 
+                          <Heart
                             className={`w-4 h-4 ${
-                              favorites.includes(a.id) 
-                                ? 'fill-red-500 text-red-500' 
-                                : 'text-muted-foreground'
-                            }`} 
+                              favorites.includes(a.id)
+                                ? "fill-red-500 text-red-500"
+                                : "text-muted-foreground"
+                            }`}
                           />
                         </Button>
                       </div>
@@ -354,23 +446,30 @@ const ApplicationsOverview = () => {
                     <td className="p-3">
                       <NationalityBadge nationality={a.nationality} />
                     </td>
-                     <td className="p-3">
-                       <Button variant="ghost" size="icon">
-                         <FileText className="w-5 h-5 text-muted-foreground" />
-                       </Button>
-                     </td>
-                     <td className="p-3 text-muted-foreground">{a.submissionDate}</td>
-                     <td className="p-3">
-                       <Button 
-                         variant="ghost" 
-                         size="sm"
-                         onClick={() => setExpandedNotes({...expandedNotes, [a.id]: !expandedNotes[a.id]})}
-                         className="gap-1"
-                       >
-                         <MessageSquare className="w-4 h-4" />
-                         Notes
-                       </Button>
-                     </td>
+                    <td className="p-3">
+                      <Button variant="ghost" size="icon">
+                        <FileText className="w-5 h-5 text-muted-foreground" />
+                      </Button>
+                    </td>
+                    <td className="p-3 text-muted-foreground">
+                      {a.submissionDate}
+                    </td>
+                    <td className="p-3">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() =>
+                          setExpandedNotes({
+                            ...expandedNotes,
+                            [a.id]: !expandedNotes[a.id],
+                          })
+                        }
+                        className="gap-1"
+                      >
+                        <MessageSquare className="w-4 h-4" />
+                        Notes
+                      </Button>
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -386,25 +485,36 @@ const ApplicationsOverview = () => {
           <div className="p-6 rounded-lg shadow-sm bg-card border border-card-border space-y-4">
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
               <div className="flex-1">
-                <h3 className="text-lg font-semibold text-card-foreground mb-2">Hiring Process Management</h3>
+                <h3 className="text-lg font-semibold text-card-foreground mb-2">
+                  Hiring Process Management
+                </h3>
                 <p className="text-card-foreground">
-                  Review and manage candidates at different stages of the hiring pipeline. Take action on pending interviews, 
-                  document reviews, and track progress through each step of your recruitment process.
+                  Review and manage candidates at different stages of the hiring
+                  pipeline. Take action on pending interviews, document reviews,
+                  and track progress through each step of your recruitment
+                  process.
                 </p>
               </div>
-              
+
               {/* Filter for Action Center */}
               <div className="flex-shrink-0">
-                <Select value={actionCenterFilter} onValueChange={setActionCenterFilter}>
+                <Select
+                  value={actionCenterFilter}
+                  onValueChange={setActionCenterFilter}
+                >
                   <SelectTrigger className="w-48">
                     <SelectValue placeholder="Filter by status" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">All Candidates</SelectItem>
                     <SelectItem value="hired">Hired Candidates</SelectItem>
-                    <SelectItem value="rejected">Rejected Candidates</SelectItem>
+                    <SelectItem value="rejected">
+                      Rejected Candidates
+                    </SelectItem>
                     <SelectItem value="in_process">In Process</SelectItem>
-                    <SelectItem value="needs_attention">Needs Attention</SelectItem>
+                    <SelectItem value="needs_attention">
+                      Needs Attention
+                    </SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -415,9 +525,11 @@ const ApplicationsOverview = () => {
           <div className="space-y-4">
             {filteredActionCenterApplicants.map((applicant) => {
               const isExpanded = expandedActionCards[applicant.id];
-              const overallStatus = applicant.currentStep === 14
+              const overallStatus = applicant.steps.every(
+                (s) => s.color === "green"
+              )
                 ? "HIRED"
-                : applicant.currentStep === 0
+                : applicant.steps.some((s) => s.color === "red")
                 ? "REJECTED"
                 : "IN PROCESS";
 
@@ -425,30 +537,35 @@ const ApplicationsOverview = () => {
                 <div
                   key={applicant.id}
                   className="p-4 bg-gradient-to-br from-card via-card to-accent/5 rounded-xl shadow-lg border border-card-border/50 hover:shadow-xl transition-all duration-300 group cursor-pointer"
-                  onClick={() => setExpandedActionCards({
-                    ...expandedActionCards,
-                    [applicant.id]: !isExpanded
-                  })}
+                  onClick={() =>
+                    setExpandedActionCards({
+                      ...expandedActionCards,
+                      [applicant.id]: !isExpanded,
+                    })
+                  }
                 >
                   {/* Compact Header - Always Visible */}
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-sm">
-                        {applicant.fullName.split(' ').map(n => n[0]).join('')}
+                        {applicant.fullName
+                          .split(" ")
+                          .map((n) => n[0])
+                          .join("")}
                       </div>
                       <div>
                         <h3 className="font-semibold text-card-foreground">
                           {applicant.fullName}
                         </h3>
                         <div onClick={(e) => e.stopPropagation()}>
-                          <ExpertiseBadge expertise={applicant.primaryExpertise} />
+                          <ExpertiseBadge expertise={applicant.expertise} />
                         </div>
                       </div>
                     </div>
-                    
+
                     <div className="flex items-center gap-3">
                       {/* Overall Status Badge */}
-                      <div 
+                      <div
                         className={`px-4 py-2 font-black text-sm tracking-widest ${
                           overallStatus === "HIRED"
                             ? "bg-emerald-500 text-white shadow-lg shadow-emerald-500/30"
@@ -460,7 +577,7 @@ const ApplicationsOverview = () => {
                       >
                         {overallStatus}
                       </div>
-                      
+
                       {/* Expand/Collapse Button */}
                       <Button
                         variant="ghost"
@@ -469,7 +586,7 @@ const ApplicationsOverview = () => {
                           e.stopPropagation();
                           setExpandedActionCards({
                             ...expandedActionCards,
-                            [applicant.id]: !isExpanded
+                            [applicant.id]: !isExpanded,
                           });
                         }}
                         className="h-8 w-8 p-0"
@@ -488,31 +605,79 @@ const ApplicationsOverview = () => {
                     <div className="mt-4 space-y-4 animate-accordion-down">
                       {/* Progress status and next action */}
                       <div className="p-3 bg-muted/30 rounded-lg border-l-4 border-primary/50">
-                        <p className="text-sm font-medium text-card-foreground mb-1">Current Step:</p>
+                        <p className="text-sm font-medium text-card-foreground mb-1">
+                          Next Action Required:
+                        </p>
                         <p className="text-muted-foreground text-sm">
-                          Step {applicant.currentStep} of {STANDARD_HIRING_STEPS.length}: {STANDARD_HIRING_STEPS.find(s => s.id === applicant.currentStep)?.title || 'Unknown'}
+                          {applicant.steps.some((s) => s.color === "yellow")
+                            ? "Schedule technical interview and review submitted documents"
+                            : applicant.steps.some((s) => s.color === "green")
+                            ? "Final review pending - candidate shows strong potential"
+                            : "Review application and provide feedback"}
                         </p>
                       </div>
 
-                      {/* Hiring Steps */}
-                      <div className="space-y-4">
-                        <h4 className="font-medium text-card-foreground">Hiring Process Steps:</h4>
-                        <HorizontalHiringSteps
-                          steps={STANDARD_HIRING_STEPS}
-                          currentStep={applicant.currentStep}
-                          applicantId={applicant.id}
-                          expandedSteps={expandedSteps}
-                          onToggleStep={(stepKey) => {
-                            const isCurrentlyExpanded = expandedSteps[stepKey];
-                            // Close all steps first
-                            const newExpandedSteps = {};
-                            // If the clicked step wasn't expanded, open it
-                            if (!isCurrentlyExpanded) {
-                              newExpandedSteps[stepKey] = true;
-                            }
-                            setExpandedSteps(newExpandedSteps);
-                          }}
-                        />
+                      {/* Action buttons */}
+                      <div className="flex flex-wrap gap-2">
+                        <Button
+                          size="sm"
+                          variant="default"
+                          className="h-8 text-xs"
+                        >
+                          <Calendar className="w-3 h-3 mr-1" />
+                          Schedule Interview
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="h-8 text-xs"
+                        >
+                          <MessageSquare className="w-3 h-3 mr-1" />
+                          Send Message
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          className="h-8 text-xs"
+                        >
+                          <FileText className="w-3 h-3 mr-1" />
+                          Review CV
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          className="h-8 text-xs"
+                        >
+                          <PlusCircle className="w-3 h-3 mr-1" />
+                          Add Note
+                        </Button>
+                      </div>
+
+                      {/* Detailed Steps */}
+                      <div className="flex flex-wrap gap-2">
+                        {applicant.steps.map((step, index) => (
+                          <div
+                            key={index}
+                            className={`relative px-4 py-2.5 text-xs font-bold tracking-wide uppercase transition-all hover:scale-105 ${
+                              step.color === "green"
+                                ? "bg-status-passed text-status-passed-foreground shadow-lg shadow-status-passed/25"
+                                : step.color === "yellow"
+                                ? "bg-status-pending text-status-pending-foreground shadow-lg shadow-status-pending/25 animate-pulse"
+                                : "bg-status-rejected text-status-rejected-foreground shadow-lg shadow-status-rejected/25"
+                            }`}
+                            style={{
+                              clipPath:
+                                "polygon(0% 0%, calc(100% - 8px) 0%, 100% 50%, calc(100% - 8px) 100%, 0% 100%, 8px 50%)",
+                            }}
+                          >
+                            <span className="relative z-10">
+                              {step.label.replace(/_/g, " ")}
+                            </span>
+                            {step.color === "green" && (
+                              <div className="absolute top-1 right-1 w-2 h-2 bg-white rounded-full opacity-75"></div>
+                            )}
+                          </div>
+                        ))}
                       </div>
                     </div>
                   )}
@@ -525,21 +690,23 @@ const ApplicationsOverview = () => {
         {/* Notes System - Expanded rows */}
         {Object.entries(expandedNotes).map(([applicantId, isExpanded]) => {
           if (!isExpanded) return null;
-          const applicant = filteredApplicants.find(a => a.id === applicantId);
+          const applicant = filteredApplicants.find(
+            (a) => a.id === applicantId
+          );
           if (!applicant) return null;
-          
+
           return (
             <div key={`notes-${applicantId}`} className="mb-6">
-              <NotesSystem 
-                applicantId={applicantId} 
-                applicantName={applicant.fullName} 
+              <NotesSystem
+                applicantId={applicantId}
+                applicantName={applicant.fullName}
               />
             </div>
           );
         })}
 
         {/* Comparison Modal */}
-        <ComparisonModal 
+        <ComparisonModal
           isOpen={showComparison}
           onClose={() => setShowComparison(false)}
           applicants={selectedApplicants}

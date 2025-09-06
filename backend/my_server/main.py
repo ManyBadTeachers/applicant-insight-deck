@@ -12,7 +12,6 @@ def get_rejection_emails():
    return jsonify({"RejectionEmails": RejectionEmails})
 
 
-
 @app.route("/update_rejection_email", methods=["PUT"])
 def update_rejection_email():
     data = request.get_json()
