@@ -303,6 +303,8 @@ def create_note():
     print(f"applicant_id {applicant_id}")
     print(f"content {content}")
 
+    
+
 
     if not applicant_id or not content:
         return jsonify({"error": "applicant_id and content are required"}), 400

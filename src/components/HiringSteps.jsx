@@ -43,6 +43,7 @@ const HiringSteps = ({ applicantId }) => {
       <div className="p-3 bg-gray-50 rounded-lg border w-full mt-2">
         <p>{stepId}</p>
         {stepId === 1 && <SubmitFormDropdown />}
+
         {stepId === 2 && <ScreeingDropdown />}
         {stepId === 3 && <InterviewDropdown />}
         {stepId === 4 && <FeeModelDropdown />}

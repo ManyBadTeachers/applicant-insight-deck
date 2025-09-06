@@ -596,7 +596,8 @@ const ApplicationsOverview = () => {
           </div>
         </section>
 
-        {/* Comparison Modal */}
+        {/* Comparison Modal*/}
+
         <ComparisonModal
           isOpen={showComparison}
           onClose={() => setShowComparison(false)}

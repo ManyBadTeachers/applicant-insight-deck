@@ -16,7 +16,7 @@ const NotesSystem = ({ applicantId, onClose }) => {
 
   const API_BASE = "http://127.0.0.1:5000";
 
-  // Fetch applicant notes
+  // Fetch applicant notes api
   const fetchNotes = async () => {
     if (!applicantId) return;
     try {
