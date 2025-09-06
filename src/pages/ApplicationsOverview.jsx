@@ -24,6 +24,7 @@ const ApplicationsOverview = () => {
   const [nationalityFilter, setNationalityFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
   const [applicants, setApplicants] = useState([]);
+  const [applicantSteps, setApplicantSteps] = useState([]);
   const [favorites, setFavorites] = useState([]);
   const [selectedApplicants, setSelectedApplicants] = useState([]);
   const [showComparison, setShowComparison] = useState(false);
@@ -31,44 +32,86 @@ const ApplicationsOverview = () => {
   const [actionCenterFilter, setActionCenterFilter] = useState("all");
   const [expandedActionCards, setExpandedActionCards] = useState({});
   const [expandedSteps, setExpandedSteps] = useState({});
+  const [dashboardStats, setDashboardStats] = useState({});
+  const [formId, setFormId] = useState(1);
+  const [forms, setForms] = useState([]);
+  const [selectedForm, setSelectedForm] = useState("");
+
+  // Fetch all forms on mount
+  useEffect(() => {
+    const fetchForms = async () => {
+      try {
+        const res = await fetch("http://127.0.0.1:5000/get_all_forms");
+        const data = await res.json();
+        setForms(data.forms);
+        if (data.forms.length > 0) setSelectedForm(data.forms[0].form_id);
+      } catch (error) {
+        console.error("Error fetching forms:", error);
+      }
+    };
+    fetchForms();
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
+      if (!selectedForm) return;
+
       try {
-        // Fetch applicants
+        // Fetch applicants for the selected form
         const resApplicants = await fetch(
-          "http://127.0.0.1:5000/get_applicants"
+          `http://127.0.0.1:5000/get_applicants?form_id=${selectedForm}`
         );
         const dataApplicants = await resApplicants.json();
-        const formattedApplicants = dataApplicants.applicants.map(
-          (a) => ({
-            id: a[0].toString(),
-            fullName: a[1],
-            status: a[2],
-            primaryExpertise: a[3],
-            email: a[4],
-            phone: a[5],
-            firstName: a[6],
-            lastName: a[7],
-            nationality: a[8],
-            cv: a[9],
-            submissionDate: a[10].split(" ")[0],
-            currentStep: 2, // Default to step 2 (Phone Screening) as current
-          })
-        );
-
+        const formattedApplicants = dataApplicants.applicants.map((a) => ({
+          id: a[0].toString(),
+          fullName: a[1],
+          status: a[2],
+          primaryExpertise: a[3],
+          email: a[4],
+          phone: a[5],
+          firstName: a[6],
+          lastName: a[7],
+          nationality: a[8],
+          cv: a[9],
+          submissionDate: a[10].split(" ")[0],
+          form_id: a[11],
+          currentStep: 2, // Default to step 2 (Phone Screening) as current
+        }));
         setApplicants(formattedApplicants);
-        
+
+        // Fetch applicant steps for the selected form
+        const resSteps = await fetch(
+          `http://127.0.0.1:5000/applicants_hiring_steps?form_id=${selectedForm}`
+        );
+        const dataSteps = await resSteps.json();
+        const formattedSteps = dataSteps.applicants.map((a) => ({
+          id: a.id.toString(),
+          fullName: a.fullName,
+          expertise: a.expertise,
+          steps: a.steps,
+          form_id: a.form_id,
+        }));
+        setApplicantSteps(formattedSteps);
+
+        // Fetch statistics for the selected form
+        const resStats = await fetch(
+          `http://127.0.0.1:5000/get_hiring_statistics?form_id=${selectedForm}`
+        );
+        const statsData = await resStats.json();
+        setDashboardStats(statsData);
+
         // Load favorites from localStorage
-        const savedFavorites = JSON.parse(localStorage.getItem('hr-favorites') || '[]');
+        const savedFavorites = JSON.parse(
+          localStorage.getItem("hr-favorites") || "[]"
+        );
         setFavorites(savedFavorites);
       } catch (error) {
-        console.error("Error fetching applicants:", error);
+        console.error("Error fetching data for selected form:", error);
       }
     };
 
     fetchData();
-  }, []);
+  }, [selectedForm]); // refetch everything when selectedForm changes
 
   // Favorites management
   const toggleFavorite = (applicantId) => {
@@ -103,74 +146,113 @@ const ApplicationsOverview = () => {
       const matchesNationality =
         nationalityFilter === "all" ||
         a.nationality.toLowerCase() === nationalityFilter.toLowerCase();
-      
-      // Get hiring status based on current step
-      let hiringStatus = "in_process";
-      if (a.currentStep === 14) {
-        hiringStatus = "hired";
-      } else if (a.currentStep === 0) {
-        hiringStatus = "rejected";
+
+      // Get hiring status from applicantSteps
+      const applicantStep = applicantSteps.find((step) => step.id === a.id);
+      let hiringStatus = "unknown";
+      if (applicantStep) {
+        if (applicantStep.steps.every((s) => s.color === "green")) {
+          hiringStatus = "hired";
+        } else if (applicantStep.steps.some((s) => s.color === "red")) {
+          hiringStatus = "rejected";
+        } else {
+          hiringStatus = "in_process";
+        }
       }
-      
+
       const matchesStatus =
         statusFilter === "all" || hiringStatus === statusFilter;
-      
-      return matchesSearch && matchesExpertise && matchesNationality && matchesStatus;
+
+      return (
+        matchesSearch && matchesExpertise && matchesNationality && matchesStatus
+      );
     });
-  }, [applicants, searchQuery, expertiseFilter, nationalityFilter, statusFilter]);
+  }, [
+    applicants,
+    searchQuery,
+    expertiseFilter,
+    nationalityFilter,
+    statusFilter,
+    applicantSteps,
+  ]);
 
   // Filtered applicants for Action Center
   const filteredActionCenterApplicants = useMemo(() => {
-    return applicants.filter((applicant) => {
+    return applicantSteps.filter((applicant) => {
       if (actionCenterFilter === "all") return true;
-      
-      if (applicant.currentStep === 14) {
+
+      if (applicant.steps.every((s) => s.color === "green")) {
         return actionCenterFilter === "hired";
-      } else if (applicant.currentStep === 0) {
+      } else if (applicant.steps.some((s) => s.color === "red")) {
         return actionCenterFilter === "rejected";
+      } else if (applicant.steps.some((s) => s.color === "yellow")) {
+        return (
+          actionCenterFilter === "in_process" ||
+          actionCenterFilter === "needs_attention"
+        );
       } else {
-        return actionCenterFilter === "in_process" || actionCenterFilter === "needs_attention";
+        return actionCenterFilter === "in_process";
       }
     });
-  }, [applicants, actionCenterFilter]);
-  const dashboardStats = {
-    totalApplications: 35,
-    reviewedToday: 5,
-    submittedToday: 7,
-    leftInProcess: 12,
-    waitingConfirmation: 3,
-    rejectionRate: "92%",
-    hired: 2,
-  };
+  }, [applicantSteps, actionCenterFilter]);
   const dashboardColors = {
-    totalApplications: "bg-primary/10 text-primary border border-primary/20",
-    reviewedToday: "bg-emerald-50 text-emerald-700 border border-emerald-200",
-    submittedToday: "bg-amber-50 text-amber-700 border border-amber-200",
-    leftInProcess: "bg-muted text-muted-foreground border border-border",
-    waitingConfirmation: "bg-purple-50 text-purple-700 border border-purple-200",
-    rejectionRate: "bg-red-50 text-red-700 border border-red-200",
-    hired: "bg-green-50 text-green-700 border border-green-200",
+    total_applicants: "bg-primary/10 text-primary border border-primary/20",
+    reviewed_today: "bg-emerald-50 text-emerald-700 border border-emerald-200",
+    submitted_today: "bg-amber-50 text-amber-700 border border-amber-200",
+    in_process: "bg-muted text-muted-foreground border border-border",
+    rejection_rate: "bg-red-50 text-red-700 border border-red-200",
+    hired_this_year: "bg-green-50 text-green-700 border border-green-200",
   };
 
   return (
     <div className="min-h-screen bg-background">
       <Navigation />
       <div className="max-w-7xl mx-auto px-4 py-8 space-y-12">
+        {/* Form Selection */}
+        <section>
+          <h1 className="text-3xl font-extrabold text-foreground mb-6">
+            Select Form
+          </h1>
+
+          {/* Form selector */}
+          <div className="mb-6">
+            <Select value={selectedForm} onValueChange={setSelectedForm}>
+              <SelectTrigger className="w-56">
+                <SelectValue
+                  placeholder="Choose a form"
+                  className="font-medium text-foreground"
+                />
+              </SelectTrigger>
+              <SelectContent className="bg-background border border-border z-50">
+                {forms.map((form) => (
+                  <SelectItem key={form.form_id} value={form.form_id}>
+                    {form.name.replace(/_/g, " ")}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        </section>
+
         {/* Dashboard */}
         <section>
           <h2 className="text-2xl font-bold mb-4 text-foreground">Quick Overview</h2>
           <div className="grid md:grid-cols-4 gap-4">
-            {Object.entries(dashboardStats).map(([key, value]) => (
-              <div
-                key={key}
-                className={`p-4 rounded-lg shadow-sm text-center transition-all hover:shadow-md ${
-                  dashboardColors[key]
-                }`}
-              >
-                <p className="text-sm font-medium opacity-80">{key.replace(/([A-Z])/g, " $1")}</p>
-                <p className="text-xl font-bold">{value}</p>
-              </div>
-            ))}
+            {dashboardStats &&
+              Object.values(dashboardStats)[0] &&
+              Object.entries(Object.values(dashboardStats)[0]).map(
+                ([key, value]) => (
+                  <div
+                    key={key}
+                    className={`p-4 rounded-lg shadow-sm text-center transition-all hover:shadow-md ${dashboardColors[key]}`}
+                  >
+                    <p className="text-sm font-medium opacity-80">
+                      {key.replace(/_/g, " ")}
+                    </p>
+                    <p className="text-xl font-bold">{value}</p>
+                  </div>
+                )
+              )}
           </div>
         </section>
 
