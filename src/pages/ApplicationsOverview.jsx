@@ -528,9 +528,6 @@ const ApplicationsOverview = () => {
                       Rejected Candidates
                     </SelectItem>
                     <SelectItem value="in_process">In Process</SelectItem>
-                    <SelectItem value="needs_attention">
-                      Needs Attention
-                    </SelectItem>
                   </SelectContent>
                 </Select>
               </div>
