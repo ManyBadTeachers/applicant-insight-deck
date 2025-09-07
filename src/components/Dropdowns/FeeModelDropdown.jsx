@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { DollarSign, Mail, Handshake, TrendingUp } from "lucide-react";
 
-function FeeModelDropdown({ applicantId }) {
+function FeeModelDropdown({ applicantId, onStepUpdate }) {
   const [feeSteps, setFeeSteps] = useState([]);
 
   // Fetch fee model steps from API
@@ -69,6 +69,10 @@ function FeeModelDropdown({ applicantId }) {
       const result = await res.json();
       console.log("API result:", result);
       fetchFeeSteps(); // refresh steps after action
+      // Update main hiring steps status
+      if (onStepUpdate) {
+        onStepUpdate();
+      }
     } catch (error) {
       console.error("Error updating step:", error);
     }

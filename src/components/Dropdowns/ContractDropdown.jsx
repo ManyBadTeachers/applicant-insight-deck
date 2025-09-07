@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { FileSignature, Mail, CheckCircle } from "lucide-react";
 
-function ContractDropdown({ applicantId }) {
+function ContractDropdown({ applicantId, onStepUpdate }) {
   const [contractSteps, setContractSteps] = useState([]);
 
   // Fetch contract steps from API
@@ -68,6 +68,10 @@ function ContractDropdown({ applicantId }) {
       });
       await res.json();
       fetchContractSteps(); // refresh after action
+      // Update main hiring steps status
+      if (onStepUpdate) {
+        onStepUpdate();
+      }
     } catch (error) {
       console.error("Error updating contract step:", error);
     }

@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Search, FileCheck, Eye } from "lucide-react";
 
-function ScreeningDropdown({ applicantId }) {
+function ScreeningDropdown({ applicantId, onStepUpdate }) {
   const [screeningSteps, setScreeningSteps] = useState([]);
 
   // Function to fetch current steps from the API
@@ -78,50 +78,67 @@ function ScreeningDropdown({ applicantId }) {
 
       // Fetch updated steps immediately after edit
       fetchScreeningSteps();
+      // Update main hiring steps status
+      if (onStepUpdate) {
+        onStepUpdate();
+      }
     } catch (error) {
       console.error("Error calling edit API:", error);
     }
   };
 
   return (
-    <div className="space-y-4 p-4 bg-card rounded-lg border border-border">
-      <div className="flex items-center gap-2 mb-4">
-        <Search className="w-5 h-5 text-primary" />
-        <h3 className="font-semibold text-card-foreground">
-          Screening Process
+    <div className="space-y-4 p-6 bg-gradient-to-br from-blue-50/50 to-indigo-50/50 rounded-lg border">
+      <div className="flex items-center justify-between mb-6">
+        <h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
+          <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
+            <FileCheck className="w-4 h-4 text-blue-600" />
+          </div>
+          Screening Steps
         </h3>
+        <Badge variant="outline" className="bg-white/50">
+          {screeningSteps.filter(s => s.completed).length} of {screeningSteps.length} completed
+        </Badge>
       </div>
 
       {screeningSteps.map((step) => (
         <div
           key={step.id}
-          className="border border-border rounded-lg p-4 space-y-3"
+          className="bg-white rounded-lg p-4 border border-border/50 shadow-sm hover:shadow-md transition-all duration-200"
         >
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              {getIcon(step.id)}
-              <h4 className="font-semibold text-card-foreground">
-                {step.title}
-              </h4>
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-3">
+              <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                step.completed ? 'bg-green-100 text-green-600' : 'bg-gray-100 text-gray-500'
+              }`}>
+                {getIcon(step.id)}
+              </div>
+              <div>
+                <h4 className="font-semibold text-foreground">{step.title}</h4>
+                <p className="text-sm text-muted-foreground">Step {step.id}</p>
+              </div>
             </div>
             {getStatusBadge(step.completed)}
           </div>
 
-          <p className="text-sm text-muted-foreground bg-muted/30 p-3 rounded border-l-4 border-primary/20">
-            {step.description}
-          </p>
+          <div className="bg-muted/30 p-3 rounded-md border-l-4 border-primary/30 mb-4">
+            <p className="text-sm text-muted-foreground">{step.description}</p>
+          </div>
 
-          <div className="flex gap-2 pt-2">
+          <div className="flex gap-2">
             <Button
               size="sm"
               variant="default"
+              className="flex-1"
               onClick={(e) => handleStepAction(e, step.title, "finish")}
             >
+              <FileCheck className="w-4 h-4 mr-1" />
               Finish Step
             </Button>
             <Button
               size="sm"
               variant="outline"
+              className="flex-1"
               onClick={(e) => handleStepAction(e, step.title, "skip")}
             >
               Skip Step

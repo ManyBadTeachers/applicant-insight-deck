@@ -3,7 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { FileText, Calendar, User, Mail } from "lucide-react";
 import { useEffect, useState } from "react";
 
-function SubmitFormDropdown({ applicantId }) {
+function SubmitFormDropdown({ applicantId, onStepUpdate }) {
   const [dropDownData, setDropDownData] = useState(null);
 
   useEffect(() => {

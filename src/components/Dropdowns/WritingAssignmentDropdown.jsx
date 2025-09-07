@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { PenTool, Mail, FileEdit, Eye, CheckCircle } from "lucide-react";
 
-function WritingAssignmentDropdown({ applicantId }) {
+function WritingAssignmentDropdown({ applicantId, onStepUpdate }) {
   const [writingSteps, setWritingSteps] = useState([]);
 
   // Fetch writing assignment steps from API
@@ -73,6 +73,10 @@ function WritingAssignmentDropdown({ applicantId }) {
       const result = await res.json();
       console.log("API result:", result);
       fetchWritingSteps(); // refresh after update
+      // Update main hiring steps status
+      if (onStepUpdate) {
+        onStepUpdate();
+      }
     } catch (error) {
       console.error("Error updating step:", error);
     }

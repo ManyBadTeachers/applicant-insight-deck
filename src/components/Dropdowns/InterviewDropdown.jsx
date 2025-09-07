@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Mail, Video, Calendar, Users } from "lucide-react";
 
-function InterviewDropdown({ applicantId }) {
+function InterviewDropdown({ applicantId, onStepUpdate }) {
   const [interviewSteps, setInterviewSteps] = useState([]);
   const [interviewNotes, setInterviewNotes] = useState([]);
 
@@ -76,6 +76,10 @@ function InterviewDropdown({ applicantId }) {
       const result = await res.json();
       console.log("API result:", result);
       fetchInterviewData(); // refresh after action
+      // Update main hiring steps status
+      if (onStepUpdate) {
+        onStepUpdate();
+      }
     } catch (error) {
       console.error("Error updating step:", error);
     }
