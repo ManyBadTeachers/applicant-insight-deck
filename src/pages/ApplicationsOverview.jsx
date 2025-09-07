@@ -243,35 +243,47 @@ const ApplicationsOverview = () => {
 
       <div className="max-w-7xl mx-auto px-4 py-8 space-y-12">
         {/* Dashboard */}
-        <section>
-          {/* Heading for the section */}
-          <h1 className="text-3xl font-extrabold text-foreground mb-6">
-            Select Form
-          </h1>
-
-          {/* Form selector */}
-          <div className="mb-6">
-            <Select value={selectedForm} onValueChange={setSelectedForm}>
-              <SelectTrigger className="w-56">
-                <SelectValue
-                  placeholder="Choose a form"
-                  className="font-medium text-foreground"
-                />
-              </SelectTrigger>
-              <SelectContent>
-                {forms.map((form) => (
-                  <SelectItem key={form.form_id} value={form.form_id}>
-                    {form.name.replace(/_/g, " ")}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+        <section className="space-y-8">
+          {/* Form Selection Card */}
+          <div className="bg-gradient-to-br from-card via-card to-accent/5 rounded-2xl p-8 border border-card-border/50 shadow-lg">
+            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+              <div className="space-y-2">
+                <h1 className="text-3xl font-bold text-foreground">
+                  HR Dashboard
+                </h1>
+                <p className="text-muted-foreground text-lg">
+                  Select a form to view applications and manage the hiring process
+                </p>
+              </div>
+              <div className="flex-shrink-0">
+                <Select value={selectedForm} onValueChange={setSelectedForm}>
+                  <SelectTrigger className="w-80 h-12 text-base font-medium bg-background/50 border-2 border-primary/20 hover:border-primary/40 transition-colors">
+                    <SelectValue
+                      placeholder="Choose a form to analyze"
+                      className="font-medium"
+                    />
+                  </SelectTrigger>
+                  <SelectContent className="w-80">
+                    {forms.map((form) => (
+                      <SelectItem 
+                        key={form.form_id} 
+                        value={form.form_id}
+                        className="text-base py-3"
+                      >
+                        {form.name.replace(/_/g, " ")}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
           </div>
 
           {/* Quick Overview Stats */}
-          <h2 className="text-2xl font-bold mb-4 text-foreground">
-            Quick Overview
-          </h2>
+          <div className="space-y-6">
+            <h2 className="text-2xl font-bold text-foreground">
+              Analytics Overview
+            </h2>
           <div className="grid md:grid-cols-4 gap-4">
             {dashboardStats &&
               Object.values(dashboardStats)[0] &&
