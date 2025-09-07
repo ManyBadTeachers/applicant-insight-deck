@@ -1,25 +1,61 @@
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { FileText, Calendar, User, Mail } from "lucide-react";
+import { useEffect, useState } from "react";
 
-function SubmitFormDropdown() {
-  const submissionData = {
-    status: "completed",
-    submittedDate: "2024-01-15 14:30",
-    platform: "Company Career Portal",
-    applicantName: "Sarah Johnson",
-    email: "sarah.johnson@email.com",
-    documentsSubmitted: ["Resume", "Cover Letter", "Portfolio"],
-    applicationId: "APP-2024-001"
-  };
+function SubmitFormDropdown({ applicantId }) {
+  const [dropDownData, setDropDownData] = useState(null);
+
+  useEffect(() => {
+    const getData = async () => {
+      try {
+        const res = await fetch(
+          `http://127.0.0.1:5000/hiring_steps/submit-form/${applicantId}`
+        );
+        const data = await res.json();
+
+        // Normalize the keys to camelCase for frontend use
+        const temp_dict = {
+          completed: data.completed,
+          email: data.email,
+          formName: data.formName,
+          fullName: data.fullname, // backend: fullname
+          submissionDate: data.submissionsdate, // backend: submissionsdate
+        };
+
+        setDropDownData(temp_dict);
+      } catch (error) {
+        console.error("Error fetching hiring steps (submit form):", error);
+      }
+    };
+
+    getData();
+  }, [applicantId]);
+
+  if (!dropDownData) {
+    return (
+      <div className="p-4 text-muted-foreground">
+        Loading submission details...
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-4 p-4 bg-card rounded-lg border border-border">
       <div className="flex items-center gap-2 mb-3">
         <FileText className="w-5 h-5 text-primary" />
-        <h3 className="font-semibold text-card-foreground">Form Submission Details</h3>
-        <Badge variant="secondary" className="bg-green-50 text-green-700 border-green-200">
-          Completed
+        <h3 className="font-semibold text-card-foreground">
+          Form Submission Details
+        </h3>
+        <Badge
+          variant="secondary"
+          className={`${
+            dropDownData.completed
+              ? "bg-green-50 text-green-700 border-green-200"
+              : "bg-yellow-50 text-yellow-700 border-yellow-200"
+          }`}
+        >
+          {dropDownData.completed ? "Completed" : "Pending"}
         </Badge>
       </div>
 
@@ -28,57 +64,36 @@ function SubmitFormDropdown() {
           <div className="flex items-center gap-2 text-sm">
             <Calendar className="w-4 h-4 text-muted-foreground" />
             <span className="text-muted-foreground">Submitted:</span>
-            <span className="font-medium text-card-foreground">{submissionData.submittedDate}</span>
+            <span className="font-medium text-card-foreground">
+              {dropDownData.submissionDate}
+            </span>
           </div>
-          
+
           <div className="flex items-center gap-2 text-sm">
             <User className="w-4 h-4 text-muted-foreground" />
             <span className="text-muted-foreground">Applicant:</span>
-            <span className="font-medium text-card-foreground">{submissionData.applicantName}</span>
+            <span className="font-medium text-card-foreground">
+              {dropDownData.fullName}
+            </span>
           </div>
 
           <div className="flex items-center gap-2 text-sm">
             <Mail className="w-4 h-4 text-muted-foreground" />
             <span className="text-muted-foreground">Email:</span>
-            <span className="font-medium text-card-foreground">{submissionData.email}</span>
+            <span className="font-medium text-card-foreground">
+              {dropDownData.email}
+            </span>
           </div>
         </div>
 
         <div className="space-y-3">
           <div className="text-sm">
-            <span className="text-muted-foreground">Platform:</span>
-            <span className="font-medium text-card-foreground ml-2">{submissionData.platform}</span>
-          </div>
-          
-          <div className="text-sm">
-            <span className="text-muted-foreground">Application ID:</span>
-            <span className="font-medium text-card-foreground ml-2">{submissionData.applicationId}</span>
-          </div>
-          
-          <div className="text-sm">
-            <span className="text-muted-foreground">Documents:</span>
-            <div className="flex flex-wrap gap-1 mt-1">
-              {submissionData.documentsSubmitted.map((doc, index) => (
-                <Badge key={index} variant="outline" className="text-xs">
-                  {doc}
-                </Badge>
-              ))}
-            </div>
+            <span className="text-muted-foreground">Form Name:</span>
+            <span className="font-medium text-card-foreground ml-2">
+              {dropDownData.formName}
+            </span>
           </div>
         </div>
-      </div>
-
-      <div className="flex gap-2 pt-3 border-t border-border">
-        <Button size="sm" variant="default">
-          <FileText className="w-4 h-4 mr-1" />
-          View Application
-        </Button>
-        <Button size="sm" variant="outline">
-          Download Documents
-        </Button>
-        <Button size="sm" variant="ghost">
-          Contact Applicant
-        </Button>
       </div>
     </div>
   );

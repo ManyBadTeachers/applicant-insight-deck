@@ -367,5 +367,313 @@ def delete_note(note_id):
     conn.close()
     return jsonify({"message": "Note deleted"}), 200
 
+
+@app.route("/hiring_steps/submit-form/<int:applicant_id>", methods=["GET"])
+def hiring_step_submit_form(applicant_id):
+    conn = create_connection()
+    cur = conn.cursor()
+
+    sql = """
+    SELECT 
+    a.FullName, 
+    a.Email, 
+    a.SubmissionDate, 
+    a.form_id,
+    h.name AS step_name
+    FROM applicants a
+    JOIN hiring_stats h 
+        ON a.form_id = h.form_id
+    WHERE a.ID = ?;
+    """
+
+    cur.execute(sql, (applicant_id,))
+    result = cur.fetchone()
+
+    data = {
+            "fullname": result[0],
+            "email": result[1],
+            "submissionsdate": result[2],
+            "formName": result[4],
+            "completed": True
+        }
+
+    return jsonify(data)
+
+@app.route("/get_applicant_hiring_steps/<int:applicant_id>", methods=["GET"])
+def get_applicant_hiring_steps(applicant_id):
+    conn = create_connection()
+    cur = conn.cursor()
+
+    sql = """
+    SELECT
+        main.id AS step_id,
+        main.title AS step_name,
+        CASE 
+            WHEN COUNT(sub.id) = SUM(CASE WHEN a.step_id IS NOT NULL THEN 1 ELSE 0 END)
+            THEN 1
+            ELSE 0
+        END AS completed
+    FROM hiring_steps main
+    LEFT JOIN hiring_steps sub 
+        ON sub.sub_step = 1 AND sub.title LIKE main.title || '%'
+    LEFT JOIN applicant_hiring_steps a 
+        ON sub.id = a.step_id AND a.applicant_id = ?
+    WHERE main.sub_step = 0
+    GROUP BY main.id, main.title
+    ORDER BY main.id;
+    """
+
+    cur.execute(sql, (applicant_id,))
+    rows = cur.fetchall()
+
+    data = [
+        {
+            "step_id": row[0],
+            "step_name": row[1],
+            "completed": row[2]
+        }
+        for row in rows
+    ]
+
+    return jsonify(data)
+
+@app.route("/hiring_steps/screening/<int:applicant_id>", methods=["GET"])
+def hiring_steps_screening(applicant_id):
+    conn = create_connection()
+    cur = conn.cursor()
+
+    # List of screening step names
+    screening_steps = ["Screening Started", "Screening Finished", "Screening Reviewed"]
+
+    # SQL: join with applicants to get applicant name
+    sql = """
+    SELECT 
+        h.title AS step_name,
+        CASE WHEN a.step_id IS NOT NULL THEN 1 ELSE 0 END AS completed,
+        ap.FullName AS applicant_name
+    FROM hiring_steps h
+    LEFT JOIN applicant_hiring_steps a
+        ON h.id = a.step_id AND a.applicant_id = ?
+    LEFT JOIN applicants ap
+        ON ap.ID = ?
+    WHERE h.title IN (?, ?, ?)
+    ORDER BY h.id;
+    """
+
+    cur.execute(sql, (applicant_id, applicant_id, *screening_steps))
+    rows = cur.fetchall()
+
+    # Convert to list of dicts
+    data = [
+        {"step_name": row[0], "completed": row[1], "applicant_name": row[2]}
+        for row in rows
+    ]
+
+    return jsonify(data)
+
+@app.route("/hiring_steps/edit/", methods=["POST"])
+def hiring_steps_edit():
+    data = request.get_json()
+    applicant_id = data.get("applicant_id")
+    step_name = data.get("step_name")
+    action = data.get("action")  # "finish" or "skip"
+
+    if not applicant_id or not step_name or action not in ["finish", "skip"]:
+        return jsonify({"error": "Missing or invalid parameters"}), 400
+
+    conn = create_connection()
+    cur = conn.cursor()
+
+    # Get the step ID from the step name
+    cur.execute("SELECT id FROM hiring_steps WHERE title = ?", (step_name,))
+    step_row = cur.fetchone()
+    if not step_row:
+        return jsonify({"error": f"Step '{step_name}' not found"}), 404
+    step_id = step_row[0]
+
+    # Check if the step already exists in the junction table
+    cur.execute(
+        "SELECT id FROM applicant_hiring_steps WHERE applicant_id = ? AND step_id = ?",
+        (applicant_id, step_id),
+    )
+    row = cur.fetchone()
+
+    if row:
+        # Step already exists, we just need to update 'skipped' if action is skip
+        if action == "skip":
+            cur.execute(
+                "UPDATE applicant_hiring_steps SET skipped = 1 WHERE id = ?",
+                (row[0],)
+            )
+        # If action is finish and row exists, do nothing (already completed)
+        message = f"Step '{step_name}' already completed for applicant {applicant_id}."
+    else:
+        # Insert new record
+        skipped = 1 if action == "skip" else 0
+        cur.execute(
+            "INSERT INTO applicant_hiring_steps (applicant_id, step_id, skipped) VALUES (?, ?, ?)",
+            (applicant_id, step_id, skipped),
+        )
+        message = f"Step '{step_name}' updated successfully for applicant {applicant_id}."
+
+    conn.commit()
+    return jsonify({"message": message})
+
+@app.route("/hiring_steps/interview/<int:applicant_id>", methods=["GET"])
+def hiring_steps_interview(applicant_id):
+    conn = create_connection()
+    cur = conn.cursor()
+
+    # List of interview step names
+    interview_steps = ["Suggest Interview Email", "Interview Scheduled", "Interview Finished"]
+
+    # SQL: join with applicants to get applicant name and check completion
+    sql_steps = """
+    SELECT 
+        h.title AS step_name,
+        CASE WHEN a.step_id IS NOT NULL THEN 1 ELSE 0 END AS completed,
+        ap.FullName AS applicant_name
+    FROM hiring_steps h
+    LEFT JOIN applicant_hiring_steps a
+        ON h.id = a.step_id AND a.applicant_id = ?
+    LEFT JOIN applicants ap
+        ON ap.ID = ?
+    WHERE h.title IN (?, ?, ?)
+    ORDER BY h.id;
+    """
+    cur.execute(sql_steps, (applicant_id, applicant_id, *interview_steps))
+    step_rows = cur.fetchall()
+
+    steps_data = [
+        {"step_name": row[0], "completed": row[1], "applicant_name": row[2]}
+        for row in step_rows
+    ]
+
+    # SQL: fetch all interview notes for this applicant
+    sql_notes = """
+    SELECT applicant_id, content
+    FROM interview_notes
+    WHERE applicant_id = ?;
+    """
+    cur.execute(sql_notes, (applicant_id,))
+    note_rows = cur.fetchall()
+
+    notes_data = [{"applicant_id": row[0], "content": row[1]} for row in note_rows]
+
+    # Return both steps and notes
+    return jsonify({"steps": steps_data, "notes": notes_data})
+
+
+@app.route("/hiring_steps/fee_model/<int:applicant_id>", methods=["GET"])
+def hiring_steps_fee_model(applicant_id):
+    conn = create_connection()
+    cur = conn.cursor()
+
+    # List of screening step names
+    screening_steps = ["Fee Model Email", "Fee Model Negotiation", "Fee Model Accepted"]
+
+    sql = """
+    SELECT 
+        h.title AS step_name,
+        CASE WHEN a.step_id IS NOT NULL THEN 1 ELSE 0 END AS completed,
+        ap.FullName AS applicant_name
+    FROM hiring_steps h
+    LEFT JOIN applicant_hiring_steps a
+        ON h.id = a.step_id AND a.applicant_id = ?
+    LEFT JOIN applicants ap
+        ON ap.ID = ?
+    WHERE h.title IN (?, ?, ?)
+    ORDER BY h.id;
+    """
+
+    cur.execute(sql, (applicant_id, applicant_id, *screening_steps))
+    rows = cur.fetchall()
+
+    # Convert to list of dicts
+    data = [
+        {"step_name": row[0], "completed": row[1], "applicant_name": row[2]}
+        for row in rows
+    ]
+
+    return jsonify(data)
+
+
+@app.route("/hiring_steps/writing_assignment/<int:applicant_id>", methods=["GET"])
+def hiring_steps_writing_assignment(applicant_id):
+    conn = create_connection()
+    cur = conn.cursor()
+
+    # List of writing assignment step names
+    writing_steps = [
+        "Writing Assignment Email",
+        "Writing Assignment Started",
+        "Writing Assignment Ended",
+        "Review Writing Assignment",
+        "Writing Assignment Result"
+    ]
+
+    sql = f"""
+    SELECT 
+        h.title AS step_name,
+        CASE WHEN a.step_id IS NOT NULL THEN 1 ELSE 0 END AS completed,
+        ap.FullName AS applicant_name
+    FROM hiring_steps h
+    LEFT JOIN applicant_hiring_steps a
+        ON h.id = a.step_id AND a.applicant_id = ?
+    LEFT JOIN applicants ap
+        ON ap.ID = ?
+    WHERE h.title IN ({','.join(['?'] * len(writing_steps))})
+    ORDER BY h.id;
+    """
+
+    cur.execute(sql, (applicant_id, applicant_id, *writing_steps))
+    rows = cur.fetchall()
+
+    steps_data = [
+        {"step_name": row[0], "completed": row[1], "applicant_name": row[2]}
+        for row in rows
+    ]
+
+    return jsonify(steps_data)
+
+@app.route("/hiring_steps/contract/<int:applicant_id>", methods=["GET"])
+def hiring_steps_contract(applicant_id):
+    conn = create_connection()
+    cur = conn.cursor()
+
+    # List of contract step names
+    contract_steps = [
+        "Contract Sent",
+        "Contract Under Review",
+        "Contract Result"
+    ]
+
+    sql = f"""
+    SELECT 
+        h.title AS step_name,
+        CASE WHEN a.step_id IS NOT NULL THEN 1 ELSE 0 END AS completed,
+        ap.FullName AS applicant_name
+    FROM hiring_steps h
+    LEFT JOIN applicant_hiring_steps a
+        ON h.id = a.step_id AND a.applicant_id = ?
+    LEFT JOIN applicants ap
+        ON ap.ID = ?
+    WHERE h.title IN ({','.join(['?'] * len(contract_steps))})
+    ORDER BY h.id;
+    """
+
+    cur.execute(sql, (applicant_id, applicant_id, *contract_steps))
+    rows = cur.fetchall()
+
+    steps_data = [
+        {"step_name": row[0], "completed": row[1], "applicant_name": row[2]}
+        for row in rows
+    ]
+
+    return jsonify(steps_data)
+
+
+
+
 if __name__ == '__main__':
     app.run(debug=True)
