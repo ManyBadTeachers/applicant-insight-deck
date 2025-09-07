@@ -9,7 +9,7 @@ export const StatusBadge = ({ status }) => {
   };
   return (
     <span
-      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold transition-colors border ${
+      className={`inline-flex items-center px-3 py-1.5 rounded-full text-sm font-bold transition-colors border shadow-sm ${
         colors[status] || "bg-muted text-muted-foreground border-border"
       }`}
     >

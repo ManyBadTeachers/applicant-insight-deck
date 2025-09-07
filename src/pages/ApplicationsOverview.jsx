@@ -537,25 +537,29 @@ const ApplicationsOverview = () => {
                   onClick={() => toggleActionCard(applicant.id)}
                 >
                   {/* Compact Header - Always Visible */}
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-sm">
-                        {applicant.fullName
-                          .split(" ")
-                          .map((n) => n[0])
-                          .join("")}
-                      </div>
+                   <div className="flex items-center justify-between">
+                     <div className="flex items-center gap-3">
+                       <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-sm">
+                         {applicant.fullName
+                           .split(" ")
+                           .map((n) => n[0])
+                           .join("")}
+                       </div>
                        <div>
                          <h3 className="font-semibold text-card-foreground">
                            {applicant.fullName}
                          </h3>
-                         <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
+                         <div onClick={(e) => e.stopPropagation()}>
                            <ExpertiseBadge expertise={applicant.expertise} />
-                           <StatusBadge status={applicant.Status} />
                          </div>
                        </div>
-                    </div>
-                  </div>
+                     </div>
+                     <div className="flex-shrink-0" onClick={(e) => e.stopPropagation()}>
+                       <div className="text-sm font-semibold">
+                         <StatusBadge status={applicant.Status} />
+                       </div>
+                     </div>
+                   </div>
 
                   {/* Expanded Content - Only Visible When Expanded */}
                   {isExpanded && (
