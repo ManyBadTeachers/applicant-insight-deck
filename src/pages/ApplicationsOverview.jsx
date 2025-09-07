@@ -72,12 +72,10 @@ const ApplicationsOverview = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      if (!selectedForm) return;
-
       try {
-        // Fetch applicants for the selected form
+        // Fetch applicants for form 1 (static)
         const resApplicants = await fetch(
-          `http://127.0.0.1:5000/get_applicants?form_id=${selectedForm}`
+          `http://127.0.0.1:5000/get_applicants?form_id=1`
         );
         const dataApplicants = await resApplicants.json();
         const formattedApplicants = dataApplicants.applicants.map((a) => ({
@@ -96,9 +94,9 @@ const ApplicationsOverview = () => {
         }));
         setApplicants(formattedApplicants);
 
-        // Fetch applicant steps for the selected form
+        // Fetch applicant steps for form 1 (static)
         const resSteps = await fetch(
-          `http://127.0.0.1:5000/applicants_hiring_steps?form_id=${selectedForm}`
+          `http://127.0.0.1:5000/applicants_hiring_steps?form_id=1`
         );
         const dataSteps = await resSteps.json();
         const formattedSteps = dataSteps.applicants.map((a) => ({
@@ -110,9 +108,9 @@ const ApplicationsOverview = () => {
         }));
         setApplicantSteps(formattedSteps);
 
-        // Fetch statistics for the selected form
+        // Fetch statistics for form 1 (static)
         const resStats = await fetch(
-          `http://127.0.0.1:5000/get_hiring_statistics?form_id=${selectedForm}`
+          `http://127.0.0.1:5000/get_hiring_statistics?form_id=1`
         );
         const statsData = await resStats.json();
         setDashboardStats(statsData);
@@ -123,12 +121,12 @@ const ApplicationsOverview = () => {
         );
         setFavorites(savedFavorites);
       } catch (error) {
-        console.error("Error fetching data for selected form:", error);
+        console.error("Error fetching data:", error);
       }
     };
 
     fetchData();
-  }, [selectedForm]); // refetch everything when selectedForm changes
+  }, []); // removed dependency on selectedForm
 
   // Favorites management
   const toggleFavorite = (applicantId) => {
@@ -242,7 +240,7 @@ const ApplicationsOverview = () => {
 
           {/* Form selector */}
           <div className="mb-6">
-            <Select value={selectedForm} onValueChange={setSelectedForm}>
+            <Select value={selectedForm}>
               <SelectTrigger className="w-56">
                 <SelectValue
                   placeholder="Choose a form"
