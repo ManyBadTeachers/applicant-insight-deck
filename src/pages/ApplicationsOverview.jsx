@@ -345,31 +345,27 @@ const ApplicationsOverview = () => {
                   <SelectTrigger className="w-full sm:w-44 h-11">
                     <SelectValue placeholder="Nationality" />
                   </SelectTrigger>
-                    placeholder="Nationality"
-                    className="font-semibold"
-                  />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All</SelectItem>
-                  <SelectItem value="Swedish">Swedish</SelectItem>
-                  <SelectItem value="American">American</SelectItem>
-                  <SelectItem value="Spanish">Spanish</SelectItem>
-                  <SelectItem value="Korean">Korean</SelectItem>
-                  <SelectItem value="German">German</SelectItem>
-                  <SelectItem value="Indian">Indian</SelectItem>
-                  <SelectItem value="Chinese">Chinese</SelectItem>
-                  <SelectItem value="Japanese">Japanese</SelectItem>
-                  <SelectItem value="Italian">Italian</SelectItem>
-                  <SelectItem value="Canadian">Canadian</SelectItem>
-                  <SelectItem value="Czech">Czech</SelectItem>
-                  <SelectItem value="British">British</SelectItem>
-                  <SelectItem value="Brazilian">Brazilian</SelectItem>
-                  <SelectItem value="French">French</SelectItem>
-                  <SelectItem value="Egyptian">Egyptian</SelectItem>
-                  <SelectItem value="Pakistani">Pakistani</SelectItem>
-                  <SelectItem value="Russian">Russian</SelectItem>
-                </SelectContent>
-              </Select>
+                  <SelectContent>
+                    <SelectItem value="all">All Nationalities</SelectItem>
+                    <SelectItem value="Swedish">Swedish</SelectItem>
+                    <SelectItem value="American">American</SelectItem>
+                    <SelectItem value="Spanish">Spanish</SelectItem>
+                    <SelectItem value="Korean">Korean</SelectItem>
+                    <SelectItem value="German">German</SelectItem>
+                    <SelectItem value="Indian">Indian</SelectItem>
+                    <SelectItem value="Chinese">Chinese</SelectItem>
+                    <SelectItem value="Japanese">Japanese</SelectItem>
+                    <SelectItem value="Italian">Italian</SelectItem>
+                    <SelectItem value="Canadian">Canadian</SelectItem>
+                    <SelectItem value="Czech">Czech</SelectItem>
+                    <SelectItem value="British">British</SelectItem>
+                    <SelectItem value="Brazilian">Brazilian</SelectItem>
+                    <SelectItem value="French">French</SelectItem>
+                    <SelectItem value="Egyptian">Egyptian</SelectItem>
+                    <SelectItem value="Pakistani">Pakistani</SelectItem>
+                    <SelectItem value="Russian">Russian</SelectItem>
+                  </SelectContent>
+                </Select>
 
               <Select value={statusFilter} onValueChange={setStatusFilter}>
                 <SelectTrigger className="w-44">
