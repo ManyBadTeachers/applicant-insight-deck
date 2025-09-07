@@ -96,17 +96,15 @@ const ApplicationsOverview = () => {
         }));
         setApplicants(formattedApplicants);
 
-        // Fetch applicant steps for the selected form
+        // Fetch applicants in hiring process for the selected form
         const resSteps = await fetch(
-          `http://127.0.0.1:5000/applicants_hiring_steps?form_id=${selectedForm}`
+          `http://127.0.0.1:5000/get_applicants_in_hiring_process?form_id=${selectedForm}`
         );
         const dataSteps = await resSteps.json();
         const formattedSteps = dataSteps.applicants.map((a) => ({
           id: a.id.toString(),
           fullName: a.fullName,
           expertise: a.expertise,
-          steps: a.steps,
-          form_id: a.form_id,
         }));
         setApplicantSteps(formattedSteps);
 
@@ -166,17 +164,11 @@ const ApplicationsOverview = () => {
         nationalityFilter === "all" ||
         a.nationality.toLowerCase() === nationalityFilter.toLowerCase();
 
-      // Get hiring status from applicantSteps
+      // Get hiring status - simplified since no steps data available
       const applicantStep = applicantSteps.find((step) => step.id === a.id);
       let hiringStatus = "unknown";
       if (applicantStep) {
-        if (applicantStep.steps.every((s) => s.color === "green")) {
-          hiringStatus = "hired";
-        } else if (applicantStep.steps.some((s) => s.color === "red")) {
-          hiringStatus = "rejected";
-        } else {
-          hiringStatus = "in_process";
-        }
+        hiringStatus = "in_process"; // Default to in_process since we don't have step details
       }
 
       const matchesStatus =
@@ -195,25 +187,10 @@ const ApplicationsOverview = () => {
     applicantSteps,
   ]);
 
-  // Filtered applicants for Action Center
+  // Filtered applicants for Action Center - no filtering logic, just show all
   const filteredActionCenterApplicants = useMemo(() => {
-    return applicantSteps.filter((applicant) => {
-      if (actionCenterFilter === "all") return true;
-
-      if (applicant.steps.every((s) => s.color === "green")) {
-        return actionCenterFilter === "hired";
-      } else if (applicant.steps.some((s) => s.color === "red")) {
-        return actionCenterFilter === "rejected";
-      } else if (applicant.steps.some((s) => s.color === "yellow")) {
-        return (
-          actionCenterFilter === "in_process" ||
-          actionCenterFilter === "needs_attention"
-        );
-      } else {
-        return actionCenterFilter === "in_process";
-      }
-    });
-  }, [applicantSteps, actionCenterFilter]);
+    return applicantSteps;
+  }, [applicantSteps]);
 
   const handleNotes = (id) => {
     console.log(id);
@@ -523,10 +500,7 @@ const ApplicationsOverview = () => {
 
               {/* Filter for Action Center */}
               <div className="flex-shrink-0">
-                <Select
-                  value={actionCenterFilter}
-                  onValueChange={setActionCenterFilter}
-                >
+                <Select value={actionCenterFilter}>
                   <SelectTrigger className="w-48">
                     <SelectValue placeholder="Filter by status" />
                   </SelectTrigger>
