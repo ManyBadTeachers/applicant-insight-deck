@@ -219,6 +219,21 @@ const ApplicationsOverview = () => {
     console.log(id);
     setNoteId(id);
     setShowNotePopup(true);
+    // Close all expanded action cards when opening notes
+    setExpandedActionCards({});
+  };
+
+  const toggleActionCard = (applicantId) => {
+    const isCurrentlyExpanded = expandedActionCards[applicantId];
+    
+    if (isCurrentlyExpanded) {
+      // If clicking on the already expanded card, just close it
+      setExpandedActionCards({});
+    } else {
+      // Close any notes popup and expand only this card
+      setShowNotePopup(false);
+      setExpandedActionCards({ [applicantId]: true });
+    }
   };
 
   return (
@@ -540,12 +555,7 @@ const ApplicationsOverview = () => {
                 <div
                   key={applicant.id}
                   className="p-4 bg-gradient-to-br from-card via-card to-accent/5 rounded-xl shadow-lg border border-card-border/50 hover:shadow-xl transition-all duration-300 group cursor-pointer"
-                  onClick={() =>
-                    setExpandedActionCards({
-                      ...expandedActionCards,
-                      [applicant.id]: !isExpanded,
-                    })
-                  }
+                  onClick={() => toggleActionCard(applicant.id)}
                 >
                   {/* Compact Header - Always Visible */}
                   <div className="flex items-center justify-between">
