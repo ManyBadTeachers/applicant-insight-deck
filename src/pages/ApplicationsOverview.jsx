@@ -393,26 +393,25 @@ const ApplicationsOverview = () => {
               </Button>
             </div>
           </div>
-        </section>
 
-        {/* Table */}
-        <div className="rounded-xl border border-border shadow-sm overflow-hidden bg-card">
-          <div className="max-h-[600px] overflow-y-auto overflow-x-auto">
-            <table className="w-full text-sm border-collapse">
-              <thead className="bg-muted/50 text-left text-muted-foreground font-medium sticky top-0 z-10">
-                <tr>
-                  <th className="p-4 font-semibold">Select</th>
-                  <th className="p-4 font-semibold">Full Name</th>
-                  <th className="p-4 font-semibold">Status</th>
-                  <th className="p-4 font-semibold">Expertise</th>
-                  <th className="p-4 font-semibold">Email</th>
-                  <th className="p-4 font-semibold">Phone</th>
-                  <th className="p-4 font-semibold">Nationality</th>
-                  <th className="p-4 font-semibold">CV</th>
-                  <th className="p-4 font-semibold">Submission Date</th>
-                  <th className="p-4 font-semibold">Actions</th>
-                </tr>
-              </thead>
+          {/* Table */}
+          <div className="rounded-xl border border-border shadow-sm overflow-hidden bg-card">
+            <div className="max-h-[600px] overflow-y-auto overflow-x-auto">
+              <table className="w-full text-sm border-collapse">
+                <thead className="bg-muted/50 text-left text-muted-foreground font-medium sticky top-0 z-10">
+                  <tr>
+                    <th className="p-4 font-semibold">Select</th>
+                    <th className="p-4 font-semibold">Full Name</th>
+                    <th className="p-4 font-semibold">Status</th>
+                    <th className="p-4 font-semibold">Expertise</th>
+                    <th className="p-4 font-semibold">Email</th>
+                    <th className="p-4 font-semibold">Phone</th>
+                    <th className="p-4 font-semibold">Nationality</th>
+                    <th className="p-4 font-semibold">CV</th>
+                    <th className="p-4 font-semibold">Submission Date</th>
+                    <th className="p-4 font-semibold">Actions</th>
+                  </tr>
+                </thead>
               <tbody>
                 {filteredApplicants.map((a) => (
                   <tr
@@ -484,10 +483,11 @@ const ApplicationsOverview = () => {
                     </td>
                   </tr>
                 ))}
-              </tbody>
-            </table>
+                </tbody>
+              </table>
+            </div>
           </div>
-        </div>
+        </section>
 
         {/* Action Center */}
         <section className="space-y-6">
