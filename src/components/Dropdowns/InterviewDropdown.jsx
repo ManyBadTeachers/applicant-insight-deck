@@ -40,10 +40,12 @@ function InterviewDropdown({ applicantId, onStepUpdate }) {
   const getStatusBadge = (completed) => {
     return completed ? (
       <Badge className="bg-green-50 text-green-700 border-green-200">
-        Completed
+        ✓ Completed
       </Badge>
     ) : (
-      <Badge variant="secondary">Not Completed</Badge>
+      <Badge variant="outline" className="bg-amber-50 text-amber-700 border-amber-200">
+        ⏳ In Progress
+      </Badge>
     );
   };
 
@@ -144,22 +146,24 @@ function InterviewDropdown({ applicantId, onStepUpdate }) {
             </div>
           )}
 
-          <div className="flex gap-2 pt-2">
-            <Button
-              size="sm"
-              variant="default"
-              onClick={(e) => handleStepAction(e, step.title, "finish")}
-            >
-              Finish Step
-            </Button>
-            <Button
-              size="sm"
-              variant="outline"
-              onClick={(e) => handleStepAction(e, step.title, "skip")}
-            >
-              Skip Step
-            </Button>
-          </div>
+          {!step.completed && (
+            <div className="flex gap-2 pt-2">
+              <Button
+                size="sm"
+                variant="default"
+                onClick={(e) => handleStepAction(e, step.title, "finish")}
+              >
+                Finish Step
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={(e) => handleStepAction(e, step.title, "skip")}
+              >
+                Skip Step
+              </Button>
+            </div>
+          )}
         </div>
       ))}
     </div>

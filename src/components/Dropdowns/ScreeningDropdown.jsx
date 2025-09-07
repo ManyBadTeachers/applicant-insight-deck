@@ -37,10 +37,12 @@ function ScreeningDropdown({ applicantId, onStepUpdate }) {
   const getStatusBadge = (completed) => {
     return completed ? (
       <Badge className="bg-green-50 text-green-700 border-green-200">
-        Completed
+        ✓ Completed
       </Badge>
     ) : (
-      <Badge variant="secondary">Not Completed</Badge>
+      <Badge variant="outline" className="bg-amber-50 text-amber-700 border-amber-200">
+        ⏳ In Progress
+      </Badge>
     );
   };
 
@@ -125,25 +127,27 @@ function ScreeningDropdown({ applicantId, onStepUpdate }) {
             <p className="text-sm text-muted-foreground">{step.description}</p>
           </div>
 
-          <div className="flex gap-2">
-            <Button
-              size="sm"
-              variant="default"
-              className="flex-1"
-              onClick={(e) => handleStepAction(e, step.title, "finish")}
-            >
-              <FileCheck className="w-4 h-4 mr-1" />
-              Finish Step
-            </Button>
-            <Button
-              size="sm"
-              variant="outline"
-              className="flex-1"
-              onClick={(e) => handleStepAction(e, step.title, "skip")}
-            >
-              Skip Step
-            </Button>
-          </div>
+          {!step.completed && (
+            <div className="flex gap-2">
+              <Button
+                size="sm"
+                variant="default"
+                className="flex-1"
+                onClick={(e) => handleStepAction(e, step.title, "finish")}
+              >
+                <FileCheck className="w-4 h-4 mr-1" />
+                Finish Step
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                className="flex-1"
+                onClick={(e) => handleStepAction(e, step.title, "skip")}
+              >
+                Skip Step
+              </Button>
+            </div>
+          )}
         </div>
       ))}
     </div>
