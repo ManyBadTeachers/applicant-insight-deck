@@ -48,12 +48,12 @@ const ApplicationsOverview = () => {
   const [noteId, setNoteId] = useState(1);
 
   const dashboardColors = {
-    total_applicants: "bg-primary/10 text-primary border border-primary/20",
-    reviewed_today: "bg-emerald-50 text-emerald-700 border border-emerald-200",
-    submitted_today: "bg-amber-50 text-amber-700 border border-amber-200",
-    in_process: "bg-muted text-muted-foreground border border-border",
-    rejection_rate: "bg-red-50 text-red-700 border border-red-200",
-    hired_this_year: "bg-green-50 text-green-700 border border-green-200",
+    total_applicants: "bg-gradient-to-br from-blue-50 to-blue-100/80 text-blue-800 border border-blue-200/50 shadow-sm",
+    reviewed_today: "bg-gradient-to-br from-emerald-50 to-emerald-100/80 text-emerald-800 border border-emerald-200/50 shadow-sm",
+    submitted_today: "bg-gradient-to-br from-amber-50 to-amber-100/80 text-amber-800 border border-amber-200/50 shadow-sm",
+    in_process: "bg-gradient-to-br from-purple-50 to-purple-100/80 text-purple-800 border border-purple-200/50 shadow-sm",
+    rejection_rate: "bg-gradient-to-br from-red-50 to-red-100/80 text-red-800 border border-red-200/50 shadow-sm",
+    hired_this_year: "bg-gradient-to-br from-green-50 to-green-100/80 text-green-800 border border-green-200/50 shadow-sm",
   };
 
   // Fetch all forms on mount
@@ -284,21 +284,42 @@ const ApplicationsOverview = () => {
             <h2 className="text-2xl font-bold text-foreground">
               Analytics Overview
             </h2>
-            <div className="grid md:grid-cols-4 gap-4">
+            <div className="grid md:grid-cols-4 gap-6">
               {dashboardStats &&
                 Object.values(dashboardStats)[0] &&
                 Object.entries(Object.values(dashboardStats)[0]).map(
-                  ([key, value]) => (
-                    <div
-                      key={key}
-                      className={`p-4 rounded-lg shadow-sm text-center transition-all hover:shadow-md ${dashboardColors[key]}`}
-                    >
-                      <p className="text-sm font-medium opacity-80">
-                        {key.replace(/_/g, " ")}
-                      </p>
-                      <p className="text-xl font-bold">{value}</p>
-                    </div>
-                  )
+                  ([key, value]) => {
+                    // Format the label
+                    const formatLabel = (key) => {
+                      return key
+                        .replace(/_/g, " ")
+                        .split(" ")
+                        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                        .join(" ");
+                    };
+                    
+                    // Format the value
+                    const formatValue = (key, value) => {
+                      if (key === "rejection_rate") {
+                        return `${value}%`;
+                      }
+                      return value;
+                    };
+                    
+                    return (
+                      <div
+                        key={key}
+                        className={`p-6 rounded-xl text-center transition-all duration-300 hover:scale-105 hover:shadow-lg ${dashboardColors[key]}`}
+                      >
+                        <p className="text-sm font-semibold uppercase tracking-wide mb-2 opacity-75">
+                          {formatLabel(key)}
+                        </p>
+                        <p className="text-3xl font-bold">
+                          {formatValue(key, value)}
+                        </p>
+                      </div>
+                    );
+                  }
                 )}
             </div>
           </div>
