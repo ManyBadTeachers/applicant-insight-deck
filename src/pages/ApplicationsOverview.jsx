@@ -284,22 +284,23 @@ const ApplicationsOverview = () => {
             <h2 className="text-2xl font-bold text-foreground">
               Analytics Overview
             </h2>
-          <div className="grid md:grid-cols-4 gap-4">
-            {dashboardStats &&
-              Object.values(dashboardStats)[0] &&
-              Object.entries(Object.values(dashboardStats)[0]).map(
-                ([key, value]) => (
-                  <div
-                    key={key}
-                    className={`p-4 rounded-lg shadow-sm text-center transition-all hover:shadow-md ${dashboardColors[key]}`}
-                  >
-                    <p className="text-sm font-medium opacity-80">
-                      {key.replace(/_/g, " ")}
-                    </p>
-                    <p className="text-xl font-bold">{value}</p>
-                  </div>
-                )
-              )}
+            <div className="grid md:grid-cols-4 gap-4">
+              {dashboardStats &&
+                Object.values(dashboardStats)[0] &&
+                Object.entries(Object.values(dashboardStats)[0]).map(
+                  ([key, value]) => (
+                    <div
+                      key={key}
+                      className={`p-4 rounded-lg shadow-sm text-center transition-all hover:shadow-md ${dashboardColors[key]}`}
+                    >
+                      <p className="text-sm font-medium opacity-80">
+                        {key.replace(/_/g, " ")}
+                      </p>
+                      <p className="text-xl font-bold">{value}</p>
+                    </div>
+                  )
+                )}
+            </div>
           </div>
         </section>
 
