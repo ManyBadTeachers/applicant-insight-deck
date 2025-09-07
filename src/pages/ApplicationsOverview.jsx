@@ -189,10 +189,25 @@ const ApplicationsOverview = () => {
     applicantSteps,
   ]);
 
-  // Filtered applicants for Action Center - no filtering logic, just show all
+  // Filtered applicants for Action Center
   const filteredActionCenterApplicants = useMemo(() => {
-    return applicantSteps;
-  }, [applicantSteps]);
+    if (actionCenterFilter === "all") {
+      return applicantSteps;
+    }
+    
+    return applicantSteps.filter((applicant) => {
+      switch (actionCenterFilter) {
+        case "hired":
+          return applicant.Status === "Hired";
+        case "rejected":
+          return applicant.Status === "Rejected";
+        case "in_process":
+          return applicant.Status === "In Process";
+        default:
+          return true;
+      }
+    });
+  }, [applicantSteps, actionCenterFilter]);
 
   const handleNotes = (id) => {
     console.log(id);
@@ -506,7 +521,7 @@ const ApplicationsOverview = () => {
 
               {/* Filter for Action Center */}
               <div className="flex-shrink-0">
-                <Select value={actionCenterFilter}>
+                <Select value={actionCenterFilter} onValueChange={setActionCenterFilter}>
                   <SelectTrigger className="w-48">
                     <SelectValue placeholder="Filter by status" />
                   </SelectTrigger>
