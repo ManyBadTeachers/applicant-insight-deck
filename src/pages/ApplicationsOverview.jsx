@@ -545,14 +545,15 @@ const ApplicationsOverview = () => {
                           .map((n) => n[0])
                           .join("")}
                       </div>
-                      <div>
-                        <h3 className="font-semibold text-card-foreground">
-                          {applicant.fullName}
-                        </h3>
-                        <div onClick={(e) => e.stopPropagation()}>
-                          <ExpertiseBadge expertise={applicant.expertise} />
-                        </div>
-                      </div>
+                       <div>
+                         <h3 className="font-semibold text-card-foreground">
+                           {applicant.fullName}
+                         </h3>
+                         <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
+                           <ExpertiseBadge expertise={applicant.expertise} />
+                           <StatusBadge status={applicant.Status} />
+                         </div>
+                       </div>
                     </div>
                   </div>
 
