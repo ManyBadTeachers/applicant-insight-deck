@@ -522,10 +522,10 @@ const ApplicationsOverview = () => {
                     <SelectValue placeholder="Filter by status" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all">All Candidates</SelectItem>
-                    <SelectItem value="hired">Hired Candidates</SelectItem>
+                    <SelectItem value="all">All Applicants</SelectItem>
+                    <SelectItem value="hired">Hired Applicants</SelectItem>
                     <SelectItem value="rejected">
-                      Rejected Candidates
+                      Rejected Applicants
                     </SelectItem>
                     <SelectItem value="in_process">In Process</SelectItem>
                   </SelectContent>
