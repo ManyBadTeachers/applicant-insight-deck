@@ -41,20 +41,10 @@ const ApplicationsOverview = () => {
   const [showComparison, setShowComparison] = useState(false);
   const [actionCenterFilter, setActionCenterFilter] = useState("all");
   const [expandedActionCards, setExpandedActionCards] = useState({});
-  const [dashboardStats, setDashboardStats] = useState({});
   const [forms, setForms] = useState([]);
   const [selectedForm, setSelectedForm] = useState("");
   const [showNotePopup, setShowNotePopup] = useState(false);
   const [noteId, setNoteId] = useState(1);
-
-  const dashboardColors = {
-    total_applicants: "bg-gradient-to-br from-blue-50 to-blue-100/80 text-blue-800 border border-blue-200/50 shadow-sm",
-    reviewed_today: "bg-gradient-to-br from-emerald-50 to-emerald-100/80 text-emerald-800 border border-emerald-200/50 shadow-sm",
-    submitted_today: "bg-gradient-to-br from-amber-50 to-amber-100/80 text-amber-800 border border-amber-200/50 shadow-sm",
-    in_process: "bg-gradient-to-br from-purple-50 to-purple-100/80 text-purple-800 border border-purple-200/50 shadow-sm",
-    rejection_rate: "bg-gradient-to-br from-red-50 to-red-100/80 text-red-800 border border-red-200/50 shadow-sm",
-    hired_this_year: "bg-gradient-to-br from-green-50 to-green-100/80 text-green-800 border border-green-200/50 shadow-sm",
-  };
 
   // Fetch all forms on mount
   useEffect(() => {
@@ -109,13 +99,6 @@ const ApplicationsOverview = () => {
           Status: a.Status,
         }));
         setApplicantSteps(formattedSteps);
-
-        // Fetch statistics for the selected form
-        const resStats = await fetch(
-          `http://127.0.0.1:5000/get_hiring_statistics?form_id=${selectedForm}`
-        );
-        const statsData = await resStats.json();
-        setDashboardStats(statsData);
 
         // Load favorites from localStorage
         const savedFavorites = JSON.parse(
@@ -279,50 +262,6 @@ const ApplicationsOverview = () => {
             </div>
           </div>
 
-          {/* Quick Overview Stats */}
-          <div className="bg-gradient-to-br from-card via-card to-accent/5 rounded-2xl p-8 border border-card-border/50 shadow-lg space-y-6">
-            <h2 className="text-2xl font-bold text-foreground">
-              Analytics Overview
-            </h2>
-            <div className="grid md:grid-cols-4 gap-6">
-              {dashboardStats &&
-                Object.values(dashboardStats)[0] &&
-                Object.entries(Object.values(dashboardStats)[0]).map(
-                  ([key, value]) => {
-                    // Format the label
-                    const formatLabel = (key) => {
-                      return key
-                        .replace(/_/g, " ")
-                        .split(" ")
-                        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-                        .join(" ");
-                    };
-                    
-                    // Format the value
-                    const formatValue = (key, value) => {
-                      if (key === "rejection_rate") {
-                        return `${value}%`;
-                      }
-                      return value;
-                    };
-                    
-                    return (
-                      <div
-                        key={key}
-                        className={`p-6 rounded-xl text-center transition-all duration-300 hover:scale-105 hover:shadow-lg ${dashboardColors[key]}`}
-                      >
-                        <p className="text-sm font-semibold uppercase tracking-wide mb-2 opacity-75">
-                          {formatLabel(key)}
-                        </p>
-                        <p className="text-3xl font-bold">
-                          {formatValue(key, value)}
-                        </p>
-                      </div>
-                    );
-                  }
-                )}
-            </div>
-          </div>
         </section>
 
         {/* Applications Overview */}
