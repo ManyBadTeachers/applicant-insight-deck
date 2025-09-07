@@ -414,8 +414,6 @@ const ApplicationsOverview = () => {
                   <th className="p-3">Expertise</th>
                   <th className="p-3">Email</th>
                   <th className="p-3">Phone</th>
-                  <th className="p-3">First Name</th>
-                  <th className="p-3">Last Name</th>
                   <th className="p-3">Nationality</th>
                   <th className="p-3">CV</th>
                   <th className="p-3">Submission Date</th>
@@ -469,8 +467,6 @@ const ApplicationsOverview = () => {
                     </td>
                     <td className="p-3 text-muted-foreground">{a.email}</td>
                     <td className="p-3 text-muted-foreground">{a.phone}</td>
-                    <td className="p-3 text-card-foreground">{a.firstName}</td>
-                    <td className="p-3 text-card-foreground">{a.lastName}</td>
                     <td className="p-3">
                       <NationalityBadge nationality={a.nationality} />
                     </td>
