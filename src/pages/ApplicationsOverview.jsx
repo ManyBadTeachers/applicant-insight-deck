@@ -306,111 +306,113 @@ const ApplicationsOverview = () => {
 
         {/* Applications Overview */}
         <section className="space-y-6">
-          <h1 className="text-3xl font-extrabold text-foreground mb-6">
-            Applications Overview
-          </h1>
+          <div className="bg-gradient-to-br from-card via-card to-accent/5 rounded-2xl p-8 border border-card-border/50 shadow-lg space-y-8">
+            <h1 className="text-3xl font-bold text-foreground">
+              Applications Overview
+            </h1>
 
-          {/* Filters and Actions */}
-          <div className="flex flex-col md:flex-row gap-4 mb-6 items-center justify-between">
-            <div className="flex flex-col md:flex-row gap-4 flex-1">
-              <div className="relative flex-1">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5" />
-                <Input
-                  placeholder="Search applicants..."
-                  className="pl-12"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                />
+            {/* Filters and Actions */}
+            <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
+              <div className="flex flex-col md:flex-row gap-4 flex-1">
+                <div className="relative flex-1">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5" />
+                  <Input
+                    placeholder="Search applicants..."
+                    className="pl-12"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                  />
+                </div>
+
+                <Select
+                  value={expertiseFilter}
+                  onValueChange={setExpertiseFilter}
+                >
+                  <SelectTrigger className="w-44">
+                    <SelectValue
+                      placeholder="Expertise"
+                      className="font-semibold"
+                    />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Expertise</SelectItem>
+                    <SelectItem value="IT">IT</SelectItem>
+                    <SelectItem value="Business">Business</SelectItem>
+                    <SelectItem value="Physics">Physics</SelectItem>
+                    <SelectItem value="Materials Science">
+                      Materials Science
+                    </SelectItem>
+                    <SelectItem value="Biotechnology">Biotechnology</SelectItem>
+                    <SelectItem value="Life Sciences">Life Sciences</SelectItem>
+                    <SelectItem value="Engineering">Engineering</SelectItem>
+                    <SelectItem value="Finance">Finance</SelectItem>
+                    <SelectItem value="Quantum">Quantum</SelectItem>
+                    <SelectItem value="Earth Sciences">Earth Sciences</SelectItem>
+                    <SelectItem value="Machine Learning">
+                      Machine Learning
+                    </SelectItem>
+                    <SelectItem value="Agrotech">Agrotech</SelectItem>
+                    <SelectItem value="Chemistry">Chemistry</SelectItem>
+                  </SelectContent>
+                </Select>
+
+                <Select
+                  value={nationalityFilter}
+                  onValueChange={setNationalityFilter}
+                >
+                  <SelectTrigger className="w-44">
+                    <SelectValue
+                      placeholder="Nationality"
+                      className="font-semibold"
+                    />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All</SelectItem>
+                    <SelectItem value="Swedish">Swedish</SelectItem>
+                    <SelectItem value="American">American</SelectItem>
+                    <SelectItem value="Spanish">Spanish</SelectItem>
+                    <SelectItem value="Korean">Korean</SelectItem>
+                    <SelectItem value="German">German</SelectItem>
+                    <SelectItem value="Indian">Indian</SelectItem>
+                    <SelectItem value="Chinese">Chinese</SelectItem>
+                    <SelectItem value="Japanese">Japanese</SelectItem>
+                    <SelectItem value="Italian">Italian</SelectItem>
+                    <SelectItem value="Canadian">Canadian</SelectItem>
+                    <SelectItem value="Czech">Czech</SelectItem>
+                    <SelectItem value="British">British</SelectItem>
+                    <SelectItem value="Brazilian">Brazilian</SelectItem>
+                    <SelectItem value="French">French</SelectItem>
+                    <SelectItem value="Egyptian">Egyptian</SelectItem>
+                    <SelectItem value="Pakistani">Pakistani</SelectItem>
+                    <SelectItem value="Russian">Russian</SelectItem>
+                  </SelectContent>
+                </Select>
+
+                <Select value={statusFilter} onValueChange={setStatusFilter}>
+                  <SelectTrigger className="w-44">
+                    <SelectValue placeholder="Status" className="font-semibold" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Status</SelectItem>
+                    <SelectItem value="hired">Hired</SelectItem>
+                    <SelectItem value="rejected">Rejected</SelectItem>
+                    <SelectItem value="in_process">In Process</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
 
-              <Select
-                value={expertiseFilter}
-                onValueChange={setExpertiseFilter}
-              >
-                <SelectTrigger className="w-44">
-                  <SelectValue
-                    placeholder="Expertise"
-                    className="font-semibold"
-                  />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Expertise</SelectItem>
-                  <SelectItem value="IT">IT</SelectItem>
-                  <SelectItem value="Business">Business</SelectItem>
-                  <SelectItem value="Physics">Physics</SelectItem>
-                  <SelectItem value="Materials Science">
-                    Materials Science
-                  </SelectItem>
-                  <SelectItem value="Biotechnology">Biotechnology</SelectItem>
-                  <SelectItem value="Life Sciences">Life Sciences</SelectItem>
-                  <SelectItem value="Engineering">Engineering</SelectItem>
-                  <SelectItem value="Finance">Finance</SelectItem>
-                  <SelectItem value="Quantum">Quantum</SelectItem>
-                  <SelectItem value="Earth Sciences">Earth Sciences</SelectItem>
-                  <SelectItem value="Machine Learning">
-                    Machine Learning
-                  </SelectItem>
-                  <SelectItem value="Agrotech">Agrotech</SelectItem>
-                  <SelectItem value="Chemistry">Chemistry</SelectItem>
-                </SelectContent>
-              </Select>
-
-              <Select
-                value={nationalityFilter}
-                onValueChange={setNationalityFilter}
-              >
-                <SelectTrigger className="w-44">
-                  <SelectValue
-                    placeholder="Nationality"
-                    className="font-semibold"
-                  />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All</SelectItem>
-                  <SelectItem value="Swedish">Swedish</SelectItem>
-                  <SelectItem value="American">American</SelectItem>
-                  <SelectItem value="Spanish">Spanish</SelectItem>
-                  <SelectItem value="Korean">Korean</SelectItem>
-                  <SelectItem value="German">German</SelectItem>
-                  <SelectItem value="Indian">Indian</SelectItem>
-                  <SelectItem value="Chinese">Chinese</SelectItem>
-                  <SelectItem value="Japanese">Japanese</SelectItem>
-                  <SelectItem value="Italian">Italian</SelectItem>
-                  <SelectItem value="Canadian">Canadian</SelectItem>
-                  <SelectItem value="Czech">Czech</SelectItem>
-                  <SelectItem value="British">British</SelectItem>
-                  <SelectItem value="Brazilian">Brazilian</SelectItem>
-                  <SelectItem value="French">French</SelectItem>
-                  <SelectItem value="Egyptian">Egyptian</SelectItem>
-                  <SelectItem value="Pakistani">Pakistani</SelectItem>
-                  <SelectItem value="Russian">Russian</SelectItem>
-                </SelectContent>
-              </Select>
-
-              <Select value={statusFilter} onValueChange={setStatusFilter}>
-                <SelectTrigger className="w-44">
-                  <SelectValue placeholder="Status" className="font-semibold" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Status</SelectItem>
-                  <SelectItem value="hired">Hired</SelectItem>
-                  <SelectItem value="rejected">Rejected</SelectItem>
-                  <SelectItem value="in_process">In Process</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            {/* Action buttons */}
-            <div className="flex gap-2">
-              <Button
-                variant="outline"
-                className="gap-2"
-                onClick={() => setShowComparison(true)}
-                disabled={selectedApplicants.length < 2}
-              >
-                <GitCompare className="w-4 h-4" />
-                Compare ({selectedApplicants.length})
-              </Button>
+              {/* Action buttons */}
+              <div className="flex gap-2">
+                <Button
+                  variant="outline"
+                  className="gap-2"
+                  onClick={() => setShowComparison(true)}
+                  disabled={selectedApplicants.length < 2}
+                >
+                  <GitCompare className="w-4 h-4" />
+                  Compare ({selectedApplicants.length})
+                </Button>
+              </div>
             </div>
           </div>
         </section>
