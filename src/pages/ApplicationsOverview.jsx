@@ -280,7 +280,7 @@ const ApplicationsOverview = () => {
           </div>
 
           {/* Quick Overview Stats */}
-          <div className="space-y-6">
+          <div className="bg-gradient-to-br from-card via-card to-accent/5 rounded-2xl p-8 border border-card-border/50 shadow-lg space-y-6">
             <h2 className="text-2xl font-bold text-foreground">
               Analytics Overview
             </h2>
