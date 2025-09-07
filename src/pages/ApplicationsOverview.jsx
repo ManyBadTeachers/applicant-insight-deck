@@ -3,6 +3,7 @@ import Navigation from "@/components/Navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { StatusBadge } from "@/components/StatusBadge";
+import { HiringStatusBadge } from "@/components/HiringStatusBadge";
 import { NationalityBadge } from "@/components/NationalityBadge";
 import { ExpertiseBadge } from "@/components/ExpertiseBadge";
 import NotesSystem from "@/components/NotesSystem";
@@ -555,9 +556,7 @@ const ApplicationsOverview = () => {
                        </div>
                      </div>
                      <div className="flex-shrink-0" onClick={(e) => e.stopPropagation()}>
-                       <div className="text-sm font-semibold">
-                         <StatusBadge status={applicant.Status} />
-                       </div>
+                       <HiringStatusBadge status={applicant.Status} />
                      </div>
                    </div>
 
