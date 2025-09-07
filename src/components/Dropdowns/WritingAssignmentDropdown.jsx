@@ -129,3 +129,7 @@ function WritingAssignmentDropdown({ applicantId }) {
 }
 
 export default WritingAssignmentDropdown;
+
+{
+  /* github */
+}

@@ -122,3 +122,7 @@ function ContractDropdown({ applicantId }) {
 }
 
 export default ContractDropdown;
+
+{
+  /* github */
+}

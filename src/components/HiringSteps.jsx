@@ -94,3 +94,7 @@ const HiringSteps = ({ applicantId }) => {
 };
 
 export default HiringSteps;
+
+{
+  /* github */
+}

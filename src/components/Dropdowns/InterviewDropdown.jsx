@@ -163,3 +163,7 @@ function InterviewDropdown({ applicantId }) {
 }
 
 export default InterviewDropdown;
+
+{
+  /* github */
+}

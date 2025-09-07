@@ -134,3 +134,7 @@ function ScreeningDropdown({ applicantId }) {
 }
 
 export default ScreeningDropdown;
+
+{
+  /* github */
+}
