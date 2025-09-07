@@ -105,6 +105,7 @@ const ApplicationsOverview = () => {
           id: a.id.toString(),
           fullName: a.fullName,
           expertise: a.expertise,
+          Status: a.Status,
         }));
         setApplicantSteps(formattedSteps);
 
@@ -164,11 +165,11 @@ const ApplicationsOverview = () => {
         nationalityFilter === "all" ||
         a.nationality.toLowerCase() === nationalityFilter.toLowerCase();
 
-      // Get hiring status - simplified since no steps data available
+      // Get hiring status from the API Status field
       const applicantStep = applicantSteps.find((step) => step.id === a.id);
       let hiringStatus = "unknown";
-      if (applicantStep) {
-        hiringStatus = "in_process"; // Default to in_process since we don't have step details
+      if (applicantStep && applicantStep.Status) {
+        hiringStatus = applicantStep.Status.toLowerCase().replace(" ", "_");
       }
 
       const matchesStatus =
@@ -440,9 +441,13 @@ const ApplicationsOverview = () => {
                         </Button>
                       </div>
                     </td>
-                    <td className="p-3">
-                      <StatusBadge status={a.status} />
-                    </td>
+                     <td className="p-3">
+                       {(() => {
+                         const applicantStep = applicantSteps.find((step) => step.id === a.id);
+                         const hiringStatus = applicantStep?.Status || a.status;
+                         return <StatusBadge status={hiringStatus} />;
+                       })()}
+                     </td>
                     <td className="p-3">
                       <ExpertiseBadge expertise={a.primaryExpertise} />
                     </td>
