@@ -39,11 +39,8 @@ const ComparisonModal = ({ isOpen, onClose, applicants = [] }) => {
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="flex items-center justify-between">
-            <span>Compare Applicants ({applicants.length})</span>
-            <Button variant="ghost" size="icon" onClick={onClose}>
-              <X className="w-4 h-4" />
-            </Button>
+          <DialogTitle>
+            Compare Applicants ({applicants.length})
           </DialogTitle>
         </DialogHeader>
 
