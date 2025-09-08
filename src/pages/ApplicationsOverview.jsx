@@ -486,13 +486,14 @@ const ApplicationsOverview = () => {
                         size="sm"
                         onClick={() => handleAnswers(a.id, a.fullName)}
                         disabled={answersLoading}
-                        className="text-xs px-3 py-1 h-7 min-w-0 font-bold bg-white hover:bg-gray-900 text-gray-900 hover:text-white border-0 rounded-none shadow-sm transition-colors"
+                        className="gap-2"
                       >
                         {answersLoading ? (
                           <Loader2 className="w-3 h-3 animate-spin" />
                         ) : (
-                          "Answers"
+                          <FileText className="w-3 h-3" />
                         )}
+                        {answersLoading ? "Loading..." : "Answers"}
                       </Button>
                     </td>
                     <td className="px-3 py-4">
@@ -500,8 +501,9 @@ const ApplicationsOverview = () => {
                         variant="outline" 
                         size="sm"
                         onClick={() => navigate(`/applicant/${a.id}`)}
-                        className="text-xs px-3 py-1 h-7 min-w-0 font-bold bg-white hover:bg-gray-900 text-gray-900 hover:text-white border-0 rounded-none shadow-sm transition-colors"
+                        className="gap-2"
                       >
+                        <Search className="w-3 h-3" />
                         View
                       </Button>
                     </td>
