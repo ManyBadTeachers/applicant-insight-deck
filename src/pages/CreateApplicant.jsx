@@ -12,6 +12,7 @@ const CreateApplicant = () => {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [nationality, setNationality] = useState("");
+  const [formId, setFormId] = useState("1");
   const [message, setMessage] = useState("");
   const [newApplicants, setNewApplicants] = useState([]);
 
@@ -43,6 +44,7 @@ const CreateApplicant = () => {
       Email: email,
       Phone: phone,
       Nationality: nationality,
+      FormID: parseInt(formId),
       CV: "📄 CV Placeholder",
     };
 
@@ -69,6 +71,7 @@ const CreateApplicant = () => {
         setEmail("");
         setPhone("");
         setNationality("");
+        setFormId("1");
       }
     } catch (error) {
       setMessage(`Error: ${error.message}`);
@@ -155,6 +158,19 @@ const CreateApplicant = () => {
           </div>
 
           <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Form ID
+              </label>
+              <input
+                type="number"
+                value={formId}
+                onChange={(e) => setFormId(e.target.value)}
+                placeholder="Enter form ID (default: 1)"
+                className="w-full border rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
+              />
+            </div>
+
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 First Name
