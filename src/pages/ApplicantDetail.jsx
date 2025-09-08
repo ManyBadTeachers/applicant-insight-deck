@@ -29,7 +29,7 @@ const ApplicantDetail = () => {
   const [interviewNotes, setInterviewNotes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showNotePopup, setShowNotePopup] = useState(false);
-  const [expandedHiringSteps, setExpandedHiringSteps] = useState(false);
+  
 
   useEffect(() => {
     const fetchApplicantDetails = async () => {
@@ -181,44 +181,8 @@ const ApplicantDetail = () => {
 
         {/* Hiring Process */}
         <div className="bg-gradient-to-br from-card via-card to-accent/5 rounded-2xl p-8 border border-card-border/50 shadow-lg">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold text-foreground">Hiring Process</h2>
-            <Button
-              variant="outline"
-              onClick={() => setExpandedHiringSteps(!expandedHiringSteps)}
-              className="gap-2"
-            >
-              {expandedHiringSteps ? "Collapse" : "Expand"} Steps
-            </Button>
-          </div>
-
-          {/* Hiring Steps Overview */}
-          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4 mb-6">
-            {hiringSteps.map((step) => (
-              <div
-                key={step.step_id}
-                className={`p-3 rounded-lg border-2 text-center ${
-                  step.completed
-                    ? "bg-green-50 border-green-200 text-green-800"
-                    : step.skipped
-                    ? "bg-yellow-50 border-yellow-200 text-yellow-800"
-                    : "bg-gray-50 border-gray-200 text-gray-600"
-                }`}
-              >
-                <div className="text-xs font-medium">{step.step_name}</div>
-                <div className="text-xs mt-1">
-                  {step.completed ? "✓ Complete" : step.skipped ? "⊘ Skipped" : "○ Pending"}
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* Detailed Hiring Steps */}
-          {expandedHiringSteps && (
-            <div className="bg-background/50 rounded-xl p-6">
-              <HiringSteps applicantId={applicantId} />
-            </div>
-          )}
+          <h2 className="text-2xl font-bold text-foreground mb-6">Hiring Process</h2>
+          <HiringSteps applicantId={applicantId} />
         </div>
 
         {/* Notes Section */}
