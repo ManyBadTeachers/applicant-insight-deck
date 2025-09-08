@@ -519,17 +519,19 @@ const ApplicationsOverview = () => {
                 >
                   {/* Compact Header - Always Visible */}
                    <div className="flex items-center justify-between">
-                     <div className="flex items-center gap-3">
-                       <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-sm">
+                     <div className="flex items-center gap-4">
+                       <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/20 flex items-center justify-center text-primary font-bold text-sm shadow-sm">
                          {applicant.fullName
                            .split(" ")
                            .map((n) => n[0])
                            .join("")}
                        </div>
-                       <div>
-                         <h3 className="font-semibold text-card-foreground">
-                           {applicant.fullName}
-                         </h3>
+                       <div className="flex items-center gap-3">
+                         <div>
+                           <h3 className="font-semibold text-card-foreground text-base">
+                             {applicant.fullName}
+                           </h3>
+                         </div>
                          <div onClick={(e) => e.stopPropagation()}>
                            <ExpertiseBadge expertise={applicant.expertise} />
                          </div>
