@@ -9,6 +9,13 @@ import { ExpertiseBadge } from "@/components/ExpertiseBadge";
 import NotesSystem from "@/components/NotesSystem";
 import HiringSteps from "../components/HiringSteps";
 import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
+import {
   FileText,
   MessageSquare,
   ArrowLeft,
@@ -18,6 +25,7 @@ import {
   User,
   Briefcase,
   Flag,
+  Loader2,
 } from "lucide-react";
 
 const ApplicantDetail = () => {
@@ -29,6 +37,9 @@ const ApplicantDetail = () => {
   const [interviewNotes, setInterviewNotes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showNotePopup, setShowNotePopup] = useState(false);
+  const [showAnswersPopup, setShowAnswersPopup] = useState(false);
+  const [answersLoading, setAnswersLoading] = useState(false);
+  const [answersData, setAnswersData] = useState(null);
   
 
   useEffect(() => {
@@ -52,6 +63,23 @@ const ApplicantDetail = () => {
       fetchApplicantDetails();
     }
   }, [applicantId]);
+
+  const handleAnswers = async () => {
+    setAnswersLoading(true);
+    setShowAnswersPopup(true);
+    setAnswersData(null);
+    
+    try {
+      const response = await fetch(`http://127.0.0.1:5000/get_applicants_answers?applicant_id=${applicantId}`);
+      const data = await response.json();
+      setAnswersData(data);
+    } catch (error) {
+      console.error("Error fetching applicant answers:", error);
+      setAnswersData({ error: true });
+    } finally {
+      setAnswersLoading(false);
+    }
+  };
 
   if (loading) {
     return (
@@ -90,21 +118,78 @@ const ApplicantDetail = () => {
         />
       )}
 
+      {/* Answers Popup */}
+      <Dialog open={showAnswersPopup} onOpenChange={setShowAnswersPopup}>
+        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Applicant Answers</DialogTitle>
+            <DialogDescription>
+              Answers from {applicant?.fullName}
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="mt-4">
+            {answersLoading ? (
+              <div className="flex items-center justify-center py-8">
+                <Loader2 className="w-6 h-6 animate-spin mr-2" />
+                <span>Loading answers...</span>
+              </div>
+            ) : answersData ? (
+              answersData.error ? (
+                <div className="text-center py-8 text-muted-foreground">
+                  <p>Couldn't get answers from {applicant?.fullName}</p>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {answersData.answers ? (
+                    answersData.answers.map((answer, index) => (
+                      <div key={index} className="p-4 border rounded-lg">
+                        <h4 className="font-semibold mb-2">{answer.question || `Question ${index + 1}`}</h4>
+                        <p className="text-muted-foreground">{answer.answer || answer}</p>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="text-center py-8 text-muted-foreground">
+                      <p>Couldn't get answers from {applicant?.fullName}</p>
+                    </div>
+                  )}
+                </div>
+              )
+            ) : null}
+          </div>
+        </DialogContent>
+      </Dialog>
+
       <div className="max-w-7xl mx-auto px-4 py-8 space-y-8">
         {/* Header */}
         <div className="bg-gradient-to-br from-card via-card to-accent/5 rounded-2xl p-8 border border-card-border/50 shadow-lg">
-          <div className="flex items-center gap-4 mb-6">
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center gap-4">
+              <Button
+                variant="outline"
+                onClick={() => navigate(-1)}
+                className="gap-2"
+              >
+                <ArrowLeft className="w-4 h-4" />
+                Back
+              </Button>
+              <h1 className="text-3xl font-bold text-foreground">
+                Applicant Details
+              </h1>
+            </div>
             <Button
               variant="outline"
-              onClick={() => navigate(-1)}
+              onClick={handleAnswers}
+              disabled={answersLoading}
               className="gap-2"
             >
-              <ArrowLeft className="w-4 h-4" />
-              Back
+              {answersLoading ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <FileText className="w-4 h-4" />
+              )}
+              {answersLoading ? "Loading..." : "View Answers"}
             </Button>
-            <h1 className="text-3xl font-bold text-foreground">
-              Applicant Details
-            </h1>
           </div>
 
           {/* Applicant Info Card */}
