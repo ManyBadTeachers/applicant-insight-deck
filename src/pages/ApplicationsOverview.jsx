@@ -306,53 +306,234 @@ const ApplicationsOverview = () => {
                   </div>
                 </>
               ) : (
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                <div className="space-y-6">
                   {(() => {
-                    // Convert the flat object to question-answer pairs
-                    const excludedFields = ['ApplicantID', 'CV', 'Email', 'FirstName', 'LastName', 'FormID', 'Nationality', 'PhoneNumber', 'SubmissionDate', 'MainAreaExpertise'];
-                    const questionAnswerPairs = Object.entries(answersData)
-                      .filter(([key]) => !excludedFields.includes(key))
-                      .map(([key, value]) => ({
-                        question: key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase()),
-                        answer: value,
-                        isNumeric: typeof value === 'number' && value >= 1 && value <= 5
-                      }));
+                    // Question mapping for proper display
+                    const questionMap = {
+                      // Personal Information
+                      'FirstName': 'First Name',
+                      'LastName': 'Last Name', 
+                      'Email': 'Email',
+                      'PhoneNumber': 'Phone Number',
+                      'Nationality': 'Nationality',
+                      'CV': 'Curriculum Vitae',
+                      
+                      // Expertise & Motivation
+                      'MainAreaExpertise': 'What is your main area of expertise?',
+                      'WhyWorkWithZaz': 'Why do you want to work with Zaz?',
+                      'HowDidYouHear': 'How did you hear about this job application?',
+                      'OtherAreasExperience': 'What other areas do you have experience or knowledge on?',
+                      'PreviousGrantApplication': 'Have you previously written any grant application under FP7 or H2020?',
+                      'PreviousWritingExperience': 'Other Writing Experience – What is your previous writing experience?',
+                      
+                      // Competency Ranking
+                      'MarketAnalysis': 'Market Analysis',
+                      'CompetitiveAnalysis': 'Competitive Analysis',
+                      'BusinessModelDevelopment': 'Business Model Development',
+                      'FinancialForecasting': 'Financial Forecasting',
+                      'ProjectBudgeting': 'Project Budgeting',
+                      'PitchDeckCreation': 'Pitch Deck Creation',
+                      'WordDocuments': 'Word Documents',
+                      'ExcelSpreadsheets': 'Excel Spreadsheets',
+                      'PowerPointPresentations': 'PowerPoint Presentations',
+                      
+                      // Working Style
+                      'TaskPrioritization': 'You have a list of tasks of varying urgency and importance. Which tasks would it be sensible to start on first thing in the morning?',
+                      'ProposalWritingStart': 'You are about to start writing your first proposal draft. What do you start with?',
+                      'BlockingPoint': 'You have a blocking point in your proposal that requires client input? What do you do?',
+                      'MissingClientInput': 'You are still missing key client input and your final draft deadline is in 48h. What do you do next?',
+                      'FinalHourChanges': 'There is one hour left before your final proposal deadline and you have a chance to make a few changes. What do you focus on?',
+                      
+                      // Program Experience
+                      'ProgrammesWorkedOn': 'Please specify all the programmes you have worked on.',
+                      'ProjectsFundedOrPitched': 'Have you gotten any of these projects funded or invited to pitch?'
+                    };
 
-                    return questionAnswerPairs.length > 0 ? (
-                      questionAnswerPairs.map((item, index) => (
-                        <div key={index} className="bg-gradient-to-r from-slate-50 to-gray-50 border border-slate-200 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow">
-                          <h4 className="text-sm font-semibold text-slate-800 mb-3">{item.question}</h4>
-                          
-                          {item.isNumeric ? (
-                            <div className="flex items-center space-x-2">
-                              <div className="flex space-x-1">
-                                {[1, 2, 3, 4, 5].map((rating) => (
-                                  <div
-                                    key={rating}
-                                    className={`w-7 h-7 rounded-md flex items-center justify-center text-xs font-bold transition-all ${
-                                      rating === item.answer
-                                        ? 'bg-blue-500 text-white shadow-md scale-105'
-                                        : rating < item.answer
-                                        ? 'bg-blue-100 text-blue-600 border border-blue-200'
-                                        : 'bg-gray-100 text-gray-400 border border-gray-200'
-                                    }`}
-                                  >
-                                    {rating}
+                    const competencyFields = ['MarketAnalysis', 'CompetitiveAnalysis', 'BusinessModelDevelopment', 'FinancialForecasting', 'ProjectBudgeting', 'PitchDeckCreation', 'WordDocuments', 'ExcelSpreadsheets', 'PowerPointPresentations'];
+                    
+                    const sections = [
+                      {
+                        title: 'Personal Information',
+                        fields: ['FirstName', 'LastName', 'Email', 'PhoneNumber', 'Nationality', 'CV']
+                      },
+                      {
+                        title: 'Expertise & Motivation',
+                        fields: ['MainAreaExpertise', 'WhyWorkWithZaz', 'HowDidYouHear', 'OtherAreasExperience', 'PreviousGrantApplication', 'PreviousWritingExperience']
+                      },
+                      {
+                        title: 'Competency Ranking (1 = I know almost nothing, 5 = I am an expert)',
+                        fields: competencyFields
+                      },
+                      {
+                        title: 'Working Style',
+                        fields: ['TaskPrioritization', 'ProposalWritingStart', 'BlockingPoint', 'MissingClientInput', 'FinalHourChanges']
+                      },
+                      {
+                        title: 'Program Experience',
+                        fields: ['ProgrammesWorkedOn', 'ProjectsFundedOrPitched']
+                      }
+                    ];
+
+                    return sections.map((section, sectionIndex) => (
+                      <div key={sectionIndex} className="bg-card rounded-lg border border-border p-6">
+                        <h3 className="text-lg font-semibold text-foreground mb-4 pb-2 border-b border-border">
+                          {section.title}
+                        </h3>
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                          {section.fields.map((fieldKey) => {
+                            const answer = answersData[fieldKey];
+                            const question = questionMap[fieldKey] || fieldKey;
+                            const isNumeric = competencyFields.includes(fieldKey) && typeof answer === 'number' && answer >= 1 && answer <= 5;
+                            
+                            if (answer === undefined || answer === null || answer === '') return null;
+                            
+                            return (
+                              <div key={fieldKey} className="bg-muted/50 rounded-lg p-4 border border-border/50">
+                                <h4 className="text-sm font-medium text-foreground mb-3">{question}</h4>
+                                
+                                {isNumeric ? (
+                                  <div className="flex items-center space-x-3">
+                                    <div className="flex space-x-1">
+                                      {[1, 2, 3, 4, 5].map((rating) => (
+                                        <div
+                                          key={rating}
+                                          className={`w-6 h-6 rounded flex items-center justify-center text-xs font-bold transition-all ${
+                                            rating === answer
+                                              ? 'bg-primary text-primary-foreground shadow-sm'
+                                              : rating < answer
+                                              ? 'bg-primary/20 text-primary border border-primary/30'
+                                              : 'bg-muted text-muted-foreground border border-border'
+                                          }`}
+                                        >
+                                          {rating}
+                                        </div>
+                                      ))}
+                                    </div>
+                                    <span className="text-sm font-semibold text-primary">{answer}/5</span>
                                   </div>
-                                ))}
+                                ) : (
+                                  <div className="bg-background rounded p-3 border-l-2 border-primary">
+                                    <p className="text-sm text-foreground leading-relaxed">
+                                      {answer}
+                                    </p>
+                                  </div>
+                                )}
                               </div>
-                              <span className="text-sm font-bold text-blue-600">{item.answer}/5</span>
-                            </div>
-                          ) : (
-                            <div className="bg-white rounded-md p-3 border-l-4 border-blue-400">
-                              <p className="text-slate-700 text-sm leading-relaxed">
-                                {item.answer || <span className="text-slate-400 italic">No answer provided</span>}
-                              </p>
-                            </div>
-                          )}
+                            );
+                          }).filter(Boolean)}
                         </div>
-                      ))
-                    ) : (
+                      </div>
+                    ));
+                  })().filter(section => section.props.children[1].props.children.length > 0).length > 0 ? (
+                    (() => {
+                      const sections = [
+                        {
+                          title: 'Personal Information',
+                          fields: ['FirstName', 'LastName', 'Email', 'PhoneNumber', 'Nationality', 'CV']
+                        },
+                        {
+                          title: 'Expertise & Motivation', 
+                          fields: ['MainAreaExpertise', 'WhyWorkWithZaz', 'HowDidYouHear', 'OtherAreasExperience', 'PreviousGrantApplication', 'PreviousWritingExperience']
+                        },
+                        {
+                          title: 'Competency Ranking (1 = I know almost nothing, 5 = I am an expert)',
+                          fields: ['MarketAnalysis', 'CompetitiveAnalysis', 'BusinessModelDevelopment', 'FinancialForecasting', 'ProjectBudgeting', 'PitchDeckCreation', 'WordDocuments', 'ExcelSpreadsheets', 'PowerPointPresentations']
+                        },
+                        {
+                          title: 'Working Style',
+                          fields: ['TaskPrioritization', 'ProposalWritingStart', 'BlockingPoint', 'MissingClientInput', 'FinalHourChanges']
+                        },
+                        {
+                          title: 'Program Experience',
+                          fields: ['ProgrammesWorkedOn', 'ProjectsFundedOrPitched']
+                        }
+                      ];
+
+                      const questionMap = {
+                        'FirstName': 'First Name',
+                        'LastName': 'Last Name', 
+                        'Email': 'Email',
+                        'PhoneNumber': 'Phone Number',
+                        'Nationality': 'Nationality',
+                        'CV': 'Curriculum Vitae',
+                        'MainAreaExpertise': 'What is your main area of expertise?',
+                        'WhyWorkWithZaz': 'Why do you want to work with Zaz?',
+                        'HowDidYouHear': 'How did you hear about this job application?',
+                        'OtherAreasExperience': 'What other areas do you have experience or knowledge on?',
+                        'PreviousGrantApplication': 'Have you previously written any grant application under FP7 or H2020?',
+                        'PreviousWritingExperience': 'Other Writing Experience – What is your previous writing experience?',
+                        'MarketAnalysis': 'Market Analysis',
+                        'CompetitiveAnalysis': 'Competitive Analysis',
+                        'BusinessModelDevelopment': 'Business Model Development',
+                        'FinancialForecasting': 'Financial Forecasting',
+                        'ProjectBudgeting': 'Project Budgeting',
+                        'PitchDeckCreation': 'Pitch Deck Creation',
+                        'WordDocuments': 'Word Documents',
+                        'ExcelSpreadsheets': 'Excel Spreadsheets',
+                        'PowerPointPresentations': 'PowerPoint Presentations',
+                        'TaskPrioritization': 'You have a list of tasks of varying urgency and importance. Which tasks would it be sensible to start on first thing in the morning?',
+                        'ProposalWritingStart': 'You are about to start writing your first proposal draft. What do you start with?',
+                        'BlockingPoint': 'You have a blocking point in your proposal that requires client input? What do you do?',
+                        'MissingClientInput': 'You are still missing key client input and your final draft deadline is in 48h. What do you do next?',
+                        'FinalHourChanges': 'There is one hour left before your final proposal deadline and you have a chance to make a few changes. What do you focus on?',
+                        'ProgrammesWorkedOn': 'Please specify all the programmes you have worked on.',
+                        'ProjectsFundedOrPitched': 'Have you gotten any of these projects funded or invited to pitch?'
+                      };
+
+                      const competencyFields = ['MarketAnalysis', 'CompetitiveAnalysis', 'BusinessModelDevelopment', 'FinancialForecasting', 'ProjectBudgeting', 'PitchDeckCreation', 'WordDocuments', 'ExcelSpreadsheets', 'PowerPointPresentations'];
+
+                      return sections.map((section, sectionIndex) => (
+                        <div key={sectionIndex} className="bg-card rounded-lg border border-border p-6">
+                          <h3 className="text-lg font-semibold text-foreground mb-4 pb-2 border-b border-border">
+                            {section.title}
+                          </h3>
+                          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                            {section.fields.map((fieldKey) => {
+                              const answer = answersData[fieldKey];
+                              const question = questionMap[fieldKey] || fieldKey;
+                              const isNumeric = competencyFields.includes(fieldKey) && typeof answer === 'number' && answer >= 1 && answer <= 5;
+                              
+                              if (answer === undefined || answer === null || answer === '') return null;
+                              
+                              return (
+                                <div key={fieldKey} className="bg-muted/50 rounded-lg p-4 border border-border/50">
+                                  <h4 className="text-sm font-medium text-foreground mb-3">{question}</h4>
+                                  
+                                  {isNumeric ? (
+                                    <div className="flex items-center space-x-3">
+                                      <div className="flex space-x-1">
+                                        {[1, 2, 3, 4, 5].map((rating) => (
+                                          <div
+                                            key={rating}
+                                            className={`w-6 h-6 rounded flex items-center justify-center text-xs font-bold transition-all ${
+                                              rating === answer
+                                                ? 'bg-primary text-primary-foreground shadow-sm'
+                                                : rating < answer
+                                                ? 'bg-primary/20 text-primary border border-primary/30'
+                                                : 'bg-muted text-muted-foreground border border-border'
+                                            }`}
+                                          >
+                                            {rating}
+                                          </div>
+                                        ))}
+                                      </div>
+                                      <span className="text-sm font-semibold text-primary">{answer}/5</span>
+                                    </div>
+                                  ) : (
+                                    <div className="bg-background rounded p-3 border-l-2 border-primary">
+                                      <p className="text-sm text-foreground leading-relaxed">
+                                        {answer}
+                                      </p>
+                                    </div>
+                                  )}
+                                </div>
+                              );
+                            }).filter(Boolean)}
+                          </div>
+                        </div>
+                      )).filter(section => section.props.children[1].props.children.some(child => child !== null));
+                    })()
+                  ) : (
                       <>
                         {/* Status Information - Only show when no answers found */}
                         <div className="bg-amber-50 border border-amber-200 rounded-md p-4 mb-4">
