@@ -13,7 +13,7 @@ const CreateApplicant = () => {
   const [phone, setPhone] = useState("");
   const [nationality, setNationality] = useState("");
   const [message, setMessage] = useState("");
-  const [newApplicantsCount, setNewApplicantsCount] = useState(0);
+  const [newApplicants, setNewApplicants] = useState([]);
 
   useEffect(() => {
     const fetchNewApplicants = async () => {
@@ -21,7 +21,7 @@ const CreateApplicant = () => {
         const response = await fetch("http://127.0.0.1:5000/new_applicants");
         const data = await response.json();
         if (data.status === "ok" && data.new_applicants) {
-          setNewApplicantsCount(data.new_applicants.length);
+          setNewApplicants(data.new_applicants);
         }
       } catch (error) {
         console.error("Error fetching new applicants:", error);
@@ -95,14 +95,14 @@ const CreateApplicant = () => {
 
         {/* New Applicants Status */}
         <Card className="p-4 bg-amber-50 border-amber-200">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between mb-4">
             <div className="flex items-center space-x-3">
               <div className="text-amber-600">
                 <Users className="w-6 h-6" />
               </div>
               <div>
                 <h3 className="font-semibold text-amber-800">
-                  {newApplicantsCount} new applicant{newApplicantsCount !== 1 ? 's' : ''} in the system
+                  {newApplicants.length} new applicant{newApplicants.length !== 1 ? 's' : ''} in the system
                 </h3>
                 <p className="text-sm text-amber-600">
                   Ready for processing
@@ -114,6 +114,24 @@ const CreateApplicant = () => {
               <span className="text-sm">Waiting for applicants to be added into system</span>
             </div>
           </div>
+          
+          {newApplicants.length > 0 && (
+            <div className="space-y-2">
+              {newApplicants.map((applicant) => (
+                <div key={applicant.ApplicantID} className="bg-white rounded-md p-3 border border-amber-200">
+                  <div className="flex justify-between items-center">
+                    <div>
+                      <span className="font-medium text-gray-800">Applicant ID: {applicant.ApplicantID}</span>
+                      <span className="text-sm text-gray-600 ml-4">Submitted: {new Date(applicant.SubmissionDate).toLocaleString()}</span>
+                    </div>
+                    <span className="text-xs text-amber-600 bg-amber-100 px-2 py-1 rounded-full">
+                      Has not been added to system yet
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </Card>
 
         {/* Form Card */}
