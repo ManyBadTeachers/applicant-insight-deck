@@ -455,10 +455,10 @@ const ApplicationsOverview = () => {
                     </td>
                     <td className="p-3">
                       <Button
-                        variant="ghost"
+                        variant="outline"
                         size="sm"
                         onClick={() => handleNotes(a.id)}
-                        className="gap-1"
+                        className="gap-2 bg-card hover:bg-accent/50 border-border/50 text-foreground hover:text-accent-foreground transition-all duration-200"
                       >
                         <MessageSquare className="w-4 h-4" />
                         Notes
