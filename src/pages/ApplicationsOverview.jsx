@@ -288,11 +288,12 @@ const ApplicationsOverview = () => {
                   value={expertiseFilter}
                   onValueChange={setExpertiseFilter}
                 >
-                  <SelectTrigger className="w-44">
+                  <SelectTrigger className="w-44 cursor-pointer hover:bg-gray-50 border-2 hover:border-gray-400 transition-all duration-200">
                     <SelectValue
                       placeholder="Expertise"
                       className="font-semibold"
                     />
+                    <ChevronDown className="w-4 h-4 text-gray-600" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">All Expertise</SelectItem>
@@ -320,11 +321,12 @@ const ApplicationsOverview = () => {
                   value={nationalityFilter}
                   onValueChange={setNationalityFilter}
                 >
-                  <SelectTrigger className="w-44">
+                  <SelectTrigger className="w-44 cursor-pointer hover:bg-gray-50 border-2 hover:border-gray-400 transition-all duration-200">
                     <SelectValue
                       placeholder="Nationality"
                       className="font-semibold"
                     />
+                    <ChevronDown className="w-4 h-4 text-gray-600" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">All</SelectItem>
@@ -349,8 +351,9 @@ const ApplicationsOverview = () => {
                 </Select>
 
                 <Select value={statusFilter} onValueChange={setStatusFilter}>
-                  <SelectTrigger className="w-44">
+                  <SelectTrigger className="w-44 cursor-pointer hover:bg-gray-50 border-2 hover:border-gray-400 transition-all duration-200">
                     <SelectValue placeholder="Status" className="font-semibold" />
+                    <ChevronDown className="w-4 h-4 text-gray-600" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">All Status</SelectItem>
