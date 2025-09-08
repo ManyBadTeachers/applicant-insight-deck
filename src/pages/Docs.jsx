@@ -139,7 +139,7 @@ const Docs = () => {
                 </li>
                 <li className="flex items-center gap-2">
                   <ArrowRight className="w-4 h-4 text-primary" />
-                  Use filters to find specific candidates
+                  Use filters to find specific applicants
                 </li>
                 <li className="flex items-center gap-2">
                   <ArrowRight className="w-4 h-4 text-primary" />
@@ -160,7 +160,7 @@ const Docs = () => {
                 </li>
                 <li className="flex items-center gap-2">
                   <ArrowRight className="w-4 h-4 text-primary" />
-                  Compare multiple candidates side-by-side
+                  Compare multiple applicants side-by-side
                 </li>
                 <li className="flex items-center gap-2">
                   <ArrowRight className="w-4 h-4 text-primary" />
@@ -176,8 +176,8 @@ const Docs = () => {
           <div className="text-center space-y-4">
             <h2 className="text-4xl font-bold text-foreground">What is the HR Platform?</h2>
             <p className="text-lg text-muted-foreground max-w-4xl mx-auto">
-              A comprehensive hiring management system designed to streamline your recruitment process 
-              from initial application to final contract signing.
+            A comprehensive hiring management system designed to streamline your recruitment process 
+            from initial application to final contract signing.
             </p>
           </div>
 
@@ -190,7 +190,7 @@ const Docs = () => {
                 <h3 className="text-xl font-semibold">Centralized Management</h3>
               </div>
               <p className="text-muted-foreground">
-                Manage all your job applications, candidate information, and hiring decisions 
+                Manage all your job applications, applicant information, and hiring decisions 
                 in one unified dashboard with powerful filtering and search capabilities.
               </p>
             </Card>
@@ -222,6 +222,49 @@ const Docs = () => {
             </Card>
           </div>
         </section>
+
+        {/* Main Feature Highlight */}
+        <Card className="p-8 bg-gradient-to-br from-blue-50 to-indigo-50 border-blue-200">
+          <div className="text-center space-y-6">
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-100 rounded-full text-blue-700 font-medium">
+              <Eye className="w-4 h-4" />
+              Our Best Feature
+            </div>
+            <h2 className="text-4xl font-bold text-foreground">
+              Detailed Applicant Analysis - One at a Time
+            </h2>
+            <p className="text-xl text-muted-foreground max-w-4xl mx-auto leading-relaxed">
+              Click "View" on any applicant to dive deep into their complete profile. 
+              Analyze everything from contact details and expertise to CV information and application answers - 
+              all in one comprehensive, focused view that lets you make informed decisions.
+            </p>
+            <div className="flex items-center justify-center gap-8 pt-6">
+              <div className="text-center">
+                <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                  <Eye className="w-8 h-8 text-blue-600" />
+                </div>
+                <h3 className="font-semibold">Click "View"</h3>
+                <p className="text-sm text-muted-foreground">Access detailed profile</p>
+              </div>
+              <ArrowRight className="w-8 h-8 text-blue-400" />
+              <div className="text-center">
+                <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                  <Search className="w-8 h-8 text-green-600" />
+                </div>
+                <h3 className="font-semibold">Analyze Everything</h3>
+                <p className="text-sm text-muted-foreground">Complete applicant overview</p>
+              </div>
+              <ArrowRight className="w-8 h-8 text-blue-400" />
+              <div className="text-center">
+                <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                  <CheckCircle className="w-8 h-8 text-purple-600" />
+                </div>
+                <h3 className="font-semibold">Make Decisions</h3>
+                <p className="text-sm text-muted-foreground">Informed hiring choices</p>
+              </div>
+            </div>
+          </div>
+        </Card>
 
         {/* Key Features */}
         <section className="space-y-8">
@@ -279,7 +322,7 @@ const Docs = () => {
               </div>
               <ul className="space-y-2 text-muted-foreground">
                 <li>• Internal notes system for team communication</li>
-                <li>• Side-by-side candidate comparison</li>
+                <li>• Side-by-side applicant comparison</li>
                 <li>• Action center for quick status updates</li>
                 <li>• Interview notes and feedback tracking</li>
               </ul>
@@ -309,7 +352,7 @@ const Docs = () => {
                   </p>
                   <ul className="space-y-1 text-sm text-muted-foreground">
                     <li>• Select a job form from the dropdown to filter applications</li>
-                    <li>• Use the search bar to find specific candidates</li>
+                    <li>• Use the search bar to find specific applicants</li>
                     <li>• Apply filters by expertise, nationality, or status</li>
                   </ul>
                 </div>
@@ -322,10 +365,10 @@ const Docs = () => {
                   2
                 </div>
                 <div>
-                  <h3 className="text-xl font-semibold mb-2">Review Individual Candidates</h3>
-                  <p className="text-muted-foreground mb-3">
-                    Click "View" to access detailed information about each applicant.
-                  </p>
+                  <h3 className="text-xl font-semibold mb-2">Review Individual Applicants</h3>
+              <p className="text-muted-foreground mb-3">
+                Click "View" to access detailed information about each applicant - our best feature for in-depth analysis.
+              </p>
                   <ul className="space-y-1 text-sm text-muted-foreground">
                     <li>• Review contact information and professional details</li>
                     <li>• Check expertise level and nationality</li>
@@ -344,7 +387,7 @@ const Docs = () => {
                 <div>
                   <h3 className="text-xl font-semibold mb-2">Manage Hiring Steps</h3>
                   <p className="text-muted-foreground mb-3">
-                    Guide candidates through each stage of your hiring process.
+                    Guide applicants through each stage of your hiring process.
                   </p>
                   <ul className="space-y-1 text-sm text-muted-foreground">
                     <li>• Track progress through the 6-step workflow</li>
@@ -368,9 +411,9 @@ const Docs = () => {
                   </p>
                   <ul className="space-y-1 text-sm text-muted-foreground">
                     <li>• Add internal notes for team communication</li>
-                    <li>• Compare multiple candidates side-by-side</li>
+                    <li>• Compare multiple applicants side-by-side</li>
                     <li>• Track interview feedback and evaluations</li>
-                    <li>• Mark favorite candidates for quick access</li>
+                    <li>• Mark favorite applicants for quick access</li>
                   </ul>
                 </div>
               </div>
@@ -383,7 +426,7 @@ const Docs = () => {
           <div className="text-center">
             <h2 className="text-4xl font-bold text-foreground mb-4">The 6-Step Hiring Process</h2>
             <p className="text-lg text-muted-foreground">
-              A structured approach to ensure consistent and thorough candidate evaluation
+              A structured approach to ensure consistent and thorough applicant evaluation
             </p>
           </div>
 
@@ -473,19 +516,19 @@ const Docs = () => {
 
           <div className="grid lg:grid-cols-2 gap-6">
             <Card className="p-6">
-              <h3 className="text-lg font-semibold mb-3">How do I compare multiple candidates?</h3>
+              <h3 className="text-lg font-semibold mb-3">How do I compare multiple applicants?</h3>
               <p className="text-muted-foreground mb-3">
-                Select multiple candidates from the Applications Overview by checking their boxes, 
+                Select multiple applicants from the Applications Overview by checking their boxes, 
                 then click the "Compare" button to view them side-by-side.
               </p>
               <div className="text-sm text-muted-foreground">
-                You can compare up to 4 candidates at once, viewing their qualifications, 
+                You can compare up to 4 applicants at once, viewing their qualifications, 
                 expertise, and hiring progress in a unified comparison view.
               </div>
             </Card>
 
             <Card className="p-6">
-              <h3 className="text-lg font-semibold mb-3">What happens when a candidate is rejected?</h3>
+              <h3 className="text-lg font-semibold mb-3">What happens when an applicant is rejected?</h3>
               <p className="text-muted-foreground mb-3">
                 The system automatically sends tailored rejection emails based on the stage 
                 where the rejection occurred (screening, interview, etc.).
@@ -497,9 +540,9 @@ const Docs = () => {
             </Card>
 
             <Card className="p-6">
-              <h3 className="text-lg font-semibold mb-3">How do I track candidate progress?</h3>
+              <h3 className="text-lg font-semibold mb-3">How do I track applicant progress?</h3>
               <p className="text-muted-foreground mb-3">
-                Each candidate's profile shows their current position in the 6-step hiring process 
+                Each applicant's profile shows their current position in the 6-step hiring process 
                 with visual indicators for completed, current, and pending steps.
               </p>
               <div className="text-sm text-muted-foreground">
@@ -509,9 +552,9 @@ const Docs = () => {
             </Card>
 
             <Card className="p-6">
-              <h3 className="text-lg font-semibold mb-3">Can I add notes about candidates?</h3>
+              <h3 className="text-lg font-semibold mb-3">Can I add notes about applicants?</h3>
               <p className="text-muted-foreground mb-3">
-                Yes, both general notes and interview-specific notes can be added to any candidate. 
+                Yes, both general notes and interview-specific notes can be added to any applicant. 
                 These are visible to your entire HR team for collaboration.
               </p>
               <div className="text-sm text-muted-foreground">
@@ -523,7 +566,7 @@ const Docs = () => {
             <Card className="p-6">
               <h3 className="text-lg font-semibold mb-3">How do writing assignments work?</h3>
               <p className="text-muted-foreground mb-3">
-                Candidates can schedule writing assignments at their preferred time. The system 
+                Applicants can schedule writing assignments at their preferred time. The system 
                 enforces a 5-hour completion window and automatically closes access afterward.
               </p>
               <div className="text-sm text-muted-foreground">
@@ -553,7 +596,7 @@ const Docs = () => {
             <h2 className="text-3xl font-bold text-foreground">Rejection Email Management</h2>
           </div>
           <p className="text-lg text-muted-foreground mb-6">
-            Customize automated rejection emails sent to candidates at different stages of the hiring process. 
+            Customize automated rejection emails sent to applicants at different stages of the hiring process. 
             These templates ensure professional and consistent communication.
           </p>
 
