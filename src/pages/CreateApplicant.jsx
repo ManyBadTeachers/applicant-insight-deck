@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Navigation from "@/components/Navigation";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -13,6 +13,23 @@ const CreateApplicant = () => {
   const [phone, setPhone] = useState("");
   const [nationality, setNationality] = useState("");
   const [message, setMessage] = useState("");
+  const [newApplicantsCount, setNewApplicantsCount] = useState(0);
+
+  useEffect(() => {
+    const fetchNewApplicants = async () => {
+      try {
+        const response = await fetch("http://127.0.0.1:5000/new_applicants");
+        const data = await response.json();
+        if (data.status === "ok" && data.new_applicants) {
+          setNewApplicantsCount(data.new_applicants.length);
+        }
+      } catch (error) {
+        console.error("Error fetching new applicants:", error);
+      }
+    };
+
+    fetchNewApplicants();
+  }, []);
 
   const status = "Submitted Form"; // default, unchangeable
   const submissionDate = new Date().toISOString().split("T")[0]; // YYYY-MM-DD
@@ -73,6 +90,9 @@ const CreateApplicant = () => {
             necessary applicant details are included, status is defaulted to
             "Submitted Form", and the submission date is automatically set to
             today.
+          </p>
+          <p className="text-sm text-amber-600 font-medium mt-2">
+            There are currently {newApplicantsCount} new applicant{newApplicantsCount !== 1 ? 's' : ''} in the system.
           </p>
         </div>
 
