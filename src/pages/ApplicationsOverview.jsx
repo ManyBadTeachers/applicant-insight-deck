@@ -406,7 +406,7 @@ const ApplicationsOverview = () => {
                       <Button 
                         variant="outline" 
                         size="sm"
-                        className="text-xs px-3 py-1 h-7 min-w-0 font-bold bg-white hover:bg-gray-900 text-gray-900 hover:text-white border-2 border-gray-900 shadow-sm transition-colors"
+                        className="text-xs px-3 py-1 h-7 min-w-0 font-bold bg-white hover:bg-gray-900 text-gray-900 hover:text-white border-0 rounded-none shadow-sm transition-colors"
                       >
                         Answers
                       </Button>
@@ -415,7 +415,7 @@ const ApplicationsOverview = () => {
                       <Button 
                         variant="outline" 
                         size="sm"
-                        className="text-xs px-3 py-1 h-7 min-w-0 font-bold bg-white hover:bg-gray-900 text-gray-900 hover:text-white border-2 border-gray-900 shadow-sm transition-colors"
+                        className="text-xs px-3 py-1 h-7 min-w-0 font-bold bg-white hover:bg-gray-900 text-gray-900 hover:text-white border-0 rounded-none shadow-sm transition-colors"
                       >
                         View
                       </Button>
