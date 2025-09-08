@@ -234,7 +234,10 @@ const ApplicationsOverview = () => {
     setAnswersData(null);
     
     try {
-      const response = await fetch(`http://127.0.0.1:5000/get_applicants_answers?applicant_id=${applicantId}`);
+      const response = await fetch(`http://127.0.0.1:5000/get_applicants_answers/${applicantId}`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
       const data = await response.json();
       setAnswersData(data);
     } catch (error) {
