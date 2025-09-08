@@ -7,6 +7,7 @@ import ApplicationsOverview from "./pages/ApplicationsOverview";
 import CreateApplicant from "./pages/CreateApplicant";
 import Docs from "./pages/Docs";
 import NotFound from "./pages/NotFound";
+import DevelopmentNotice from "./components/DevelopmentNotice";
 
 const queryClient = new QueryClient();
 
@@ -15,6 +16,7 @@ const App = () => (
     <TooltipProvider>
       <Toaster />
       <Sonner />
+      <DevelopmentNotice />
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<ApplicationsOverview />} />
