@@ -261,7 +261,7 @@ const ApplicationsOverview = () => {
 
       {/* Answers Popup */}
       <Dialog open={showAnswersPopup} onOpenChange={setShowAnswersPopup}>
-        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+        <DialogContent className="max-w-4xl max-h-[85vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Applicant Answers</DialogTitle>
             <DialogDescription>
@@ -306,7 +306,7 @@ const ApplicationsOverview = () => {
                   </div>
                 </>
               ) : (
-                <div className="space-y-4">
+                <div className="space-y-6">
                   {(() => {
                     // Convert the flat object to question-answer pairs
                     const excludedFields = ['ApplicantID', 'CV', 'Email', 'FirstName', 'LastName', 'FormID', 'Nationality', 'PhoneNumber', 'SubmissionDate', 'MainAreaExpertise'];
@@ -314,14 +314,48 @@ const ApplicationsOverview = () => {
                       .filter(([key]) => !excludedFields.includes(key))
                       .map(([key, value]) => ({
                         question: key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase()),
-                        answer: value
+                        answer: value,
+                        isNumeric: typeof value === 'number' && value >= 1 && value <= 5
                       }));
 
                     return questionAnswerPairs.length > 0 ? (
                       questionAnswerPairs.map((item, index) => (
-                        <div key={index} className="p-4 border rounded-lg">
-                          <h4 className="font-semibold mb-2">{item.question}</h4>
-                          <p className="text-muted-foreground">{item.answer || 'No answer provided'}</p>
+                        <div key={index} className="bg-gradient-to-r from-slate-50 to-gray-50 border border-slate-200 rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow">
+                          <h4 className="text-lg font-semibold text-slate-800 mb-4">{item.question}</h4>
+                          
+                          {item.isNumeric ? (
+                            <div className="space-y-3">
+                              <div className="flex items-center space-x-2">
+                                <span className="text-sm font-medium text-slate-600">Rating:</span>
+                                <div className="flex space-x-1">
+                                  {[1, 2, 3, 4, 5].map((rating) => (
+                                    <div
+                                      key={rating}
+                                      className={`w-10 h-10 rounded-lg flex items-center justify-center text-sm font-bold transition-all ${
+                                        rating === item.answer
+                                          ? 'bg-blue-500 text-white shadow-lg scale-110'
+                                          : rating < item.answer
+                                          ? 'bg-blue-100 text-blue-600 border-2 border-blue-200'
+                                          : 'bg-gray-100 text-gray-400 border-2 border-gray-200'
+                                      }`}
+                                    >
+                                      {rating}
+                                    </div>
+                                  ))}
+                                </div>
+                                <span className="text-lg font-bold text-blue-600">{item.answer}/5</span>
+                              </div>
+                              <div className="text-xs text-slate-500">
+                                1 = Beginner • 2 = Basic • 3 = Intermediate • 4 = Advanced • 5 = Expert
+                              </div>
+                            </div>
+                          ) : (
+                            <div className="bg-white rounded-lg p-4 border-l-4 border-blue-400">
+                              <p className="text-slate-700 leading-relaxed">
+                                {item.answer || <span className="text-slate-400 italic">No answer provided</span>}
+                              </p>
+                            </div>
+                          )}
                         </div>
                       ))
                     ) : (
