@@ -383,16 +383,17 @@ const ApplicationsOverview = () => {
             <table className="w-full border-collapse">
               <thead className="bg-gray-50 border-b border-gray-200">
                 <tr>
-                  <th className="px-4 py-4 text-left text-sm font-semibold text-gray-900">Select</th>
-                  <th className="px-4 py-4 text-left text-sm font-semibold text-gray-900">Full Name</th>
-                  <th className="px-4 py-4 text-left text-sm font-semibold text-gray-900">Status</th>
-                  <th className="px-4 py-4 text-left text-sm font-semibold text-gray-900">Expertise</th>
-                  <th className="px-4 py-4 text-left text-sm font-semibold text-gray-900">Email</th>
-                  <th className="px-4 py-4 text-left text-sm font-semibold text-gray-900">Phone</th>
-                  <th className="px-4 py-4 text-left text-sm font-semibold text-gray-900">Nationality</th>
-                  <th className="px-4 py-4 text-left text-sm font-semibold text-gray-900">CV</th>
-                  <th className="px-4 py-4 text-left text-sm font-semibold text-gray-900">Submission Date</th>
-                  <th className="px-4 py-4 text-left text-sm font-semibold text-gray-900">Actions</th>
+                  <th className="px-3 py-4 text-left text-sm font-semibold text-gray-900">View Answers</th>
+                  <th className="px-3 py-4 text-left text-sm font-semibold text-gray-900">View Separately</th>
+                  <th className="px-3 py-4 text-left text-sm font-semibold text-gray-900">Full Name</th>
+                  <th className="px-3 py-4 text-left text-sm font-semibold text-gray-900">Expertise</th>
+                  <th className="px-3 py-4 text-left text-sm font-semibold text-gray-900">Email</th>
+                  <th className="px-3 py-4 text-left text-sm font-semibold text-gray-900">Phone</th>
+                  <th className="px-3 py-4 text-left text-sm font-semibold text-gray-900">Nationality</th>
+                  <th className="px-3 py-4 text-left text-sm font-semibold text-gray-900">CV</th>
+                  <th className="px-3 py-4 text-left text-sm font-semibold text-gray-900">Submission Date</th>
+                  <th className="px-3 py-4 text-left text-sm font-semibold text-gray-900">Status</th>
+                  <th className="px-3 py-4 text-left text-sm font-semibold text-gray-900">Select</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
@@ -401,17 +402,25 @@ const ApplicationsOverview = () => {
                     key={a.id}
                     className={`${index % 2 === 0 ? 'bg-white' : 'bg-gray-50/50'} hover:bg-blue-50 transition-colors duration-150`}
                   >
-                    <td className="px-4 py-4">
-                      <input
-                        type="checkbox"
-                        checked={selectedApplicants.some(
-                          (app) => app.id === a.id
-                        )}
-                        onChange={() => toggleSelection(a)}
-                        className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                      />
+                    <td className="px-3 py-4">
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        className="text-xs px-2 py-1 h-8"
+                      >
+                        View Answers
+                      </Button>
                     </td>
-                    <td className="px-4 py-4">
+                    <td className="px-3 py-4">
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        className="text-xs px-2 py-1 h-8"
+                      >
+                        View Separately
+                      </Button>
+                    </td>
+                    <td className="px-3 py-4">
                       <div className="flex items-center gap-3">
                         <span className="font-semibold text-gray-900 text-sm">{a.fullName}</span>
                         <Button
@@ -430,40 +439,39 @@ const ApplicationsOverview = () => {
                         </Button>
                       </div>
                     </td>
-                     <td className="px-4 py-4">
+                     <td className="px-3 py-4">
+                       <ExpertiseBadge expertise={a.primaryExpertise} />
+                     </td>
+                     <td className="px-3 py-4 text-sm text-gray-700">{a.email}</td>
+                     <td className="px-3 py-4 text-sm text-gray-700">{a.phone}</td>
+                     <td className="px-3 py-4">
+                       <NationalityBadge nationality={a.nationality} />
+                     </td>
+                     <td className="px-3 py-4">
+                       <Button variant="ghost" size="icon" className="hover:bg-gray-100">
+                         <FileText className="w-5 h-5 text-gray-600" />
+                       </Button>
+                     </td>
+                     <td className="px-3 py-4 text-sm text-gray-700">
+                       {a.submissionDate}
+                     </td>
+                     <td className="px-3 py-4">
                        {(() => {
                          const applicantStep = applicantSteps.find((step) => step.id === a.id);
                          const hiringStatus = applicantStep?.Status || a.status;
                          return <StatusBadge status={hiringStatus} />;
                        })()}
                      </td>
-                    <td className="px-4 py-4">
-                      <ExpertiseBadge expertise={a.primaryExpertise} />
-                    </td>
-                    <td className="px-4 py-4 text-sm text-gray-700">{a.email}</td>
-                    <td className="px-4 py-4 text-sm text-gray-700">{a.phone}</td>
-                    <td className="px-4 py-4">
-                      <NationalityBadge nationality={a.nationality} />
-                    </td>
-                    <td className="px-4 py-4">
-                      <Button variant="ghost" size="icon" className="hover:bg-gray-100">
-                        <FileText className="w-5 h-5 text-gray-600" />
-                      </Button>
-                    </td>
-                    <td className="px-4 py-4 text-sm text-gray-700">
-                      {a.submissionDate}
-                    </td>
-                    <td className="px-4 py-4">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handleNotes(a.id)}
-                        className="gap-2 border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-gray-400 transition-all duration-200"
-                      >
-                        <MessageSquare className="w-4 h-4" />
-                        Notes
-                      </Button>
-                    </td>
+                     <td className="px-3 py-4">
+                       <input
+                         type="checkbox"
+                         checked={selectedApplicants.some(
+                           (app) => app.id === a.id
+                         )}
+                         onChange={() => toggleSelection(a)}
+                         className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                       />
+                     </td>
                   </tr>
                 ))}
               </tbody>
