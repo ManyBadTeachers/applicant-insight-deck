@@ -378,87 +378,87 @@ const ApplicationsOverview = () => {
         </section>
 
         {/* Table */}
-        <div className="border border-card-border rounded-lg shadow-sm overflow-hidden bg-card">
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
           <div className="max-h-[600px] overflow-y-auto overflow-x-auto">
-            <table className="w-full text-sm border-collapse">
-              <thead className="bg-muted text-left text-muted-foreground font-semibold sticky top-0 z-10">
+            <table className="w-full border-collapse">
+              <thead className="bg-gray-50 border-b border-gray-200">
                 <tr>
-                  <th className="p-3">Select</th>
-                  <th className="p-3">Full Name</th>
-                  <th className="p-3">Status</th>
-                  <th className="p-3">Expertise</th>
-                  <th className="p-3">Email</th>
-                  <th className="p-3">Phone</th>
-                  <th className="p-3">Nationality</th>
-                  <th className="p-3">CV</th>
-                  <th className="p-3">Submission Date</th>
-                  <th className="p-3">Actions</th>
+                  <th className="px-4 py-4 text-left text-sm font-semibold text-gray-900">Select</th>
+                  <th className="px-4 py-4 text-left text-sm font-semibold text-gray-900">Full Name</th>
+                  <th className="px-4 py-4 text-left text-sm font-semibold text-gray-900">Status</th>
+                  <th className="px-4 py-4 text-left text-sm font-semibold text-gray-900">Expertise</th>
+                  <th className="px-4 py-4 text-left text-sm font-semibold text-gray-900">Email</th>
+                  <th className="px-4 py-4 text-left text-sm font-semibold text-gray-900">Phone</th>
+                  <th className="px-4 py-4 text-left text-sm font-semibold text-gray-900">Nationality</th>
+                  <th className="px-4 py-4 text-left text-sm font-semibold text-gray-900">CV</th>
+                  <th className="px-4 py-4 text-left text-sm font-semibold text-gray-900">Submission Date</th>
+                  <th className="px-4 py-4 text-left text-sm font-semibold text-gray-900">Actions</th>
                 </tr>
               </thead>
-              <tbody>
-                {filteredApplicants.map((a) => (
+              <tbody className="divide-y divide-gray-100">
+                {filteredApplicants.map((a, index) => (
                   <tr
                     key={a.id}
-                    className="border-t border-border odd:bg-card even:bg-muted/30 hover:bg-accent/50 transition-all duration-150"
+                    className={`${index % 2 === 0 ? 'bg-white' : 'bg-gray-50/50'} hover:bg-blue-50 transition-colors duration-150`}
                   >
-                    <td className="p-3">
+                    <td className="px-4 py-4">
                       <input
                         type="checkbox"
                         checked={selectedApplicants.some(
                           (app) => app.id === a.id
                         )}
                         onChange={() => toggleSelection(a)}
-                        className="rounded border-border"
+                        className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                       />
                     </td>
-                    <td className="p-3 font-semibold text-card-foreground">
-                      <div className="flex items-center gap-2">
-                        {a.fullName}
+                    <td className="px-4 py-4">
+                      <div className="flex items-center gap-3">
+                        <span className="font-semibold text-gray-900 text-sm">{a.fullName}</span>
                         <Button
                           variant="ghost"
                           size="sm"
                           onClick={() => toggleFavorite(a.id)}
-                          className="h-6 w-6 p-0"
+                          className="h-6 w-6 p-0 hover:bg-red-50"
                         >
                           <Heart
                             className={`w-4 h-4 ${
                               favorites.includes(a.id)
                                 ? "fill-red-500 text-red-500"
-                                : "text-muted-foreground"
+                                : "text-gray-400 hover:text-red-400"
                             }`}
                           />
                         </Button>
                       </div>
                     </td>
-                     <td className="p-3">
+                     <td className="px-4 py-4">
                        {(() => {
                          const applicantStep = applicantSteps.find((step) => step.id === a.id);
                          const hiringStatus = applicantStep?.Status || a.status;
                          return <StatusBadge status={hiringStatus} />;
                        })()}
                      </td>
-                    <td className="p-3">
+                    <td className="px-4 py-4">
                       <ExpertiseBadge expertise={a.primaryExpertise} />
                     </td>
-                    <td className="p-3 text-muted-foreground">{a.email}</td>
-                    <td className="p-3 text-muted-foreground">{a.phone}</td>
-                    <td className="p-3">
+                    <td className="px-4 py-4 text-sm text-gray-700">{a.email}</td>
+                    <td className="px-4 py-4 text-sm text-gray-700">{a.phone}</td>
+                    <td className="px-4 py-4">
                       <NationalityBadge nationality={a.nationality} />
                     </td>
-                    <td className="p-3">
-                      <Button variant="ghost" size="icon">
-                        <FileText className="w-5 h-5 text-muted-foreground" />
+                    <td className="px-4 py-4">
+                      <Button variant="ghost" size="icon" className="hover:bg-gray-100">
+                        <FileText className="w-5 h-5 text-gray-600" />
                       </Button>
                     </td>
-                    <td className="p-3 text-muted-foreground">
+                    <td className="px-4 py-4 text-sm text-gray-700">
                       {a.submissionDate}
                     </td>
-                    <td className="p-3">
+                    <td className="px-4 py-4">
                       <Button
                         variant="outline"
                         size="sm"
                         onClick={() => handleNotes(a.id)}
-                        className="gap-2 bg-card hover:bg-accent/50 border-border/50 text-foreground hover:text-accent-foreground transition-all duration-200"
+                        className="gap-2 border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-gray-400 transition-all duration-200"
                       >
                         <MessageSquare className="w-4 h-4" />
                         Notes
