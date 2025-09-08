@@ -537,7 +537,7 @@ const ApplicationsOverview = () => {
               return (
                 <div
                   key={applicant.id}
-                  className="p-4 bg-gradient-to-br from-card via-card to-accent/5 rounded-xl shadow-lg border border-card-border/50 hover:shadow-xl transition-all duration-300 group cursor-pointer"
+                  className="p-4 bg-gradient-to-br from-card via-card to-accent/5 rounded-xl shadow-lg border-2 border-card-border/50 hover:shadow-2xl hover:shadow-primary/20 hover:border-primary/40 hover:bg-gradient-to-br hover:from-card/90 hover:via-card/90 hover:to-accent/10 hover:scale-[1.02] transition-all duration-300 group cursor-pointer transform-gpu"
                   onClick={() => toggleActionCard(applicant.id)}
                 >
                   {/* Compact Header - Always Visible */}
