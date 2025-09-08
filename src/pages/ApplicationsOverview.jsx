@@ -18,6 +18,13 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
+import {
   FileText,
   Search,
   Calendar,
@@ -28,6 +35,7 @@ import {
   GitCompare,
   ChevronDown,
   ChevronUp,
+  Loader2,
 } from "lucide-react";
 
 const ApplicationsOverview = () => {
@@ -47,6 +55,10 @@ const ApplicationsOverview = () => {
   const [selectedForm, setSelectedForm] = useState("");
   const [showNotePopup, setShowNotePopup] = useState(false);
   const [noteId, setNoteId] = useState(1);
+  const [showAnswersPopup, setShowAnswersPopup] = useState(false);
+  const [answersLoading, setAnswersLoading] = useState(false);
+  const [answersData, setAnswersData] = useState(null);
+  const [currentApplicantName, setCurrentApplicantName] = useState("");
 
   // Fetch all forms on mount
   useEffect(() => {
@@ -215,6 +227,24 @@ const ApplicationsOverview = () => {
     }
   };
 
+  const handleAnswers = async (applicantId, applicantName) => {
+    setCurrentApplicantName(applicantName);
+    setAnswersLoading(true);
+    setShowAnswersPopup(true);
+    setAnswersData(null);
+    
+    try {
+      const response = await fetch(`http://127.0.0.1:5000/get_applicants_answers?applicant_id=${applicantId}`);
+      const data = await response.json();
+      setAnswersData(data);
+    } catch (error) {
+      console.error("Error fetching applicant answers:", error);
+      setAnswersData({ error: true });
+    } finally {
+      setAnswersLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <Navigation />
@@ -225,6 +255,48 @@ const ApplicationsOverview = () => {
           onClose={() => setShowNotePopup(false)}
         />
       )}
+
+      {/* Answers Popup */}
+      <Dialog open={showAnswersPopup} onOpenChange={setShowAnswersPopup}>
+        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Applicant Answers</DialogTitle>
+            <DialogDescription>
+              Answers from {currentApplicantName}
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="mt-4">
+            {answersLoading ? (
+              <div className="flex items-center justify-center py-8">
+                <Loader2 className="w-6 h-6 animate-spin mr-2" />
+                <span>Loading answers...</span>
+              </div>
+            ) : answersData ? (
+              answersData.error ? (
+                <div className="text-center py-8 text-muted-foreground">
+                  <p>Couldn't get answers from {currentApplicantName}</p>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {answersData.answers ? (
+                    answersData.answers.map((answer, index) => (
+                      <div key={index} className="p-4 border rounded-lg">
+                        <h4 className="font-semibold mb-2">{answer.question || `Question ${index + 1}`}</h4>
+                        <p className="text-muted-foreground">{answer.answer || answer}</p>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="text-center py-8 text-muted-foreground">
+                      <p>Couldn't get answers from {currentApplicantName}</p>
+                    </div>
+                  )}
+                </div>
+              )
+            ) : null}
+          </div>
+        </DialogContent>
+      </Dialog>
 
       <div className="max-w-7xl mx-auto px-4 py-8 space-y-12">
         {/* Dashboard */}
@@ -412,9 +484,15 @@ const ApplicationsOverview = () => {
                       <Button 
                         variant="outline" 
                         size="sm"
+                        onClick={() => handleAnswers(a.id, a.fullName)}
+                        disabled={answersLoading}
                         className="text-xs px-3 py-1 h-7 min-w-0 font-bold bg-white hover:bg-gray-900 text-gray-900 hover:text-white border-0 rounded-none shadow-sm transition-colors"
                       >
-                        Answers
+                        {answersLoading ? (
+                          <Loader2 className="w-3 h-3 animate-spin" />
+                        ) : (
+                          "Answers"
+                        )}
                       </Button>
                     </td>
                     <td className="px-3 py-4">
