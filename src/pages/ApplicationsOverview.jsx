@@ -266,30 +266,6 @@ const ApplicationsOverview = () => {
             </DialogDescription>
           </DialogHeader>
           
-          {/* Status Information */}
-          <div className="bg-amber-50 border border-amber-200 rounded-md p-4 mb-4">
-            <div className="space-y-3">
-              <p className="text-sm text-gray-700">
-                These questions are manually transferred into the system. 
-                <span className="text-amber-600 font-medium"> Automatic integration coming soon.</span>
-              </p>
-              
-              <div className="flex items-center space-x-2 text-amber-600">
-                <Loader2 className="w-4 h-4 animate-spin" />
-                <span className="text-sm">Trying to sync questions with form submissions</span>
-              </div>
-              
-              <div className="bg-blue-50 border border-blue-200 rounded-md p-3">
-                <p className="text-xs text-blue-700">
-                  <strong>Note:</strong> If the sync process never ends, please contact{' '}
-                  <a href="mailto:simon.skott@zazventures.com" className="text-blue-600 underline hover:text-blue-800">
-                    simon.skott@zazventures.com
-                  </a>
-                </p>
-              </div>
-            </div>
-          </div>
-          
           <div className="mt-4">
             {answersLoading ? (
               <div className="flex items-center justify-center py-8">
@@ -298,23 +274,84 @@ const ApplicationsOverview = () => {
               </div>
             ) : answersData ? (
               answersData.error ? (
-                <div className="text-center py-8 text-muted-foreground">
-                  <p>Couldn't get answers from {currentApplicantName}</p>
-                </div>
+                <>
+                  {/* Status Information - Only show when there's an error */}
+                  <div className="bg-amber-50 border border-amber-200 rounded-md p-4 mb-4">
+                    <div className="space-y-3">
+                      <p className="text-sm text-gray-700">
+                        These questions are manually transferred into the system. 
+                        <span className="text-amber-600 font-medium"> Automatic integration coming soon.</span>
+                      </p>
+                      
+                      <div className="flex items-center space-x-2 text-amber-600">
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        <span className="text-sm">Trying to sync questions with form submissions</span>
+                      </div>
+                      
+                      <div className="bg-blue-50 border border-blue-200 rounded-md p-3">
+                        <p className="text-xs text-blue-700">
+                          <strong>Note:</strong> If the sync process never ends, please contact{' '}
+                          <a href="mailto:simon.skott@zazventures.com" className="text-blue-600 underline hover:text-blue-800">
+                            simon.skott@zazventures.com
+                          </a>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="text-center py-8 text-muted-foreground">
+                    <p>Couldn't get answers from {currentApplicantName}</p>
+                  </div>
+                </>
               ) : (
                 <div className="space-y-4">
-                  {answersData.answers ? (
-                    answersData.answers.map((answer, index) => (
-                      <div key={index} className="p-4 border rounded-lg">
-                        <h4 className="font-semibold mb-2">{answer.question || `Question ${index + 1}`}</h4>
-                        <p className="text-muted-foreground">{answer.answer || answer}</p>
-                      </div>
-                    ))
-                  ) : (
-                    <div className="text-center py-8 text-muted-foreground">
-                      <p>Couldn't get answers from {currentApplicantName}</p>
-                    </div>
-                  )}
+                  {(() => {
+                    // Convert the flat object to question-answer pairs
+                    const excludedFields = ['ApplicantID', 'CV', 'Email', 'FirstName', 'LastName', 'FormID', 'Nationality', 'PhoneNumber', 'SubmissionDate', 'MainAreaExpertise'];
+                    const questionAnswerPairs = Object.entries(answersData)
+                      .filter(([key]) => !excludedFields.includes(key))
+                      .map(([key, value]) => ({
+                        question: key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase()),
+                        answer: value
+                      }));
+
+                    return questionAnswerPairs.length > 0 ? (
+                      questionAnswerPairs.map((item, index) => (
+                        <div key={index} className="p-4 border rounded-lg">
+                          <h4 className="font-semibold mb-2">{item.question}</h4>
+                          <p className="text-muted-foreground">{item.answer || 'No answer provided'}</p>
+                        </div>
+                      ))
+                    ) : (
+                      <>
+                        {/* Status Information - Only show when no answers found */}
+                        <div className="bg-amber-50 border border-amber-200 rounded-md p-4 mb-4">
+                          <div className="space-y-3">
+                            <p className="text-sm text-gray-700">
+                              These questions are manually transferred into the system. 
+                              <span className="text-amber-600 font-medium"> Automatic integration coming soon.</span>
+                            </p>
+                            
+                            <div className="flex items-center space-x-2 text-amber-600">
+                              <Loader2 className="w-4 h-4 animate-spin" />
+                              <span className="text-sm">Trying to sync questions with form submissions</span>
+                            </div>
+                            
+                            <div className="bg-blue-50 border border-blue-200 rounded-md p-3">
+                              <p className="text-xs text-blue-700">
+                                <strong>Note:</strong> If the sync process never ends, please contact{' '}
+                                <a href="mailto:simon.skott@zazventures.com" className="text-blue-600 underline hover:text-blue-800">
+                                  simon.skott@zazventures.com
+                                </a>
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="text-center py-8 text-muted-foreground">
+                          <p>No answers found for {currentApplicantName}</p>
+                        </div>
+                      </>
+                    );
+                  })()}
                 </div>
               )
             ) : null}
