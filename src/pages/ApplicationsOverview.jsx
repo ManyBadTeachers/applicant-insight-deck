@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 import Navigation from "@/components/Navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -30,6 +31,7 @@ import {
 } from "lucide-react";
 
 const ApplicationsOverview = () => {
+  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
   const [expertiseFilter, setExpertiseFilter] = useState("all");
   const [nationalityFilter, setNationalityFilter] = useState("all");
@@ -419,6 +421,7 @@ const ApplicationsOverview = () => {
                       <Button 
                         variant="outline" 
                         size="sm"
+                        onClick={() => navigate(`/applicant/${a.id}`)}
                         className="text-xs px-3 py-1 h-7 min-w-0 font-bold bg-white hover:bg-gray-900 text-gray-900 hover:text-white border-0 rounded-none shadow-sm transition-colors"
                       >
                         View
