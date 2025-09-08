@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { X, Minimize2, Send } from 'lucide-react';
+import { X, Minimize2, Send, Maximize2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
@@ -31,6 +31,12 @@ const DevelopmentNotice = () => {
     const expiryDate = new Date();
     expiryDate.setTime(expiryDate.getTime() + (30 * 24 * 60 * 60 * 1000));
     document.cookie = `dev-notice-minimized=true; expires=${expiryDate.toUTCString()}; path=/`;
+  };
+
+  const handleExpand = () => {
+    setIsVisible(true);
+    // Remove the minimized cookie
+    document.cookie = 'dev-notice-minimized=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/';
   };
 
   const handleSubmitSuggestion = async (e) => {
@@ -78,7 +84,24 @@ const DevelopmentNotice = () => {
     }
   };
 
-  if (!isVisible) return null;
+  // Show minimized indicator when not visible
+  if (!isVisible) {
+    return (
+      <div className="fixed top-4 right-4 z-50">
+        <Button
+          onClick={handleExpand}
+          variant="outline"
+          size="sm"
+          className="bg-gradient-to-r from-card to-accent/10 border-border/50 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+        >
+          <div className="flex items-center gap-2">
+            <span className="text-sm">🚧</span>
+            <Maximize2 className="h-3 w-3" />
+          </div>
+        </Button>
+      </div>
+    );
+  }
 
   return (
     <div className="fixed top-4 right-4 z-50 w-80 bg-gradient-to-br from-card via-card to-accent/10 border border-border/50 rounded-xl shadow-xl p-4 backdrop-blur-sm">
@@ -86,7 +109,7 @@ const DevelopmentNotice = () => {
       <div className="flex items-start justify-between mb-3">
         <div className="flex items-center gap-2">
           <div className="w-2 h-2 bg-orange-500 rounded-full animate-pulse"></div>
-          <h3 className="text-sm font-semibold text-foreground">Under Development</h3>
+          <h3 className="text-sm font-semibold text-foreground">🚧 Under Development 🔧</h3>
         </div>
         <Button
           variant="ghost"
@@ -100,13 +123,13 @@ const DevelopmentNotice = () => {
 
       {/* Content */}
       <p className="text-xs text-muted-foreground mb-4 leading-relaxed">
-        This website is still under development. Please submit your questions, suggestions, or improvements below.
+        ⚠️ This website is still under development. Please submit your questions, suggestions, or improvements below.
       </p>
 
       {/* Suggestion Form */}
       <form onSubmit={handleSubmitSuggestion} className="space-y-3">
         <Input
-          placeholder="Enter your suggestion..."
+          placeholder="💡 Enter your suggestion..."
           value={suggestion}
           onChange={(e) => setSuggestion(e.target.value)}
           className="text-xs h-8"
