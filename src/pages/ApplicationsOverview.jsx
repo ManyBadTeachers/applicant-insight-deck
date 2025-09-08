@@ -383,8 +383,8 @@ const ApplicationsOverview = () => {
             <table className="w-full border-collapse">
               <thead className="bg-gray-50 border-b border-gray-200">
                 <tr>
-                  <th className="px-3 py-4 text-left text-sm font-semibold text-gray-900">View Answers</th>
-                  <th className="px-3 py-4 text-left text-sm font-semibold text-gray-900">View Separately</th>
+                  <th className="px-3 py-4 text-left text-sm font-semibold text-gray-900">Answers</th>
+                  <th className="px-3 py-4 text-left text-sm font-semibold text-gray-900">View</th>
                   <th className="px-3 py-4 text-left text-sm font-semibold text-gray-900">Full Name</th>
                   <th className="px-3 py-4 text-left text-sm font-semibold text-gray-900">Expertise</th>
                   <th className="px-3 py-4 text-left text-sm font-semibold text-gray-900">Email</th>
@@ -406,18 +406,18 @@ const ApplicationsOverview = () => {
                       <Button 
                         variant="outline" 
                         size="sm"
-                        className="text-xs px-2 py-1 h-8"
+                        className="text-xs px-3 py-1 h-7 min-w-0 font-medium"
                       >
-                        View Answers
+                        Answers
                       </Button>
                     </td>
                     <td className="px-3 py-4">
                       <Button 
                         variant="outline" 
                         size="sm"
-                        className="text-xs px-2 py-1 h-8"
+                        className="text-xs px-3 py-1 h-7 min-w-0 font-medium"
                       >
-                        View Separately
+                        View
                       </Button>
                     </td>
                     <td className="px-3 py-4">
