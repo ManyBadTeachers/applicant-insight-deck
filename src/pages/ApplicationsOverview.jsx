@@ -383,8 +383,8 @@ const ApplicationsOverview = () => {
             <table className="w-full border-collapse">
               <thead className="bg-gray-50 border-b border-gray-200">
                 <tr>
-                  <th className="px-3 py-4 text-left text-sm font-semibold text-gray-900">Answers</th>
-                  <th className="px-3 py-4 text-left text-sm font-semibold text-gray-900">View</th>
+                  <th className="px-3 py-4 text-left text-sm font-semibold text-gray-900">View Answers</th>
+                  <th className="px-3 py-4 text-left text-sm font-semibold text-gray-900">View Separately</th>
                   <th className="px-3 py-4 text-left text-sm font-semibold text-gray-900">Full Name</th>
                   <th className="px-3 py-4 text-left text-sm font-semibold text-gray-900">Expertise</th>
                   <th className="px-3 py-4 text-left text-sm font-semibold text-gray-900">Email</th>
@@ -404,18 +404,18 @@ const ApplicationsOverview = () => {
                   >
                     <td className="px-3 py-4">
                       <Button 
-                        variant="outline" 
+                        variant="default" 
                         size="sm"
-                        className="text-xs px-3 py-1 h-7 min-w-0 font-medium"
+                        className="text-xs px-3 py-1 h-7 min-w-0 font-semibold bg-primary hover:bg-primary/90 text-primary-foreground shadow-sm"
                       >
                         Answers
                       </Button>
                     </td>
                     <td className="px-3 py-4">
                       <Button 
-                        variant="outline" 
+                        variant="secondary" 
                         size="sm"
-                        className="text-xs px-3 py-1 h-7 min-w-0 font-medium"
+                        className="text-xs px-3 py-1 h-7 min-w-0 font-semibold bg-secondary hover:bg-secondary/80 text-secondary-foreground shadow-sm"
                       >
                         View
                       </Button>
