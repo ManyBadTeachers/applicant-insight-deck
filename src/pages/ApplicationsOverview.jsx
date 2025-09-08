@@ -479,14 +479,11 @@ const ApplicationsOverview = () => {
           <div className="p-6 rounded-lg shadow-sm bg-card border border-card-border space-y-4">
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
               <div className="flex-1">
-                <h3 className="text-lg font-semibold text-card-foreground mb-2">
-                  Hiring Process Management
+                <h3 className="text-xl font-bold text-card-foreground mb-3">
+                  Manage Your Hiring Pipeline
                 </h3>
-                <p className="text-card-foreground">
-                  Review and manage candidates at different stages of the hiring
-                  pipeline. Take action on pending interviews, document reviews,
-                  and track progress through each step of your recruitment
-                  process.
+                <p className="text-base text-card-foreground leading-relaxed">
+                  See all candidates and where they are in your hiring process. Click on any candidate to move them to the next step or update their status.
                 </p>
               </div>
 
