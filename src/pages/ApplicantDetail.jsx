@@ -70,7 +70,10 @@ const ApplicantDetail = () => {
     setAnswersData(null);
     
     try {
-      const response = await fetch(`http://127.0.0.1:5000/get_applicants_answers?applicant_id=${applicantId}`);
+      const response = await fetch(`http://127.0.0.1:5000/get_applicants_answers/${applicantId}`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
       const data = await response.json();
       setAnswersData(data);
     } catch (error) {
@@ -120,7 +123,7 @@ const ApplicantDetail = () => {
 
       {/* Answers Popup */}
       <Dialog open={showAnswersPopup} onOpenChange={setShowAnswersPopup}>
-        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+        <DialogContent className="max-w-4xl max-h-[85vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Applicant Answers</DialogTitle>
             <DialogDescription>
@@ -136,23 +139,112 @@ const ApplicantDetail = () => {
               </div>
             ) : answersData ? (
               answersData.error ? (
-                <div className="text-center py-8 text-muted-foreground">
-                  <p>Couldn't get answers from {applicant?.fullName}</p>
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  {answersData.answers ? (
-                    answersData.answers.map((answer, index) => (
-                      <div key={index} className="p-4 border rounded-lg">
-                        <h4 className="font-semibold mb-2">{answer.question || `Question ${index + 1}`}</h4>
-                        <p className="text-muted-foreground">{answer.answer || answer}</p>
+                <>
+                  {/* Status Information - Only show when there's an error */}
+                  <div className="bg-amber-50 border border-amber-200 rounded-md p-4 mb-4">
+                    <div className="space-y-3">
+                      <p className="text-sm text-gray-700">
+                        These questions are manually transferred into the system. 
+                        <span className="text-amber-600 font-medium"> Automatic integration coming soon.</span>
+                      </p>
+                      
+                      <div className="flex items-center space-x-2 text-amber-600">
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        <span className="text-sm">Trying to sync questions with form submissions</span>
                       </div>
-                    ))
-                  ) : (
-                    <div className="text-center py-8 text-muted-foreground">
-                      <p>Couldn't get answers from {applicant?.fullName}</p>
+                      
+                      <div className="bg-blue-50 border border-blue-200 rounded-md p-3">
+                        <p className="text-xs text-blue-700">
+                          <strong>Note:</strong> If the sync process never ends, please contact{' '}
+                          <a href="mailto:simon.skott@zazventures.com" className="text-blue-600 underline hover:text-blue-800">
+                            simon.skott@zazventures.com
+                          </a>
+                        </p>
+                      </div>
                     </div>
-                  )}
+                  </div>
+                  <div className="text-center py-8 text-muted-foreground">
+                    <p>Couldn't get answers from {applicant?.fullName}</p>
+                  </div>
+                </>
+              ) : (
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                  {(() => {
+                    // Convert the flat object to question-answer pairs
+                    const excludedFields = ['ApplicantID', 'CV', 'Email', 'FirstName', 'LastName', 'FormID', 'Nationality', 'PhoneNumber', 'SubmissionDate', 'MainAreaExpertise'];
+                    const questionAnswerPairs = Object.entries(answersData)
+                      .filter(([key]) => !excludedFields.includes(key))
+                      .map(([key, value]) => ({
+                        question: key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase()),
+                        answer: value,
+                        isNumeric: typeof value === 'number' && value >= 1 && value <= 5
+                      }));
+
+                    return questionAnswerPairs.length > 0 ? (
+                      questionAnswerPairs.map((item, index) => (
+                        <div key={index} className="bg-gradient-to-r from-slate-50 to-gray-50 border border-slate-200 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow">
+                          <h4 className="text-sm font-semibold text-slate-800 mb-3">{item.question}</h4>
+                          
+                          {item.isNumeric ? (
+                            <div className="flex items-center space-x-2">
+                              <div className="flex space-x-1">
+                                {[1, 2, 3, 4, 5].map((rating) => (
+                                  <div
+                                    key={rating}
+                                    className={`w-7 h-7 rounded-md flex items-center justify-center text-xs font-bold transition-all ${
+                                      rating === item.answer
+                                        ? 'bg-blue-500 text-white shadow-md scale-105'
+                                        : rating < item.answer
+                                        ? 'bg-blue-100 text-blue-600 border border-blue-200'
+                                        : 'bg-gray-100 text-gray-400 border border-gray-200'
+                                    }`}
+                                  >
+                                    {rating}
+                                  </div>
+                                ))}
+                              </div>
+                              <span className="text-sm font-bold text-blue-600">{item.answer}/5</span>
+                            </div>
+                          ) : (
+                            <div className="bg-white rounded-md p-3 border-l-4 border-blue-400">
+                              <p className="text-slate-700 text-sm leading-relaxed">
+                                {item.answer || <span className="text-slate-400 italic">No answer provided</span>}
+                              </p>
+                            </div>
+                          )}
+                        </div>
+                      ))
+                    ) : (
+                      <>
+                        {/* Status Information - Only show when no answers found */}
+                        <div className="bg-amber-50 border border-amber-200 rounded-md p-4 mb-4">
+                          <div className="space-y-3">
+                            <p className="text-sm text-gray-700">
+                              These questions are manually transferred into the system. 
+                              <span className="text-amber-600 font-medium"> Automatic integration coming soon.</span>
+                            </p>
+                            
+                            <div className="flex items-center space-x-2 text-amber-600">
+                              <Loader2 className="w-4 h-4 animate-spin" />
+                              <span className="text-sm">Trying to sync questions with form submissions</span>
+                            </div>
+                            
+                            <div className="bg-blue-50 border border-blue-200 rounded-md p-3">
+                              <p className="text-xs text-blue-700">
+                                <strong>Note:</strong> If the sync process never ends, please contact{' '}
+                                <a href="mailto:simon.skott@zazventures.com" className="text-blue-600 underline hover:text-blue-800">
+                                  simon.skott@zazventures.com
+                                </a>
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="text-center py-8 text-muted-foreground">
+                          <p>No answers found for {applicant?.fullName}</p>
+                        </div>
+                      </>
+                    );
+                  })()}
                 </div>
               )
             ) : null}
