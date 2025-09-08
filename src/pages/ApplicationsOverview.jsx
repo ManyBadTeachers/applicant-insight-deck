@@ -393,6 +393,7 @@ const ApplicationsOverview = () => {
                   <th className="px-3 py-4 text-left text-sm font-semibold text-gray-900">CV</th>
                   <th className="px-3 py-4 text-left text-sm font-semibold text-gray-900">Submission Date</th>
                   <th className="px-3 py-4 text-left text-sm font-semibold text-gray-900">Status</th>
+                  <th className="px-3 py-4 text-left text-sm font-semibold text-gray-900">Actions</th>
                   <th className="px-3 py-4 text-left text-sm font-semibold text-gray-900">Select</th>
                 </tr>
               </thead>
@@ -461,6 +462,17 @@ const ApplicationsOverview = () => {
                          const hiringStatus = applicantStep?.Status || a.status;
                          return <StatusBadge status={hiringStatus} />;
                        })()}
+                     </td>
+                     <td className="px-3 py-4">
+                       <Button
+                         variant="outline"
+                         size="sm"
+                         onClick={() => handleNotes(a.id)}
+                         className="gap-2 border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-gray-400 transition-all duration-200"
+                       >
+                         <MessageSquare className="w-4 h-4" />
+                         Notes
+                       </Button>
                      </td>
                      <td className="px-3 py-4">
                        <input
