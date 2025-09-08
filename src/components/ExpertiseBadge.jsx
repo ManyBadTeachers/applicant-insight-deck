@@ -1,25 +1,25 @@
 export const ExpertiseBadge = ({ expertise }) => {
   const colors = {
-    IT: "bg-blue-50 text-blue-700 border-blue-200",
-    Business: "bg-amber-50 text-amber-700 border-amber-200",
-    Physics: "bg-indigo-50 text-indigo-700 border-indigo-200",
-    "Material Science": "bg-teal-50 text-teal-700 border-teal-200",
-    "Life Sciences": "bg-emerald-50 text-emerald-700 border-emerald-200",
-    Biotechnology: "bg-pink-50 text-pink-700 border-pink-200",
-    Engineering: "bg-orange-50 text-orange-700 border-orange-200",
-    AI: "bg-purple-50 text-purple-700 border-purple-200",
-    "Machine Learning": "bg-red-50 text-red-700 border-red-200",
-    Agrotech: "bg-lime-50 text-lime-700 border-lime-200",
-    Chemistry: "bg-cyan-50 text-cyan-700 border-cyan-200",
-    Finance: "bg-yellow-50 text-yellow-700 border-yellow-200",
-    Quantum: "bg-rose-50 text-rose-700 border-rose-200",
-    "Earth Sciences": "bg-fuchsia-50 text-fuchsia-700 border-fuchsia-200",
+    IT: "bg-blue-600 text-white shadow-lg shadow-blue-500/50",
+    Business: "bg-amber-600 text-white shadow-lg shadow-amber-500/50",
+    Physics: "bg-indigo-600 text-white shadow-lg shadow-indigo-500/50",
+    "Material Science": "bg-teal-600 text-white shadow-lg shadow-teal-500/50",
+    "Life Sciences": "bg-emerald-600 text-white shadow-lg shadow-emerald-500/50",
+    Biotechnology: "bg-pink-600 text-white shadow-lg shadow-pink-500/50",
+    Engineering: "bg-orange-600 text-white shadow-lg shadow-orange-500/50",
+    AI: "bg-purple-600 text-white shadow-lg shadow-purple-500/50",
+    "Machine Learning": "bg-red-600 text-white shadow-lg shadow-red-500/50",
+    Agrotech: "bg-lime-600 text-white shadow-lg shadow-lime-500/50",
+    Chemistry: "bg-cyan-600 text-white shadow-lg shadow-cyan-500/50",
+    Finance: "bg-yellow-600 text-white shadow-lg shadow-yellow-500/50",
+    Quantum: "bg-rose-600 text-white shadow-lg shadow-rose-500/50",
+    "Earth Sciences": "bg-fuchsia-600 text-white shadow-lg shadow-fuchsia-500/50",
   };
 
   return (
     <span
-      className={`inline-flex items-center px-3 py-1.5 rounded-full text-xs font-bold border transition-all duration-200 hover:scale-105 shadow-sm ${
-        colors[expertise] || "bg-muted text-muted-foreground border-border"
+      className={`inline-flex items-center px-3 py-1.5 rounded-full text-xs font-black uppercase tracking-wide transition-all duration-300 hover:scale-110 hover:shadow-xl ${
+        colors[expertise] || "bg-gray-600 text-white shadow-lg shadow-gray-500/50"
       }`}
     >
       {expertise}
