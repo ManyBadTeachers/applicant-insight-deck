@@ -1,6 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import ThemeToggle from "@/components/ThemeToggle";
 import { Users, FileText, BookOpen, UserPlus } from "lucide-react";
 
 const Navigation = () => {
@@ -38,10 +37,6 @@ const Navigation = () => {
                 );
               })}
             </div>
-          </div>
-          
-          <div className="flex items-center space-x-2">
-            <ThemeToggle />
           </div>
         </div>
       </div>
