@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import Navigation from "@/components/Navigation";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Users } from "lucide-react";
+import { Users, Loader2 } from "lucide-react";
 
 const CreateApplicant = () => {
   const [firstName, setFirstName] = useState("");
@@ -91,10 +91,30 @@ const CreateApplicant = () => {
             "Submitted Form", and the submission date is automatically set to
             today.
           </p>
-          <p className="text-sm text-amber-600 font-medium mt-2">
-            There are currently {newApplicantsCount} new applicant{newApplicantsCount !== 1 ? 's' : ''} in the system.
-          </p>
         </div>
+
+        {/* New Applicants Status */}
+        <Card className="p-4 bg-amber-50 border-amber-200">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-3">
+              <div className="text-amber-600">
+                <Users className="w-6 h-6" />
+              </div>
+              <div>
+                <h3 className="font-semibold text-amber-800">
+                  {newApplicantsCount} new applicant{newApplicantsCount !== 1 ? 's' : ''} in the system
+                </h3>
+                <p className="text-sm text-amber-600">
+                  Ready for processing
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center space-x-2 text-amber-600">
+              <Loader2 className="w-4 h-4 animate-spin" />
+              <span className="text-sm">Waiting for applicants to be added into system</span>
+            </div>
+          </div>
+        </Card>
 
         {/* Form Card */}
         <Card className="p-6 border-card-border bg-gray-50">
