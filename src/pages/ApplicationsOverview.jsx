@@ -404,18 +404,18 @@ const ApplicationsOverview = () => {
                   >
                     <td className="px-3 py-4">
                       <Button 
-                        variant="default" 
+                        variant="outline" 
                         size="sm"
-                        className="text-xs px-3 py-1 h-7 min-w-0 font-semibold bg-primary hover:bg-primary/90 text-primary-foreground shadow-sm"
+                        className="text-xs px-3 py-1 h-7 min-w-0 font-bold bg-white hover:bg-gray-900 text-gray-900 hover:text-white border-2 border-gray-900 shadow-sm transition-colors"
                       >
                         Answers
                       </Button>
                     </td>
                     <td className="px-3 py-4">
                       <Button 
-                        variant="secondary" 
+                        variant="outline" 
                         size="sm"
-                        className="text-xs px-3 py-1 h-7 min-w-0 font-semibold bg-secondary hover:bg-secondary/80 text-secondary-foreground shadow-sm"
+                        className="text-xs px-3 py-1 h-7 min-w-0 font-bold bg-white hover:bg-gray-900 text-gray-900 hover:text-white border-2 border-gray-900 shadow-sm transition-colors"
                       >
                         View
                       </Button>
