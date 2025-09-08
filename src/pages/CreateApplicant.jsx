@@ -105,32 +105,43 @@ const CreateApplicant = () => {
                   {newApplicants.length} new applicant{newApplicants.length !== 1 ? 's' : ''} in the system
                 </h3>
                 <p className="text-sm text-amber-600">
-                  Ready for processing
+                  Awaiting system integration
                 </p>
               </div>
             </div>
             <div className="flex items-center space-x-2 text-amber-600">
               <Loader2 className="w-4 h-4 animate-spin" />
-              <span className="text-sm">Waiting for applicants to be added into system</span>
+              <span className="text-sm">Processing incoming applications</span>
             </div>
           </div>
           
           {newApplicants.length > 0 && (
-            <div className="space-y-2">
-              {newApplicants.map((applicant) => (
-                <div key={applicant.ApplicantID} className="bg-white rounded-md p-3 border border-amber-200">
-                  <div className="flex justify-between items-center">
-                    <div>
-                      <span className="font-medium text-gray-800">Applicant ID: {applicant.ApplicantID}</span>
-                      <span className="text-sm text-gray-600 ml-4">Submitted: {new Date(applicant.SubmissionDate).toLocaleString()}</span>
+            <>
+              <div className="space-y-2 mb-4">
+                {newApplicants.map((applicant) => (
+                  <div key={applicant.ApplicantID} className="bg-white rounded-md p-3 border border-amber-200">
+                    <div className="flex justify-between items-center">
+                      <div>
+                        <span className="font-medium text-gray-800">Applicant ID: {applicant.ApplicantID}</span>
+                        <span className="text-sm text-gray-600 ml-4">Submitted: {new Date(applicant.SubmissionDate).toLocaleString()}</span>
+                      </div>
+                      <span className="text-xs text-amber-600 bg-amber-100 px-2 py-1 rounded-full">
+                        Pending system integration
+                      </span>
                     </div>
-                    <span className="text-xs text-amber-600 bg-amber-100 px-2 py-1 rounded-full">
-                      Has not been added to system yet
-                    </span>
                   </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+              
+              <div className="bg-blue-50 border border-blue-200 rounded-md p-3">
+                <p className="text-sm text-blue-700">
+                  <strong>Note:</strong> If applicants remain in pending status for an extended period, 
+                  please contact <a href="mailto:simon.skott@zazventures.com" className="text-blue-600 underline hover:text-blue-800">
+                    simon.skott@zazventures.com
+                  </a> for assistance with system integration.
+                </p>
+              </div>
+            </>
           )}
         </Card>
 
