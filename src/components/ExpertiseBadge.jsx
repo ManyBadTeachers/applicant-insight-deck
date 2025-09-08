@@ -1,25 +1,25 @@
 export const ExpertiseBadge = ({ expertise }) => {
   const colors = {
-    IT: "bg-blue-600 text-white shadow-lg shadow-blue-500/50",
-    Business: "bg-amber-600 text-white shadow-lg shadow-amber-500/50",
-    Physics: "bg-indigo-600 text-white shadow-lg shadow-indigo-500/50",
-    "Material Science": "bg-teal-600 text-white shadow-lg shadow-teal-500/50",
-    "Life Sciences": "bg-emerald-600 text-white shadow-lg shadow-emerald-500/50",
-    Biotechnology: "bg-pink-600 text-white shadow-lg shadow-pink-500/50",
-    Engineering: "bg-orange-600 text-white shadow-lg shadow-orange-500/50",
-    AI: "bg-purple-600 text-white shadow-lg shadow-purple-500/50",
-    "Machine Learning": "bg-red-600 text-white shadow-lg shadow-red-500/50",
-    Agrotech: "bg-lime-600 text-white shadow-lg shadow-lime-500/50",
-    Chemistry: "bg-cyan-600 text-white shadow-lg shadow-cyan-500/50",
-    Finance: "bg-yellow-600 text-white shadow-lg shadow-yellow-500/50",
-    Quantum: "bg-rose-600 text-white shadow-lg shadow-rose-500/50",
-    "Earth Sciences": "bg-fuchsia-600 text-white shadow-lg shadow-fuchsia-500/50",
+    IT: "bg-blue-100 text-blue-800",
+    Business: "bg-amber-100 text-amber-800",
+    Physics: "bg-indigo-100 text-indigo-800",
+    "Material Science": "bg-teal-100 text-teal-800",
+    "Life Sciences": "bg-emerald-100 text-emerald-800",
+    Biotechnology: "bg-pink-100 text-pink-800",
+    Engineering: "bg-orange-100 text-orange-800",
+    AI: "bg-purple-100 text-purple-800",
+    "Machine Learning": "bg-red-100 text-red-800",
+    Agrotech: "bg-lime-100 text-lime-800",
+    Chemistry: "bg-cyan-100 text-cyan-800",
+    Finance: "bg-yellow-100 text-yellow-800",
+    Quantum: "bg-rose-100 text-rose-800",
+    "Earth Sciences": "bg-fuchsia-100 text-fuchsia-800",
   };
 
   return (
     <span
-      className={`inline-flex items-center px-3 py-1.5 rounded-full text-xs font-black uppercase tracking-wide transition-all duration-300 hover:scale-110 hover:shadow-xl ${
-        colors[expertise] || "bg-gray-600 text-white shadow-lg shadow-gray-500/50"
+      className={`inline-flex items-center px-3 py-1.5 rounded-full text-xs font-black uppercase tracking-wide ${
+        colors[expertise] || "bg-gray-100 text-gray-800"
       }`}
     >
       {expertise}
