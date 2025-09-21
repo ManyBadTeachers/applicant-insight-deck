@@ -124,15 +124,14 @@ def get_applicants_in_hiring_process():
 
     form_id = request.args.get("form_id", type=int)
 
+    # Return all applicants for the hiring process, regardless of whether they have steps
     sql = """
         SELECT 
             a.ID AS applicant_id,
             a.FullName,
             a.Expertise,
-            a.Status,
-            s.*
+            a.Status
         FROM Applicants a
-        JOIN application_steps s ON a.ID = s.applicant_id
     """
     if form_id:
         sql += " WHERE a.form_id = ?"
@@ -143,21 +142,16 @@ def get_applicants_in_hiring_process():
         cur.execute(sql)
 
     rows = cur.fetchall()
-    col_names = [desc[0] for desc in cur.description]
     conn.close()
 
-
     applicants = []
-
     for row in rows:
-        row_dict = dict(zip(col_names, row))
         applicant_data = {
-            "id": row_dict["applicant_id"],
-            "fullName": row_dict["FullName"],
-            "expertise": row_dict["Expertise"],
-            "Status": row_dict["Status"]
+            "id": row[0],
+            "fullName": row[1],
+            "expertise": row[2],
+            "Status": row[3]
         }        
-
         applicants.append(applicant_data)
 
     return jsonify({"applicants": applicants})
